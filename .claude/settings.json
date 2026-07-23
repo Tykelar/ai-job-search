@@ -36,7 +36,9 @@
       "Bash(xargs echo \"outcome.md files:\")",
       "Bash(python -c \"import csv;r=list\\(csv.DictReader\\(open\\('job_search_tracker.csv',encoding='utf-8'\\)\\)\\);from collections import Counter;print\\('rows:',len\\(r\\)\\);print\\('status:',dict\\(Counter\\(x['status'] for x in r\\)\\)\\);print\\('sectors:',dict\\(Counter\\(x['sector'] or '\\(blank\\)' for x in r\\)\\)\\)\")",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(cd \"c:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\AI-job-search\" && ls .claude/commands/ | grep -iE \"apply|add-template|rank\" ; echo \"---legacy master + build skill---\"; ls \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\\\\CV_material\\\\CV_Complete_USI_Jose_Henriques.md\" \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\\\\.claude\\\\commands\\\\build-cv-usi.md\" 2>&1 | sed 's/.*CV builder/[CVbuilder]/')",
+      "Read(//g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/CV builder/CV_material/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\josep\\Desktop\\Dev\\USI\\education",

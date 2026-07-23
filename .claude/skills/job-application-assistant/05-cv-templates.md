@@ -12,7 +12,8 @@ All CVs use the moderncv LaTeX package with the "banking" style and "blue" color
 
 **Output file:** `cv/main_<company>_<role>.tex`
 **Compile with:** **lualatex** on MiKTeX/TeX Live. pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly.
-**Master reference:** `cv/main_example.tex` (comprehensive CV with all competencies, experience, and achievements - use as source when building targeted CVs)
+**Master reference (LaTeX structure):** `cv/main_example.tex` (comprehensive CV with all competencies, experience, and achievements - use as the structural/LaTeX source when building targeted CVs)
+**Master content bank (CV-voice wording):** `cv/master_cv.md` (USI-derived snapshot validated over 44 applications - the richest source of already-approved bullet, skill, and project phrasing. Reuse its exact wording where a bullet fits the role instead of regenerating equivalent prose. It is a content source, not a LaTeX template.)
 
 ### Compile command
 
