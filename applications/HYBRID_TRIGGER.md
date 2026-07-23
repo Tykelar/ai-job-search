@@ -14,13 +14,13 @@ pure A to the hybrid. It is the in-repo companion to the `cv-tailoring-philosoph
   is generated; every other line is copied character-for-character from a curated master.
   No drift possible, but rigid.
 - **Hybrid (the deferred target).** B's content law on top of A's infrastructure: verbatim
-  selection from `cv/master_cv.md` for all bullets/skills/projects/headline, with the
+  selection from `applications/master_cv.md` for all bullets/skills/projects/headline, with the
   profile statement as the one generative surface, keeping A's LaTeX output + reviewer +
   ATS/tracker pipeline as a second check.
 
 ## Current state (what is already in place)
 
-`cv/master_cv.md` (the curated master, USI-derived, kept in sync by `/sync-usi` Step 2) is
+`applications/master_cv.md` (the curated master, USI-derived, kept in sync by `/sync-usi` Step 2) is
 already wired into `/apply` as an **additional grounding + phrasing source** — the drafter is
 told to prefer reusing the master's exact bullet wording, and both grounding audits (Step 2
 drafter, Step 3 reviewer) cite it. `/apply` still **regenerates** prose; the philosophy is
@@ -42,7 +42,7 @@ One-off issues are not the trigger — the signal is a **pattern** across a few 
 
 1. **`/apply` Step 2 (drafter):** replace "regenerate tailored prose" with **verbatim
    selection**. Every bullet, skill row, project, and headline is copied
-   character-for-character from `cv/master_cv.md`; the drafter only **picks and orders**.
+   character-for-character from `applications/master_cv.md`; the drafter only **picks and orders**.
    The **profile statement stays generative** (facts from the master only, no em-dashes) —
    that is where role-specific framing lives.
 2. **LaTeX becomes pure presentation:** selected master lines are placed into
@@ -55,7 +55,7 @@ One-off issues are not the trigger — the signal is a **pattern** across a few 
    letter and the profile statement, which remain generative.
 4. **Add a verbatim-fidelity item** to `/apply` Step 6 and the CLAUDE.md verification
    checklist: "Every CV line except the profile statement is an exact copy of a line in
-   `cv/master_cv.md`."
+   `applications/master_cv.md`."
 5. **Keyword matching becomes selection, not insertion:** surface the skill row / bullet
    that already carries the posting's term; never insert a keyword into a bullet. The
    master's broad Skills section is the ATS keyword surface. (For the two primary targets —
@@ -69,7 +69,7 @@ One-off issues are not the trigger — the signal is a **pattern** across a few 
   registered template.
 - Do **not** make cover letters verbatim — verbatim selection is a CV-only discipline;
   cover letters stay fully generative.
-- Do **not** hand-edit facts into `cv/master_cv.md` — facts flow USI corpus -> `/sync-usi`.
+- Do **not** hand-edit facts into `applications/master_cv.md` — facts flow USI corpus -> `/sync-usi`.
 
-See also: `cv/master_cv.md` header, the `cv-tailoring-philosophy` and
+See also: `applications/master_cv.md` header, the `cv-tailoring-philosophy` and
 `master-cv-snapshot-provenance` memories.

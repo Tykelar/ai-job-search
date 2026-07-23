@@ -48,9 +48,11 @@ REQUIRED_IGNORE_RULES = [
     # to its own directory, so the state file lands under .claude/skills/... and
     # a repo-rooted rule silently fails to match it.
     "**/job_scraper/seen_jobs.json",
-    "cv/main_*.tex",
-    "!cv/main_example.tex",
-    "cover_letters/cover_*.tex",
+    "applications/**/CV_*.tex",
+    "applications/**/CL_*.tex",
+    "applications/**/main_*.tex",
+    "!applications/main_example.tex",
+    "applications/**/cover_*.tex",
     "documents/cv/**",
     "documents/linkedin/**",
     "documents/diplomas/**",
@@ -68,9 +70,9 @@ REQUIRED_IGNORE_RULES = [
 # failure - add an intentional one here in the same PR, exactly as with
 # ALLOWED_PERMISSIONS, so the widening is explicit and reviewable.
 ALLOWED_IGNORE_NEGATIONS = {
-    "!cover_letters/OpenFonts/fonts/**",
-    "!cv/main_example.tex",
-    "!cover_letters/cover_example.tex",
+    "!applications/OpenFonts/fonts/**",
+    "!applications/main_example.tex",
+    "!applications/cover_example.tex",
     "!documents/**/.gitkeep",
 }
 

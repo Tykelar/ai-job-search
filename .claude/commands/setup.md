@@ -222,7 +222,7 @@ Documents cover skills, experience, education, references, and behavioral signal
 - Commute or location constraints (if not visible from CV)
 - Job search configuration (use the questions from Path C Section 9 below)
 
-Then proceed to Step 3 to populate the non-skill files (`CLAUDE.md`, `cv/main_example.tex`, `.claude/skills/job-scraper/search-queries.md`). Step 3 will detect that the seven skill files are already populated and skip those substeps.
+Then proceed to Step 3 to populate the non-skill files (`CLAUDE.md`, `applications/main_example.tex`, `.claude/skills/job-scraper/search-queries.md`). Step 3 will detect that the seven skill files are already populated and skip those substeps.
 
 ---
 
@@ -352,7 +352,7 @@ Add role-specific profile statement templates based on their background.
 ### 6. Update `07-interview-prep.md` *(Path B and C; skip if Path A populated it)*
 Create STAR examples from their actual experience (at least 3-4 examples). Path A leaves STAR stubs under "## STAR Candidates (Complete Manually)" rather than full examples; if any stubs are present, mention them in Step 4 so the user knows to flesh them out.
 
-### 7. Update `cv/main_example.tex`
+### 7. Update `applications/main_example.tex`
 Replace placeholder personal data with their actual name, contact info, and add their education and most recent experience entries.
 
 ### 8. Generate `.claude/skills/job-scraper/search-queries.md`
@@ -381,7 +381,7 @@ Present a summary:
 > - `.claude/skills/job-application-assistant/04-job-evaluation.md` - Personalized evaluation framework
 > - `.claude/skills/job-application-assistant/05-cv-templates.md` - CV templates with your profile statements
 > - `.claude/skills/job-application-assistant/07-interview-prep.md` - STAR examples from your experience
-> - `cv/main_example.tex` - Your LaTeX CV template
+> - `applications/main_example.tex` - Your LaTeX CV template
 > - `.claude/skills/job-scraper/search-queries.md` - Job search queries for `/scrape`
 >
 > **Try it out:**

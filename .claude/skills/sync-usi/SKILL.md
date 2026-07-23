@@ -63,7 +63,7 @@ Read the three packs, then compare against and update each of these targets:
    **candidate-specific rules** section (positioning rules, framing suppressions,
    headline rules, voice notes from `usi-strategy.md`). Do not touch the framework's
    generic writing rules above that section.
-5. **`cv/master_cv.md`** — the curated master CV content bank (CV-voice bullet / skill /
+5. **`applications/master_cv.md`** — the curated master CV content bank (CV-voice bullet / skill /
    project wording). Reconcile **facts only** against the packs: dates, metrics, job
    titles, company names, degree/thesis details, language levels, and whole added/removed
    entries. **Preserve the approved CV-voice phrasing** — this file is a curated
@@ -91,7 +91,7 @@ Update rules:
 
 - No `[PLACEHOLDER]` tokens remain in any of the five targets.
 - Names, dates, titles, and metrics in the profile files match the packs exactly.
-- `cv/master_cv.md` retains its curated CV-voice wording — only facts were reconciled, no bullets rewritten into pack prose.
+- `applications/master_cv.md` retains its curated CV-voice wording — only facts were reconciled, no bullets rewritten into pack prose.
 - Nothing marked `audience: private` is phrased as CV-ready copy.
 
 ## When to run

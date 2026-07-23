@@ -189,12 +189,12 @@ ai-job-search/
 │   ├── jobnet-search/                 # Jobnet.dk (Denmark, government portal)
 │   ├── linkedin-search/               # LinkedIn public job listings (country-agnostic)
 │   └── freehire-search/               # freehire.me tech job aggregator (multi-market, REST API)
-├── cv/
-│   └── main_example.tex               # moderncv LaTeX template
-├── cover_letters/
-│   ├── cover.cls                      # Custom cover letter LaTeX class
+├── applications/
+│   ├── <company>_<role>/              # One folder per application (CV + cover letter + PDFs)
+│   ├── main_example.tex               # moderncv LaTeX template
 │   ├── cover_example.tex              # Example cover letter (structural reference + CI smoke test)
-│   └── OpenFonts/                     # Lato + Raleway fonts
+│   ├── cover.cls                      # Custom cover letter LaTeX class (shared, compile from applications/)
+│   └── OpenFonts/                     # Lato + Raleway fonts (shared)
 ├── templates/                         # Custom templates registered via /add-template
 │   └── README.md                      # Folder layout instructions
 ├── documents/                         # Career source materials for /setup Path A and /expand

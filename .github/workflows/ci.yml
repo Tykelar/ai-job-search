@@ -2,7 +2,7 @@
 # CLI typechecks, and (upstream only) placeholder integrity.
 #
 # Fork-friendly by design: forks personalize CLAUDE.md, the skill files, and
-# cv/main_example.tex via /setup, so the placeholder-integrity job and the
+# applications/main_example.tex via /setup, so the placeholder-integrity job and the
 # exact page-count/content assertions run only on the upstream template repo.
 # Compile success, lint correctness, and an extractable PDF text layer are
 # asserted everywhere.
@@ -116,36 +116,36 @@ jobs:
           fi
       - name: Compile CV example (lualatex)
         run: |
-          cd cv
+          cd applications
           lualatex -interaction=nonstopmode -halt-on-error main_example.tex
           test -f main_example.pdf
           if grep -q '^!' main_example.log; then
-            echo '::error::lualatex reported errors compiling cv/main_example.tex'
+            echo '::error::lualatex reported errors compiling applications/main_example.tex'
             grep -A3 '^!' main_example.log
             exit 1
           fi
       - name: Compile cover letter example (xelatex)
         run: |
-          cd cover_letters
+          cd applications
           xelatex -interaction=nonstopmode -halt-on-error cover_example.tex
           test -f cover_example.pdf
           if grep -q '^!' cover_example.log; then
-            echo '::error::xelatex reported errors compiling cover_letters/cover_example.tex'
+            echo '::error::xelatex reported errors compiling applications/cover_example.tex'
             grep -A3 '^!' cover_example.log
             exit 1
           fi
       - name: Verify extractable PDF text
         run: |
-          python3 tools/verify_pdf.py cv/main_example.pdf --min-chars 100
-          python3 tools/verify_pdf.py cover_letters/cover_example.pdf --min-chars 100
+          python3 tools/verify_pdf.py applications/main_example.pdf --min-chars 100
+          python3 tools/verify_pdf.py applications/cover_example.pdf --min-chars 100
       - name: Assert stock PDF structure (upstream template only)
         if: github.repository == 'MadsLorentzen/ai-job-search'
         run: |
-          python3 tools/verify_pdf.py cv/main_example.pdf \
+          python3 tools/verify_pdf.py applications/main_example.pdf \
             --pages 2 \
             --contains '[your.email@example.com]' \
             --contains 'Professional Experience'
-          python3 tools/verify_pdf.py cover_letters/cover_example.pdf \
+          python3 tools/verify_pdf.py applications/cover_example.pdf \
             --pages 1 \
             --contains 'your.email@example.com' \
             --contains 'Dear [Hiring Manager / Team]'
@@ -195,8 +195,8 @@ jobs:
             fi
           }
           check CLAUDE.md '\[YOUR_NAME\]'
-          check cv/main_example.tex '\[YOUR_NAME\]'
-          check cover_letters/cover_example.tex '\[YOUR NAME\]'
+          check applications/main_example.tex '\[YOUR_NAME\]'
+          check applications/cover_example.tex '\[YOUR NAME\]'
           check .claude/skills/job-application-assistant/01-candidate-profile.md '<!-- SETUP'
           check .claude/skills/job-application-assistant/04-job-evaluation.md '\[YOUR_PRIMARY_SKILLS\]'
           exit $fail

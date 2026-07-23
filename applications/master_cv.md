@@ -12,7 +12,7 @@
 
   ROLE UNDER THE CURRENT (pure-A) /apply WORKFLOW
   - This is an ADDITIONAL grounding + phrasing reference for the drafter and reviewer, alongside
-    01-candidate-profile.md, cv/main_example.tex, and CLAUDE.md's Candidate Profile section.
+    01-candidate-profile.md, applications/main_example.tex, and CLAUDE.md's Candidate Profile section.
     It is the richest CV-voice source of already-approved bullet wording. /apply still regenerates
     tailored prose; this file gives the grounding audit more true facts to check against.
   - FUTURE (deferred): if pure-A results show wording drift/fabrication, this file becomes the

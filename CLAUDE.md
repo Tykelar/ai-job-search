@@ -84,8 +84,7 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - No deal-breakers recorded in the USI corpus yet (add a meta block there if any exist)
 
 ## Repo Structure
-- `cv/` - LaTeX CV variants (moderncv template, banking style)
-- `cover_letters/` - LaTeX cover letters (custom cover.cls template)
+- `applications/` - one folder per application (`applications/<company>_<role>/`) holding that application's CV (`CV_JoseHenriques_<company>_<role>.tex`, moderncv banking style) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`, custom cover.cls) plus their PDFs. Shared assets live at the `applications/` root: `cover.cls`, `OpenFonts/` (Lato/Raleway), `main_example.tex`, `cover_example.tex`, `master_cv.md`, `HYBRID_TRIGGER.md`. Always compile from `applications/` with `-output-directory=<company>_<role>` so the shared class/fonts resolve.
 - `.claude/skills/` - AI skill definitions for the application workflow
 - `.agents/skills/` - Job search CLI tools
 - `documents/usi/` - Generated profile packs from the USI corpus (via `python tools/sync_usi.py`; never hand-edit)
@@ -96,7 +95,7 @@ All candidate facts originate in the **USI corpus** (`C:\Users\josep\Desktop\Dev
 ## Workflow for New Job Applications
 1. User provides a job posting (URL or text)
 2. **Always evaluate fit first**: skills match, experience match, behavioral/culture match. Present this assessment to the user before proceeding.
-3. If good fit: create targeted CV (`cv/main_<company>_<role>.tex`) and cover letter (`cover_letters/cover_<company>_<role>.tex`)
+3. If good fit: create an application folder `applications/<company>_<role>/` with a targeted CV (`CV_JoseHenriques_<company>_<role>.tex`) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`)
 4. **Verify both documents** (see Verification Checklist below)
 5. Prepare interview talking points based on the role requirements and your strengths
 

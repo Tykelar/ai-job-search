@@ -8,23 +8,25 @@ framework_version: 1.0.1
 
 Cover letters use a custom LaTeX document class (`cover.cls`) with Lato/Raleway fonts.
 
-**Output file:** `cover_letters/cover_<company>_<role>.tex`
+**Output file:** `applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`
 **Compile with:** XeLaTeX (cover.cls requires fontspec)
-**Font directory:** `cover_letters/OpenFonts/fonts/`
+**Shared class & fonts:** `applications/cover.cls` and `applications/OpenFonts/fonts/` — resolved relative to the working directory, so always compile from `applications/`
 
 ### Compile command
 
+Run from `applications/` (never from inside the application folder, or `cover.cls` and the fonts will not be found); `-output-directory` keeps the PDF and build artifacts inside the application's folder:
+
 ```bash
-cd cover_letters && xelatex -interaction=nonstopmode cover_<company>_<role>.tex
+cd applications && xelatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex
 ```
 
-Expected output: `Output written on cover_<company>_<role>.pdf (1 page, ...)`. Any page count other than 1 is a failure that must be fixed before presenting to the user.
+Expected output: `Output written on CL_JoseHenriques_<company>_<role>.pdf (1 page, ...)`. Any page count other than 1 is a failure that must be fixed before presenting to the user.
 
 ## Compile-and-Inspect Loop (MANDATORY)
 
 After writing the cover letter and before presenting to the user, always compile and visually inspect the PDF. Iterate until the layout is clean:
 
-1. Run `xelatex -interaction=nonstopmode cover_<company>_<role>.tex`
+1. Run `cd applications && xelatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex`
 2. Confirm page count is exactly 1 and compile succeeded
 3. Read the PDF via the Read tool and visually check: signature fits at the bottom, no text cut off, bullet font matches body
 
@@ -172,5 +174,5 @@ The font wrapper is mandatory — if you just move `\begin{itemize}` outside `\l
 ## Submission Guidelines (Best Practice)
 - Submit only the documents the employer requests
 - Export as PDF to preserve formatting
-- Name files clearly: "[Your Name] CV" and "[Your Name] Cover Letter"
+- File naming is already handled by the output convention: `CV_JoseHenriques_<company>_<role>.pdf` and `CL_JoseHenriques_<company>_<role>.pdf`
 - Follow all employer instructions regarding anonymity or specific materials

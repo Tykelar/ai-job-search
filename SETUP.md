@@ -77,10 +77,10 @@ For BasicTeX/MacTeX, make sure the TeX binary directory is on `PATH` first (for 
 Quick smoke tests after setup:
 
 ```bash
-cd cv && lualatex -interaction=nonstopmode -halt-on-error main_example.tex && cd ..
+cd applications && lualatex -interaction=nonstopmode -halt-on-error main_example.tex && cd ..
 
 SMOKE_DIR="$(mktemp -d /tmp/ai-job-cover-smoke.XXXXXX)"
-cp -R cover_letters/cover.cls cover_letters/OpenFonts "$SMOKE_DIR/"
+cp -R applications/cover.cls applications/OpenFonts "$SMOKE_DIR/"
 cat >"$SMOKE_DIR/cover_smoke.tex" <<'EOF'
 \documentclass[]{cover}
 \begin{document}
@@ -121,10 +121,10 @@ Drop `--admin` if MiKTeX is installed for the current user only. If a package na
 Quick smoke tests after setup (PowerShell):
 
 ```powershell
-Set-Location cv; lualatex -interaction=nonstopmode -halt-on-error main_example.tex; Set-Location ..
+Set-Location applications; lualatex -interaction=nonstopmode -halt-on-error main_example.tex; Set-Location ..
 
 $SmokeDir = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "ai-job-cover-smoke-$(Get-Random)")
-Copy-Item cover_letters\cover.cls, cover_letters\OpenFonts -Destination $SmokeDir -Recurse
+Copy-Item applications\cover.cls, applications\OpenFonts -Destination $SmokeDir -Recurse
 @'
 \documentclass[]{cover}
 \begin{document}
@@ -217,7 +217,7 @@ All three paths produce the same result: fully populated profile files.
 | `04-job-evaluation.md` | Personalized skill match areas and career goals |
 | `05-cv-templates.md` | Profile statement templates for your background |
 | `07-interview-prep.md` | STAR examples from your experience |
-| `cv/main_example.tex` | Your LaTeX CV with actual details |
+| `applications/main_example.tex` | Your LaTeX CV with actual details |
 | `search-queries.md` | Job search queries for `/scrape` |
 
 ### Re-running setup
@@ -270,16 +270,18 @@ Claude will:
 
 After `/apply` creates the LaTeX files:
 
+Both documents live in the application's own folder (`applications/<company>_<role>/`). Compile from `applications/` so the shared `cover.cls` and `OpenFonts/` are found, sending output into the application folder:
+
 ```bash
 # Bash / zsh / Git Bash
-cd cv && lualatex main_<company>_<role>.tex && cd ..
-cd cover_letters && xelatex cover_<company>_<role>.tex && cd ..
+cd applications && lualatex -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex && cd ..
+cd applications && xelatex -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex && cd ..
 ```
 
 ```powershell
 # PowerShell
-Set-Location cv; lualatex main_<company>_<role>.tex; Set-Location ..
-Set-Location cover_letters; xelatex cover_<company>_<role>.tex; Set-Location ..
+Set-Location applications; lualatex -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex; Set-Location ..
+Set-Location applications; xelatex -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex; Set-Location ..
 ```
 
 These commands apply to the stock templates (moderncv CV, `cover.cls` cover letter). If you'd rather use your own LaTeX template, run `/add-template` — it captures the template's compile engine, fonts, style rules, and page limit, test-compiles it, and wires it into `/apply`. See the "LaTeX templates" section in the README.
@@ -313,7 +315,7 @@ Make sure Bun is installed and you ran `bun install` in each CLI directory. The 
 - Make sure your LaTeX distribution includes the `moderncv` package
 
 ### Fonts not found in cover letter
-The cover letter template expects fonts in `cover_letters/OpenFonts/fonts/`. Make sure this directory exists and contains the Lato and Raleway font files.
+The cover letter template expects fonts in `applications/OpenFonts/fonts/`, resolved relative to the compile working directory. Make sure the directory exists with the Lato and Raleway font files, and always compile from `applications/` (with `-output-directory=<company>_<role>`), not from inside the application folder.
 
 ### Stale `.claude/settings.local.json` from an older clone
 Shared Claude Code permissions now live in `.claude/settings.json` (scoped to `bun run`, `python salary_lookup.py`, and `python3 salary_lookup.py`). Earlier versions of this repo committed a broader `.claude/settings.local.json` that pre-approved `Bash(curl:*)`, `Bash(python:*)` and `Bash(bun:*)`. If you cloned before that change, git leaves the old file behind in your working copy, and its permissions still apply on top of `settings.json`. Delete it (or trim it to your own personal overrides):

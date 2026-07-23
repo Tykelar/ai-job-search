@@ -1,81 +1,83 @@
-# Search Queries for Job Scraper
-
-<!-- SETUP: Customize these queries based on your skills, target roles, and location -->
+# Search Queries for Job Scraper — José Pedro Nolasco Henriques
 
 ## Installed portal CLIs (primary for `/scrape`)
 
-`/scrape` discovers every portal skill under `.agents/skills/*/SKILL.md` and runs its CLI first. Shipped country-agnostic CLIs include `linkedin-search` and `freehire-search`; Danish demos and any skill you add with `/add-portal` are included the same way. You do **not** need a matching `site:` line below for those CLIs to run.
+`/scrape` discovers every portal skill under `.agents/skills/*/SKILL.md` and runs its CLI first.
 
-The `site:` query templates in this file are the **WebSearch fallback** — for portals without a CLI, company career pages, or when a CLI fails.
+- **`linkedin-search`** (country-agnostic) — pass `--location` per target market.
+- **`freehire-search`** (country-agnostic, tech-focused) — pass `--country` / `--region` facets; one call can span several countries.
+- **Danish portals** (`jobindex-search`, `jobnet-search`, `jobbank-search`, `jobdanmark-search`) — Denmark only. Run these for the Denmark leg of the search. `jobnet`/`jobdanmark` skew Danish-language public-sector; `jobindex` and `jobbank` (Akademikernes Jobbank, highly-educated/graduate) are the most useful for English-speaking tech roles.
 
-## Search Sites
+The `site:` templates further down are the **WebSearch fallback** — for company career pages or when a CLI fails.
 
-Primary (your market's job boards - scaffold one with `/add-portal`):
-- **[YOUR_JOB_BOARD]** - your market's largest general job board
-- **linkedin.com/jobs** - LinkedIn job listings (filter: [YOUR_COUNTRY] / [YOUR_CITY]); also covered by `linkedin-search` CLI
-- **[YOUR_INDUSTRY_JOB_BOARD]** - a niche/industry board for your field (optional)
-- **[YOUR_ADDITIONAL_JOB_BOARD]** - another major board for your market (optional)
+## Target Profile (drives keywords)
 
-Secondary (company career pages via Google):
-- Direct Google searches with `site:` filters for known target companies
+- **Primary roles:** AI Automation / AI Integration Engineer (LLM agents, RAG, chatbots — **Claude Code** by name), Engineering Effectiveness / Developer Productivity / DevEx, Platform / Build engineering, CI/CD & delivery-infrastructure re-engineering.
+- **Secondary roles:** Software Engineer (Python/TypeScript), Process & Operations improvement, Data Engineer, Test-automation architecture (Playwright), VR/AR / Digital Twin, Cybersecurity.
+- **Seniority:** early-career — MSc (2026) + ~1yr Software Quality Engineer (Glartek) + founder. Target **junior / graduate / trainee / mid** roles first; senior/staff/VP only where the AI-in-production differentiator makes it plausible.
+
+## Geography (open to relocation)
+
+- **Home market:** Portugal (Leiria base — Lisbon ~1.5h, Coimbra ~1h, Aveiro/Ovar ~1.5h, Porto ~2h). Remote-first preferred for non-relocation roles.
+- **Relocation-OK countries:** Denmark, Norway, Finland, Poland, Netherlands, Switzerland, Luxembourg.
+- **Remote:** any EU-remote role is in scope regardless of country.
+
+### LinkedIn `--location` strings per market
+`Portugal` · `Denmark` · `Norway` · `Finland` · `Poland` · `Netherlands` · `Switzerland` · `Luxembourg` · `Remote`
+(City-level when useful: `Lisbon, Portugal`, `Copenhagen, Denmark`, `Amsterdam, Netherlands`, `Zurich, Switzerland`, `Warsaw, Poland`.)
+
+### freehire facets per market
+`--country PT,DK,NO,FI,PL,NL,CH,LU` (comma = OR). Add `--region eu,none` to sweep remote roles that never resolved a geography. Discover live facet values at `/api/v1/jobs/facets?q=<role>` — never invent them.
 
 ## Query Categories
 
-Queries are grouped by priority. Each query should be combined with your location terms (e.g. your city, region, or metro area) where the site supports it.
-
-### Priority 1: [YOUR_PRIMARY_ROLE_TYPE]
-
-These match your strongest and most desired career direction.
-
+### Priority 1: AI Automation / AI Integration
 ```
-site:[YOUR_JOB_BOARD] "[YOUR_PRIMARY_JOB_TITLE]" [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "[YOUR_KEY_SKILL]" [YOUR_CITY]
-site:linkedin.com/jobs "[YOUR_PRIMARY_JOB_TITLE]" [YOUR_COUNTRY]
-```
-
-### Priority 2: [YOUR_DOMAIN_EXPERTISE]
-
-These match your domain expertise.
-
-```
-site:[YOUR_JOB_BOARD] [YOUR_DOMAIN_KEYWORD_1] [YOUR_CITY] OR [YOUR_REGION]
-site:[YOUR_JOB_BOARD] [YOUR_DOMAIN_KEYWORD_2] [YOUR_COUNTRY]
-site:linkedin.com/jobs [YOUR_DOMAIN_KEYWORD_1] [YOUR_CITY] [YOUR_COUNTRY]
+linkedin  -q "AI Engineer"                 -l <market> --jobage 14
+linkedin  -q "AI automation"               -l <market> --jobage 14
+linkedin  -q "Machine Learning Engineer"   -l <market> --jobage 14
+freehire  -q "AI automation agent"  --category ml_ai --country <codes> --jobage 21
+freehire  -q "agentic AI RAG LLM"                    --country <codes> --jobage 21
+jobindex  -q "AI engineer"        --jobage 14 --sort date      # Denmark
+jobbank   --key "AI"  --work-area 31 --since <date>            # Denmark, IT-Software
 ```
 
-### Priority 3: [YOUR_ADJACENT_ROLE_TYPE]
-
-Adjacent roles you could pivot into.
-
+### Priority 2: Engineering Effectiveness / DevEx / Platform / CI-CD
 ```
-site:[YOUR_JOB_BOARD] "[YOUR_ADJACENT_TITLE_1]" [YOUR_KEY_SKILL] [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "[YOUR_ADJACENT_TITLE_2]" [YOUR_KEY_SKILL] [YOUR_CITY]
+linkedin  -q "Developer Productivity Engineering Effectiveness" -l <market> --jobage 30
+linkedin  -q "Platform Engineer"     -l <market> --jobage 14
+linkedin  -q "DevOps CI/CD"          -l <market> --jobage 14
+freehire  --category devops          --country <codes> --jobage 21
+jobindex  -q "platform engineer"     --jobage 14 --sort date   # Denmark
 ```
 
-### Priority 4: Broader Technical / Consulting
-
-Wider net for general technical roles.
-
+### Priority 3: Software Engineer / Data Engineer (Python)
 ```
-site:[YOUR_JOB_BOARD] [YOUR_KEY_SKILL] developer [YOUR_CITY]
-site:linkedin.com/jobs "[YOUR_KEY_SKILL] developer" [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "technical consultant" [YOUR_DOMAIN] [YOUR_CITY]
+linkedin  -q "Python Software Engineer"  -l <market> --jobage 14
+linkedin  -q "Data Engineer"             -l <market> --jobage 14
+freehire  -q "python"  --seniority junior,middle --country <codes> --jobage 21
+```
+
+### Priority 4: Process & Operations / Test Automation (wider net)
+```
+linkedin  -q "Process Engineer continuous improvement" -l <market> --jobage 30
+linkedin  -q "Test Automation Playwright"              -l <market> --jobage 30
+freehire  --category qa  --country <codes> --jobage 21
 ```
 
 ## Location Filter
 
-When evaluating results, verify the job location is within reasonable commute distance from your home. Define acceptable areas:
-- [YOUR_CITY] and surrounding areas
-- [ACCEPTABLE_AREA_1]
-- [ACCEPTABLE_AREA_2]
-- [BORDERLINE_AREA] (borderline - ~X min by transit)
-- [TOO_FAR_AREA] (too far)
+Portugal roles: verify commute from Leiria, or remote/hybrid feasibility. Relocation-OK countries: accept onsite/hybrid (relocation expected). Reject only markets outside the list above (unless fully remote-EU).
 
 ## Date Filter
 
-Only include jobs posted within the last 14 days, or with an application deadline that has not yet passed. If a posting date cannot be determined, include it but flag as "date unknown".
+Last 14 days by default (30 for the thinner Priority-2/4 categories). If a posting date can't be determined, include and flag "date unknown".
 
-## Adapting Queries
+## WebSearch fallback (`site:` templates)
 
-If the user specifies a focus area, select queries from the matching category and also generate 2-3 custom queries for that focus. For example:
-- "/scrape [focus_area]" -> relevant category queries + custom focus-specific queries
+Use only for portals without a CLI or company career pages:
+```
+site:linkedin.com/jobs "AI Engineer" (Portugal OR Denmark OR Netherlands OR remote)
+site:boards.greenhouse.io "AI Engineer" Europe
+site:jobs.lever.co "Platform Engineer" Europe
+```

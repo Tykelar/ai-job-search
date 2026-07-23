@@ -156,7 +156,7 @@ Insert (or replace, if one exists) this block immediately after the file's H1 ti
 > - **Compile with:** `<engine>` (not the engine named in the stock guidance below)
 > - **Fonts:** <font summary, including any Path note for bundled fonts>
 > - **Page limit:** exactly <N> page(s)
-> - **Output file:** unchanged (`cv/main_<company>_<role>.tex` / `cover_letters/cover_<company>_<role>.tex`); copy any class/font files the template needs into the output directory, or reference them by relative path
+> - **Output file:** unchanged (`applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex` / `applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`); place any class/font files the template needs at the `applications/` root (compiles run from there with `-output-directory=<company>_<role>`), or reference them by relative path
 <!-- END ACTIVE-TEMPLATE -->
 ```
 

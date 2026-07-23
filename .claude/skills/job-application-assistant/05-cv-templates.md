@@ -1,5 +1,5 @@
 ---
-framework_version: 1.2.1
+framework_version: 1.3.0
 ---
 
 # CV Templates and Tailoring Guide
@@ -10,18 +10,20 @@ framework_version: 1.2.1
 
 All CVs use the moderncv LaTeX package with the "banking" style and "blue" color scheme.
 
-**Output file:** `cv/main_<company>_<role>.tex`
+**Output file:** `applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
 **Compile with:** **lualatex** on MiKTeX/TeX Live. pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly.
-**Master reference (LaTeX structure):** `cv/main_example.tex` (comprehensive CV with all competencies, experience, and achievements - use as the structural/LaTeX source when building targeted CVs)
-**Master content bank (CV-voice wording):** `cv/master_cv.md` (USI-derived snapshot validated over 44 applications - the richest source of already-approved bullet, skill, and project phrasing. Reuse its exact wording where a bullet fits the role instead of regenerating equivalent prose. It is a content source, not a LaTeX template.)
+**Master reference (LaTeX structure):** `applications/main_example.tex` (comprehensive CV with all competencies, experience, and achievements - use as the structural/LaTeX source when building targeted CVs)
+**Master content bank (CV-voice wording):** `applications/master_cv.md` (USI-derived snapshot validated over 44 applications - the richest source of already-approved bullet, skill, and project phrasing. Reuse its exact wording where a bullet fits the role instead of regenerating equivalent prose. It is a content source, not a LaTeX template.)
 
 ### Compile command
 
+Run from `applications/` (the shared assets live there); `-output-directory` keeps the PDF and build artifacts inside the application's folder:
+
 ```bash
-cd cv && lualatex -interaction=nonstopmode main_<company>_<role>.tex
+cd applications && lualatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex
 ```
 
-Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. Any page count other than 2 is a failure that must be fixed before presenting to the user.
+Expected output: `Output written on CV_JoseHenriques_<company>_<role>.pdf (2 pages, ...)`. Any page count other than 2 is a failure that must be fixed before presenting to the user.
 
 ## Document Structure
 
@@ -61,12 +63,15 @@ Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. A
 \makecvtitle
 
 % 1. Profile statement (1-3 sentences, tailored per role)
-% 2. Skills section
-% 3. Education section
-% 4. Professional Experience section
-% 5. Selected Publications (if applicable)
-% 6. Honors and Awards (if applicable)
-% 7. References
+% 2. Core Competencies / Skills
+% 3. Professional Experience        <-- experience-first order (see "Section Order")
+% 4. Selected Projects              <-- LEAD with the MSc thesis entry (see "Selected Projects")
+% 5. Education                      <-- degrees + grades only; thesis is NOT a subline here
+% 6. Languages
+% 7. Honors & Community             <-- fills page 2 with grounded content (see below)
+% 8. References
+% Force the page-1/page-2 break at the Professional Experience boundary
+%   (see "Page-1/Page-2 split discipline").
 
 \end{document}
 ```
@@ -134,8 +139,16 @@ Use the posting's own core term in the matching bullet's bold label when it trut
 
 ### Education
 - Always include your highest degrees
-- For senior roles, keep education brief (dates and titles only)
-- Include thesis topics when relevant to the target role
+- Keep each entry to degree title, institution, location, and dates. **The MSc thesis is not a subline here** — it leads the Selected Projects section (see below).
+- **Grade rendering:** the MSc line reads `MSc Computer Engineering (Avg 18/20)`. The word "Avg" makes explicit that 18/20 is the *degree average*, not a single-course mark. The thesis entry in Projects keeps its own specific grade as `(18/20)` (no "Avg") — that one really is a single grade.
+
+### Selected Projects
+- **Always lead the Projects section with the MSc thesis**, phrased as a project entry, not buried in Education:
+  ```latex
+  \item{\textbf{MSc Thesis: Lean-Driven QA \& CI/CD Re-Engineering Towards AI-Ready Infrastructures} (18/20): research into keeping engineering infrastructures scalable, understandable and AI-ready, spanning CI/CD architecture, shift-left quality, flakiness dynamics and toolchain-migration criteria, grounded in my work at Glartek.}
+  ```
+  Trim the middle clause ("spanning ... criteria") to the facets most relevant to the target role, but keep the title and `(18/20)`.
+- Select 5-6 projects total; the thesis first, then reorder the rest by relevance to the posting. Projects also do the work of filling page 2 — see the split discipline below.
 
 ### Professional Experience
 - Rewrite bullet points to emphasize aspects most relevant to the target role
@@ -156,22 +169,37 @@ If there is a gap in your employment history:
 ### Evidence Links
 Wherever the CV names a verifiable artifact - a public project, a hackathon entry, a publication - carry its link (`\href`) so a reader can verify the claim in one click. A CV whose strongest claims are checkable reads as more credible everywhere else too.
 
-### Honors and Awards
-- Keep format brief, one line each
+### Honors & Community
+- Include a short **Honors & Community** section near the end (after Languages, before References). It rounds out the profile and, as a bonus, fills page 2 with real, grounding-audited content.
+- Keep it to ~3 bold-labelled one-liners. The validated default set (every item grounded in `01-candidate-profile.md`) is:
+  - **Award**: won a governmental school-improvement funding competition and founded a student-run radio station end to end.
+  - **Community**: Scouting for 18+ years (national and international, including the World Scout Jamboree); recurring Banco Alimentar food-bank volunteer.
+  - **International**: Erasmus+ training in Finland, Poland and Portugal; six months living in Poland; travel across 16+ countries.
+- Tailor or reorder these to the posting where relevant (e.g. lead with **International** for a relocation role), but never add an item the profile does not support.
 
 ### References
-- List 2-4 references with name, title, company, and contact
-- End with: "More references are available upon request."
-- **Do not attach reference letters** - employers typically contact references directly
+- Do **not** print referee names or contact details — José's referee contacts are private and shared only on request.
+- Use the single-line form that names the on-file recommendation letter:
+  `Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.`
+- **Do not attach the reference letter** to the CV. Name it and offer it on request; employers ask for it directly when they want it. (References means *people/documents offered on request*, not letters embedded in the CV.)
 
 ## Compile-and-Inspect Loop (MANDATORY)
 
 After writing the CV and before presenting to the user, always compile and visually inspect the PDF. Iterate until the layout is clean. Workflow:
 
-1. Run `lualatex -interaction=nonstopmode main_<company>_<role>.tex`
+1. Run `cd applications && lualatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
 2. Check the output page count: must be exactly 2
 3. Read the PDF via the Read tool and visually inspect both pages
 4. Check for **orphaned entries**: a `\cventry` title line must never sit alone at the bottom of page 1 with its bullets on page 2
+
+### Page-1/Page-2 split discipline (preferred over ad-hoc nudges)
+
+Make the page-1/page-2 break **deterministic at the Professional Experience section boundary** so that section is never split across the page break. The classic failure is the last experience entry (e.g. Florescer) orphaned alone at the top of page 2, leaving a gap at the bottom of page 1. Put a single `\newpage` at whichever Professional-Experience boundary matches the section order:
+
+- **Experience-first order** (Experience before Projects): `\newpage` immediately *after* the Professional Experience list's closing `\end{itemize}`, so Projects starts page 2.
+- **Projects-first order** (Projects before Experience — used for builder / 0-to-1 roles): `\newpage` immediately *before* `\section{Professional Experience}`, so the whole Experience section sits at the top of page 2.
+
+This yields a clean section-boundary break every time. Prefer it over `\enlargethispage`/`\needspace` for the page-1/page-2 split — reserve `\enlargethispage{2-3\baselineskip}` for genuine near-miss *trailing-section* rescues (References alone spilling to page 3). If forcing the break leaves page 1 looking sparse (a short experience section), **fill page 1 by adding a grounded 4th/5th experience bullet**, not by removing the `\newpage` and reintroducing a mid-section split.
 
 ### Fixing common page-break problems
 
@@ -199,7 +227,7 @@ Restore the highest-relevance item that was previously cut — a CV that ends mi
 Most employers run CVs through an ATS before a human sees them, and the ATS reads the PDF's embedded **text layer**, not the rendered page. A CV can pass visual inspection and still extract as garbage. After the layout passes the compile-and-inspect loop, verify the text layer:
 
 ```bash
-cd cv && pdftotext -layout main_<company>_<role>.pdf main_<company>_<role>.txt
+cd applications/<company>_<role> && pdftotext -layout CV_JoseHenriques_<company>_<role>.pdf CV_JoseHenriques_<company>_<role>.txt
 ```
 
 `pdftotext` comes from [poppler](https://poppler.freedesktop.org/), not the TeX distribution - it is an **optional** dependency. If it is not installed, skip the mechanical check with a warning and rely on the visual PDF read for keyword coverage.
