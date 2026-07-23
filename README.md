@@ -191,7 +191,7 @@ ai-job-search/
 │   └── freehire-search/               # freehire.me tech job aggregator (multi-market, REST API)
 ├── applications/
 │   ├── <company>_<role>/              # One folder per application (CV + cover letter + PDFs)
-│   ├── main_example.tex               # moderncv LaTeX template
+│   ├── main_example.tex               # Master CV: full content bank in the compact LaTeX template
 │   ├── cover_example.tex              # Example cover letter (structural reference + CI smoke test)
 │   ├── cover.cls                      # Custom cover letter LaTeX class (shared, compile from applications/)
 │   └── OpenFonts/                     # Lato + Raleway fonts (shared)
@@ -224,11 +224,11 @@ The `/apply` command runs a **drafter-reviewer workflow** with mandatory PDF com
 
 1. **Parse** the job posting (URL or text)
 2. **Evaluate fit** against your profile (skills, experience, culture, location, career alignment)
-3. **Draft** a tailored CV and cover letter in LaTeX
+3. **Build** the CV by verbatim selection from the master (`applications/main_example.tex`) and draft a tailored cover letter in LaTeX
 4. **Spawn a reviewer agent** that researches the company and critiques the drafts
 5. **Revise** based on the reviewer's feedback
 6. **Compile and inspect** both PDFs: lualatex for the CV, xelatex for the cover letter. Claude reads the rendered pages and iterates on the LaTeX until the CV is exactly 2 pages with no orphaned entry titles, and the cover letter is exactly 1 page with the signature visible and fonts consistent.
-7. **ATS-check the CV**: extract the PDF's text layer (`pdftotext`, optional dependency) and verify it the way an ATS parser sees it — contact details present as literal text, no garbled glyphs, sane reading order — then score the posting's keyword coverage against the extraction. Keywords the profile genuinely supports get added; genuine gaps stay visible, never stuffed.
+7. **ATS-check the CV**: extract the PDF's text layer (`pdftotext`, optional dependency) and verify it the way an ATS parser sees it — contact details present as literal text, no garbled glyphs, sane reading order — then score the posting's keyword coverage against the extraction. Keywords the profile genuinely supports get covered by surfacing the master lines that carry them; genuine gaps stay visible, never stuffed.
 8. **Present** the final output with a verification checklist
 
 All claims in the CV and cover letter are verified against your actual profile. The system never fabricates skills or experience.
@@ -237,7 +237,7 @@ All claims in the CV and cover letter are verified against your actual profile. 
 
 - **PDF verification loop.** Most LaTeX-resume templates produce "looks fine in the .tex" output that breaks in the PDF: job titles orphan to the next page, cover letters spill onto page 2, bullet fonts silently fall back to the body font. The `/apply` command compiles and visually inspects every PDF and applies targeted fixes (`\needspace`, `\enlargethispage`, font-matching wrappers for list items) until the layout is clean. This runs automatically on every application.
 - **ATS verification on the PDF text layer.** An ATS reads the PDF's embedded text, not the rendered page — and LaTeX can silently produce PDFs whose text extracts as garbage (icon glyphs where the email should be, interleaved lines from multi-column layouts). `/apply` extracts the compiled CV's text layer with `pdftotext` and verifies contact details, reading order, and the posting's keyword coverage against what a parser actually sees. Honesty rule enforced: a keyword the profile doesn't support is acknowledged as a gap, never stuffed in.
-- **Relevance-weighted CV cutting.** When a CV overflows 2 pages, the workflow does not cut mechanically from the "oldest" section. It scores each candidate line by (a) relevance to the target posting, (b) uniqueness in the document, and (c) whether the cover letter depends on it, and cuts the lowest-total-score line first. An older-role bullet that hits posting keywords survives ahead of a recent-role bullet that does not.
+- **Relevance-weighted selection.** The CV is tailored by selecting and ordering whole lines from a curated master — never rewording them — and when it overflows 2 pages the workflow does not cut mechanically from the "oldest" section. It scores each candidate line by (a) relevance to the target posting, (b) uniqueness in the document, and (c) whether the cover letter depends on it, and deselects the lowest-total-score line first. An older-role bullet that hits posting keywords survives ahead of a recent-role bullet that does not.
 - **Drafter-reviewer separation.** The drafter writes; a second Claude agent, spawned with a fresh context, researches the company and critiques the drafts. The drafter then revises. This catches missed keywords, weak framing, and generic language that a single pass often leaves in.
 - **Token-efficient reviewer dispatch.** The reviewer agent receives drafts inline rather than re-reading them, and the verification checklist runs once at the end of the workflow rather than being duplicated by both agents. Note: the new compile-and-inspect step in Step 5 spends some of those savings on PDF rendering and layout iteration — the workflow trades some end-to-end token cost for a real reduction in broken PDFs reaching the user.
 
@@ -269,7 +269,7 @@ This re-runs the search configuration interview: which roles to target, which sk
 
 ### LaTeX templates
 
-The CV uses [moderncv](https://ctan.org/pkg/moderncv) (banking style). The cover letter uses a custom `cover.cls` with Lato/Raleway fonts.
+The CV uses a compact single-column template (Carlito font via fontspec/lualatex), embodied by the master `applications/main_example.tex`; tailored CVs are built from it by verbatim selection. The cover letter uses a custom `cover.cls` with Lato/Raleway fonts.
 
 To use your own template instead, run:
 
@@ -281,7 +281,7 @@ Point it at your `.tex` file (plus any `.cls`/`.sty` files or bundled fonts). Th
 
 - `/add-template --list` shows registered templates
 - `/add-template --use <name>` switches between them
-- `/add-template --use default` reverts to the stock moderncv / cover.cls templates
+- `/add-template --use default` reverts to the stock compact-CV / cover.cls templates
 
 If you prefer doing it by hand, the manual route still works: update the guidance in `05-cv-templates.md` and `06-cover-letter-templates.md`.
 

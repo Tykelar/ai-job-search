@@ -10,23 +10,23 @@
     Do not hand-edit facts here. New facts go into the USI corpus, then re-run /sync-usi.
   - Last reconciled against USI: 2026-07-23 (fixed MSc completion Jun->Jul 2026; countries 20+->16+).
 
-  ROLE UNDER THE CURRENT (pure-A) /apply WORKFLOW
-  - This is an ADDITIONAL grounding + phrasing reference for the drafter and reviewer, alongside
-    01-candidate-profile.md, applications/main_example.tex, and CLAUDE.md's Candidate Profile section.
-    It is the richest CV-voice source of already-approved bullet wording. /apply still regenerates
-    tailored prose; this file gives the grounding audit more true facts to check against.
-  - FUTURE (deferred): if pure-A results show wording drift/fabrication, this file becomes the
-    verbatim-selection master (pick + reorder lines character-for-character; only the profile
-    statement stays generative). See the CV-tailoring philosophy memory.
+  ROLE UNDER THE HYBRID /apply WORKFLOW (active since 2026-07-23)
+  - This file IS the verbatim-selection master: every tailored-CV line except the About Me
+    paragraph must be an exact copy of a line in here. /apply picks and orders; it never rewords.
+  - applications/main_example.tex is this same content rendered in the compact LaTeX template
+    (the copy-base for tailored CVs). /sync-usi keeps the two line-for-line identical.
+  - See applications/HYBRID_TRIGGER.md and the cv-tailoring-philosophy memory.
 -->
 
 # José Pedro Henriques
-**Computer Engineering (MSc) | Process Engineering, AI Automation & Operational Excellence**
-Portugal | Portuguese | Portfolio: tykelar.github.io/ | josepedronolasco@gmail.com | LinkedIn: josepedroh | GitHub: Tykelar
+Portuguese | (+351) 912 678 001 | josepedronolasco@gmail.com | Portfolio: tykelar.github.io | LinkedIn: josepedroh | GitHub: Tykelar
 
 ---
 
 ## About Me
+<!-- Rendered WITHOUT the "About Me" heading on the CV: separator rule + text only.
+     The headline line was dropped from the CV header on 2026-07-23 (José's call);
+     headline variants still exist in the USI summary block for LinkedIn/other use. -->
 
 Computer Engineering MSc and Software Quality Engineer who re-engineers delivery infrastructure, improves engineering velocity, and integrates AI into engineering workflows. At a technology company I led a Lean-driven re-engineering of the delivery pipeline, from diagnosing accumulated technical debt through to measurable gains in delivery speed and reliability, formalized in a master's thesis on Lean CI/CD and AI-ready infrastructure. Alongside this I founded and ran a cooperative through its full operational lifecycle, and bring a systems-level perspective spanning applied AI, immersive technologies, and cybersecurity. Get to know me better [here](https://tykelar.github.io)!
 
@@ -35,8 +35,10 @@ Computer Engineering MSc and Software Quality Engineer who re-engineers delivery
 ## Education
 
 **Master's in Computer Engineering** | Polytechnic University of Leiria | Sep 2024 – Jul 2026
+*Thesis: Lean-Driven QA & CI/CD Re-Engineering Towards AI-Ready Infrastructures (18/20)*
 
 **Bachelor's in Computational Engineering** | University of Aveiro | Sep 2021 – Jul 2024
+*Final Project: Big Data Analysis & Representation, NO2 Air Pollution in VR (17/20)*
 
 **Electrotechnical Engineering (1 year)** | ESTGA, University of Aveiro | Sep 2020 – Jul 2021
 
@@ -159,3 +161,9 @@ Independent multi-engine game development (Unity, Godot, Blender, VRChat SDK) wi
 - Scout experience for 18+ years; volunteer work across forest conservation, food distribution, and animal welfare; community ambassador roles (Unlimited Future, Quinta da Carvalheira).
 - Personal maker practice: home-based 3D modelling and printing for rapid prototyping and iterative problem-solving.
 - Writing: two personal blogs on personal growth/psychology and creative writing.
+
+---
+
+## References
+
+Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.

@@ -1,169 +1,259 @@
-%% Example CV - [YOUR_NAME]
-%% Comprehensive overview of all competencies, experience, and achievements.
-%% Use as a master reference when tailoring role-specific CVs.
+%% ============================================================================
+%% MASTER CV (compact style) - José Pedro Nolasco Henriques
 %%
-%% SETUP: Run /setup to populate this with your actual information.
-%% Compile with: lualatex main_example.tex
-%% (pdflatex often fails on modern MiKTeX with fontawesome5 font-expansion errors.)
+%% This file is the FULL master content bank (applications/master_cv.md) rendered
+%% in the compact LaTeX style ported from the legacy build-cv-usi builder
+%% (validated over 44 applications). It is the LaTeX skeleton AND the verbatim
+%% content source for tailored CVs.
+%%
+%% HOW TO BUILD A TAILORED CV (verbatim selection):
+%%   1. Copy this file to applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex
+%%   2. SELECT + REORDER: keep the blocks relevant to the role, delete the rest,
+%%      reorder within each section. Content is verbatim-FIRST: skill rows,
+%%      projects, education lines, and headers stay character-for-character.
+%%      Experience bullets may be LIGHTLY rephrased when it genuinely improves
+%%      role fit (tightening, aligning to the posting's terminology), but facts,
+%%      metrics, and scope stay exactly the master's - no new claims, no
+%%      escalated numbers, no merged achievements. Verbatim stays the default.
+%%      The only fully generative content is the About Me paragraph.
+%%   3. Keep the \newpage before SKILLS: tailored CVs are exactly 2 pages -
+%%      page 1 = About Me / Education / Work Experience / Languages,
+%%      page 2 = Skills / Projects / Other Relevant Experience / References.
+%%   4. The About Me paragraph must END with the verbatim sentence:
+%%      Get to know me better \href{https://tykelar.github.io}{here}!
+%%
+%% This master compiles to ~4 pages by design (it is the full bank, like the
+%% legacy CV_Complete master). Only tailored CVs have the 2-page rule.
+%%
+%% Compile with lualatex (fontspec + system Carlito font):
+%%   cd applications && lualatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CV_....tex
+%% ============================================================================
 
-\documentclass[11pt,a4paper,sans]{moderncv}
-\moderncvstyle{banking}
-\moderncvcolor{blue}
+\documentclass[10pt,a4paper]{article}
 
-% Force both first and last name AND section headings to render in moderncv
-% blue (color1). Default banking on lualatex+MiKTeX leaves these black, which
-% looks inconsistent with the rest of the blue accent scheme.
-\renewcommand*{\firstnamestyle}[1]{{\fontsize{34}{36}\bfseries\upshape\color{color1}#1}}
-\renewcommand*{\lastnamestyle}[1]{{\fontsize{34}{36}\bfseries\upshape\color{color1}#1}}
-\renewcommand*{\sectionstyle}[1]{{\sectionfont\color{color1}#1}}
-
-\usepackage[utf8]{inputenc}
+\usepackage[a4paper,left=2.0cm,right=2.0cm,top=1.6cm,bottom=1.7cm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Carlito}   % metric-compatible Calibri clone; matches the legacy docx look
+\usepackage{xcolor}
+\definecolor{cvblue}{HTML}{2E74B5}   % Word heading blue (legacy accent)
+\definecolor{cvdark}{HTML}{262626}   % near-black for the contact line
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{needspace}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,
-    urlcolor=blue,
-    pdftitle={[YOUR_NAME] - CV},
-    pdfpagemode=FullScreen,
+    urlcolor=cvblue,
+    linkcolor=cvblue,
+    pdftitle={José Pedro Henriques - CV},
+    pdfauthor={José Pedro Nolasco Henriques},
 }
-\usepackage[scale=0.80]{geometry}
-\usepackage{import}
 
-% personal data
-\name{[First]}{[Last]}
-\address{[Your Address, City, Country]}{}{}
-\phone[mobile]{[+XX XXXXXXXXXX]}
-\email{[your.email@example.com]}
-\extrainfo{\href{[https://linkedin.com/in/your-profile]}{LinkedIn}, \href{[https://github.com/your-username]}{GitHub}}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\emergencystretch=1em
+\linespread{1.04}
+\frenchspacing
+
+% Section heading: ALL-CAPS bold blue with a thin full-width rule hugging the text
+\titleformat{\section}
+  {\color{cvblue}\bfseries\fontsize{11}{13}\selectfont}
+  {}{0pt}{\MakeUppercase}
+  [\vspace{-10pt}{\color{cvblue!55}\rule{\textwidth}{0.5pt}}]
+\titlespacing*{\section}{0pt}{8pt}{0pt}
+
+% One-line work header: \cvjob{Job Title, Company}{Mon YYYY – Mon YYYY}
+\newcommand{\cvjob}[2]{\needspace{4\baselineskip}\vspace{3pt}{\bfseries #1 \textbar{} #2\par}\vspace{-2pt}}
+% Optional italic context line directly beneath a work header
+\newcommand{\cvcontext}[1]{{\itshape\small\hspace{0.3em}#1\par}\vspace{-3pt}}
+% One-line education entry: \cvedu{Degree}{Institution}{Mon YYYY – Mon YYYY}
+\newcommand{\cvedu}[3]{{\bfseries #1} \textbar{} #2 \textbar{} #3\par}
+% Optional italic thesis/final-project line directly beneath an education entry
+\newcommand{\cvedusub}[1]{\vspace{-4pt}{\itshape\small\hspace{0.3em}#1\par}}
+% Bare blue separator rule (used where a section has no heading, e.g. above About Me)
+\newcommand{\cvrule}{\par\vspace{2pt}{\color{cvblue!55}\rule{\textwidth}{0.5pt}}\par}
+% Skills row: \cvskill{Category}{item · item · item}
+\newcommand{\cvskill}[2]{\par{\bfseries #1:} #2\par}
+% Project entry: \cvproject{Title}{Description}
+\newcommand{\cvproject}[2]{\needspace{3\baselineskip}\vspace{2pt}{\bfseries #1}\par\vspace{-4pt}#2\par}
+
+% Compact bullet list
+\setlist[itemize]{label=\textbullet,leftmargin=1.15em,itemsep=1.5pt,parsep=0pt,topsep=2pt,partopsep=0pt}
 
 \begin{document}
 
-\makecvtitle
-
 % ============================================================
-%     PROFILE STATEMENT
+%   HEADER  (fixed contact line; no headline)
 % ============================================================
 
-\vspace{6pt}
-\small{[Write a 3-5 line profile statement tailored to the role you're applying for. Focus on what makes you uniquely qualified. Example: "Data scientist with a PhD in [field] and X years of industry experience. Combines deep domain expertise in [domain] with strong applied machine learning and Python development skills. Experienced in developing end-to-end ML pipelines, from data ingestion to stakeholder-facing dashboards."]}
-
-% ============================================================
-%     CORE COMPETENCIES
-% ============================================================
-
-\section{Core Competencies}
+{\fontsize{20}{24}\selectfont\bfseries\color{cvblue}José Pedro Henriques\par}
 \vspace{1pt}
-\begin{itemize}
-
-\item \textbf{[Skill Category 1]}: [Specific skills, frameworks, tools. Be concrete.]
-
-\item \textbf{[Skill Category 2]}: [Specific skills, frameworks, tools.]
-
-\item \textbf{[Skill Category 3]}: [Specific skills, frameworks, tools.]
-
-\item \textbf{[Skill Category 4]}: [Domain expertise, methods, approaches.]
-
-\item \textbf{[Skill Category 5]}: [Tools, platforms, software.]
-
-\end{itemize}
+{\bfseries\color{cvdark}Portuguese \textbar{} (+351) 912 678 001 \textbar{} josepedronolasco@gmail.com \textbar{} Portfolio: \href{https://tykelar.github.io/}{tykelar.github.io} \textbar{} LinkedIn: \href{https://www.linkedin.com/in/josepedroh}{josepedroh} \textbar{} GitHub: \href{https://github.com/Tykelar}{Tykelar}\par}
 
 % ============================================================
-%     PROFESSIONAL EXPERIENCE
+%   ABOUT ME  (no heading - separator rule only; the only fully
+%   generative content in a tailored CV)
 % ============================================================
 
-\section{Professional Experience}
-\vspace{3pt}
-\begin{itemize}
+\cvrule
 
-% --- Most Recent Role ---
-\item{\cventry{[YYYY--Present]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
-\begin{itemize}
-    \item [Achievement or responsibility 1 - be specific, use numbers where possible]
-    \item [Achievement or responsibility 2]
-    \item [Achievement or responsibility 3]
-    \item [Achievement or responsibility 4]
-\end{itemize}}}
-
-\vspace{3pt}
-
-% --- Previous Role ---
-\item{\cventry{[YYYY--YYYY]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
-\begin{itemize}
-    \item [Achievement or responsibility 1]
-    \item [Achievement or responsibility 2]
-    \item [Achievement or responsibility 3]
-\end{itemize}}}
-
-\vspace{3pt}
-
-% --- Earlier Role ---
-\item{\cventry{[YYYY--YYYY]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
-\begin{itemize}
-    \item [Achievement or responsibility 1]
-    \item [Achievement or responsibility 2]
-\end{itemize}}}
-
-\end{itemize}
+Computer Engineering MSc and Software Quality Engineer who re-engineers delivery infrastructure, improves engineering velocity, and integrates AI into engineering workflows. At a technology company I led a Lean-driven re-engineering of the delivery pipeline, from diagnosing accumulated technical debt through to measurable gains in delivery speed and reliability, formalized in a master's thesis on Lean CI/CD and AI-ready infrastructure. Alongside this I founded and ran a cooperative through its full operational lifecycle, and bring a systems-level perspective spanning applied AI, immersive technologies, and cybersecurity. Get to know me better \href{https://tykelar.github.io}{here}!
 
 % ============================================================
-%     EDUCATION
+%   EDUCATION  (one bold line each + thesis/final-project sub-line;
+%   full project descriptions still live in Projects;
+%   Electrotechnical entry OFF by default in tailored CVs)
 % ============================================================
 
 \section{Education}
-\vspace{1pt}
+
+\cvedu{Master's in Computer Engineering}{Polytechnic University of Leiria}{Sep 2024 – Jul 2026}
+\cvedusub{Thesis: Lean-Driven QA \& CI/CD Re-Engineering Towards AI-Ready Infrastructures (18/20)}
+\cvedu{Bachelor's in Computational Engineering}{University of Aveiro}{Sep 2021 – Jul 2024}
+\cvedusub{Final Project: Big Data Analysis \& Representation, NO2 Air Pollution in VR (17/20)}
+\cvedu{Electrotechnical Engineering (1 year)}{ESTGA, University of Aveiro}{Sep 2020 – Jul 2021}
+
+% ============================================================
+%   WORK EXPERIENCE  (select 5-6 Glartek bullets in tailored CVs;
+%   default lead order: AI agent; Lean >50%; 20% sprint; ~30% handover)
+% ============================================================
+
+\section{Work Experience}
+
+\cvjob{Software Quality Engineer, Glartek}{Sep 2025 – Jun 2026}
+\cvcontext{AI-native, mobile-first, no-code EHSQ (Environment, Health, Safety \& Quality) Connected Worker platform for frontline industrial operations.}
 \begin{itemize}
+\item Built AI agent skills deployed in internal engineering repositories, enabling automated assistance for complex engineering and process workflows.
+\item Led a Lean-driven re-engineering of delivery infrastructure and processes, resolving accumulated technical debt and cutting total pipeline job time by more than 50\%.
+\item Redesigned delivery and engineering workflows, contributing to up to 20\% more features deployed per sprint.
+\item Restructured task distribution and handovers, reducing time consumption around 30\% and eliminating duplicated work.
+\item Contributed to the architecture and testing of an embedded AI chatbot that helps users navigate the platform.
+\item Contributed to the architecture and testing of a RAG system letting users query their own uploaded documents.
+\item Drove integration of AI agents and services into product and engineering workflows.
+\item Collaborated on an in-house image-recognition application built on YOLO object detection: labeled and curated the training dataset, helped define detection classes, and ran and evaluated training and optimization tests.
+\item Designed and implemented a test framework in Playwright, including reusable helpers and utilities for scalable coverage.
+\item Integrated the automated test battery into GitLab CI pipeline jobs, enabling fully automated execution as part of workflow.
+\item Led the Cypress to Playwright migration, including trade-off evaluation, implementation, and documentation.
+\item Standardized test naming and data conventions and introduced seed-driven data setup to reduce coupling and instability.
+\item Scripted reproducible local and virtual test environments (seed, rebuild, reinitialize services) in Shell/Bash to dev experience.
+\item Maintained and extended an existing Cypress battery; analyzed self-built reports and failure patterns to prioritize fixes.
+\end{itemize}
 
-\item{\cventry{[YYYY--YYYY]}{[Degree] in [Field]}{[Institution]}{[City, Country]}{}{\vspace{1pt}
-Thesis: ``[Thesis Title].'' [Brief description of research focus.]
-}}
+\cvjob{Founder \& President, Florescer (Cooperative)}{Jan 2023 – May 2026}
+\cvcontext{Non-profit cooperative working on local educational, social, and environmental initiatives.}
+\begin{itemize}
+\item Founded a non-profit cooperative: legal incorporation, administrative setup, governance structure, and ongoing compliance.
+\item Owned the full entrepreneurial process from idea to operational execution with no prior institutional support.
+\item Coordinated partnerships with public and private institutions to fund and support community programmes.
+\item Led educational activities, community workshops, and public-space renovation initiatives.
+\item Organized and monitored internal procedures for consistent operational execution.
+\item Managed the full physical setup and operational launch of a café/restaurant space and a nursing-school space.
+\end{itemize}
 
-\vspace{3pt}
+\cvjob{Warehouse Manager Assistant, Airking}{Jul 2020 – Sep 2020}
+\begin{itemize}
+\item Organized inventory, materials, and warehouse and storage flows.
+\item Optimized storage and transport procedures, improving handling and distribution time by up to 20\%.
+\item Supported the full logistics cycle (picking, dispatch, transport, retrieval); drove forklift for load handling.
+\item Performed technical assembly support, including ventilation conduit assembly.
+\end{itemize}
 
-\item{\cventry{[YYYY--YYYY]}{[Degree] in [Field]}{[Institution]}{[City, Country]}{}{\vspace{1pt}
-[Brief description or key topics.]
-}}
-
+\cvjob{Hospitality Consultant, IMPACT Consulting, Malta}{Jul 2018 – Aug 2018}
+\begin{itemize}
+\item Built Excel databases from publicly available company information for business outreach.
+\item Conducted company and individual outreach for partnership opportunities.
+\item Produced documentation linking travel agencies and hospitality brands.
 \end{itemize}
 
 % ============================================================
-%     LANGUAGES
+%   LANGUAGES  (one line, closes page 1 in tailored CVs)
 % ============================================================
 
 \section{Languages}
-\vspace{1pt}
+
+Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
+
+% ============================================================
+%   PAGE BREAK - tailored CVs keep this so page 2 = Skills onward
+% ============================================================
+\newpage
+
+% ============================================================
+%   SKILLS  (select 6-9 rows per role; keep tool-name rows for ATS)
+% ============================================================
+
+\section{Skills}
+
+\cvskill{Process, Operations \& Continuous Improvement}{Process analysis and mapping · Workflow re-engineering · Operational efficiency · Waste identification and prioritization · Procedure standardization · Task ownership and handover design · KPI design and tracking · Lean Software Development · Technical debt diagnosis and remediation · Continuous improvement (PDCA / Kaizen)}
+\cvskill{QA, Testing \& Reliability}{Software QA (manual and automated) · End-to-end test framework design (Playwright) · Reusable test helpers and utilities · Cypress maintenance and extension · API integration testing · Component-level unit testing · Test pyramid design and coverage rebalancing · Flaky test mitigation · Seed-driven test data · Failure-pattern and log analysis · Shift-left quality}
+\cvskill{CI/CD, DevOps \& Delivery}{CI/CD foundations and practical application · Pipeline optimization and feedback-loop reduction · Build/test resource efficiency · CI job integration for test batteries · Test parallelization · GitLab MR label and workflow governance · Local environment automation scripting · Environment reproducibility · Tooling and migration assessment}
+\cvskill{Applied AI \& Machine Learning}{CNNs and image classification · YOLO object detection · RNNs and sequence prediction · Transfer Learning · Hyperparameter optimization (Optuna) · LLM integration and AI agents · RAG system design, testing and evaluation (recall@k benchmarking) · Chatbot and embedded AI chat · Local LLM deployment (Ollama, Gemma) · Prompt engineering}
+\cvskill{Cybersecurity \& Defensive Engineering}{Offensive security · OSINT and footprinting · Vulnerability assessment and reporting · SIEM implementation and log centralization · Threat detection and alerting · Host-based intrusion detection (HIDS) · File integrity monitoring · Wazuh and Elastic Stack (ELK)}
+\cvskill{Immersive Tech, 3D \& Visualization}{Virtual and Augmented Reality · Digital Twins · 3D modelling and printing · VTK 2D/3D/VR visualization · Unity (C\#) · Godot · Blender · VRChat SDK · Additive manufacturing and rapid prototyping}
+\cvskill{Data, Analysis \& Reporting}{Excel database creation and maintenance · Data structuring and reporting · SQL data handling · SPSS statistics · KPI and operational metric tracking · Analytical reasoning}
+\cvskill{Engineering Foundations}{Physics and Mathematics (classical and quantum mechanics) · Scientific computing and simulation (MATLAB) · Engineering drawings · Systems and computer hardware architecture · Elementary electrical circuits}
+\cvskill{Programming Languages}{Python · TypeScript · JavaScript · Java · C\# (Unity) · React Native · SQL Server / SQL · MATLAB · Shell / Bash · Assembly · C}
+\cvskill{Tools \& Platforms}{Playwright · Cypress · GitLab CI · Bash / Shell · Git · MS Project · Excel · SQL · SPSS · Unity · Godot · Blender · VRChat SDK · VTK · Ollama (Gemma) · Wazuh · Elastic Stack (ELK) · Microsoft 365}
+\cvskill{Soft Skills}{Initiative and autonomy · Problem-solving (root-cause-first) · Fast learning and resilience · Leadership and team dynamics · Communication with technical and non-technical stakeholders · Adaptability}
+
+% ============================================================
+%   PROJECTS  (always include; thesis entry first by default;
+%   select 3-5 per role in tailored CVs)
+% ============================================================
+
+\section{Projects}
+
+\cvproject{Lean-Driven QA \& CI/CD Re-Engineering Towards AI-Ready Infrastructures (Master's Thesis)}{Research into engineering infrastructures that stay scalable, understandable, and ready for AI integration: CI/CD architecture, QA integration, shift-left quality, flakiness dynamics, and toolchain-migration criteria. Directly informed by the Glartek work.}
+
+\cvproject{Big Data Analysis \& Representation: NO2 Air Pollution in VR (Bachelor's Final Project)}{A VR system for visualizing large-scale NO2 air-pollution data across an urban area, built with OpenXR, VTK, and Unity, with a user study comparing VR and desktop interaction. Supervised by Prof. Paulo Dias (IEETA, University of Aveiro).}
+
+\cvproject{Niche-Field SaaS Marketing \& Admin Platform}{A full-stack, multi-tenant SaaS web platform delivered solo end to end in a pnpm monorepo: React + Vite frontend and an Express REST API deployed as serverless functions on Vercel, sharing one Zod-derived, end-to-end type-safe API contract; PostgreSQL via Drizzle ORM with schema-first validation; stateless JWT auth chosen specifically for the serverless backend; server-side Mapbox geocoding and Cloudflare R2 file storage via presigned uploads; Upstash-backed rate limiting; and a Playwright e2e test suite.}
+
+\cvproject{Shared Expense Tracker (Serverless PWA)}{A private, installable expense-tracking PWA for two people, delivered solo end to end with no backend of my own to run: React, Vite, and Supabase (managed Postgres, Auth, Realtime), authorization enforced entirely through Postgres Row-Level Security, a hand-rolled \textasciitilde60-line reactive data layer replacing Redux/Zustand, Google OAuth sign-in, and Workbox-based offline/installable support, deployed as static hosting only.}
+
+\cvproject{Minimal Local RAG System (Python + Ollama)}{A from-scratch, fully local retrieval-augmented-generation pipeline indexing personal project documentation and answering questions entirely offline (Python, Ollama, nomic-embed-text, Gemma). Built a recall@k evaluation harness against a golden question set, then identified and corrected an overly permissive evaluation methodology, turning the retrieval-depth (k) choice from an assumption into an empirically justified decision.}
+
+\cvproject{SIEM Implementation: Security Monitoring \& Detection}{Designed and deployed a working SIEM (Wazuh + Elastic Stack) centralizing log collection, with detection rules, alerting, file integrity monitoring, and host-based intrusion detection, validated against simulated attacks.}
+
+\cvproject{Cybersecurity Assessment \& Footprinting (Client Project)}{External attack-surface mapping through footprinting and OSINT for a small cooperative; delivered a prioritized vulnerability and remediation report and presented it to the client.}
+
+\cvproject{Digital Twin \& Animal Tracking App}{A mobile system keeping a live digital twin of tracked animals across large-scale environments, with two-way communication and an AR layer mapping positions in real space. Built with Kotlin, React Native, Firebase, and A-Frame.}
+
+\cvproject{1:1 Architectural VR Walkthrough (Client Project)}{Accurate 1:1-scale 3D building models navigable on desktop and in VR (Unity), used by clients to plan interior decoration in a spatially accurate representation of their space.}
+
+\cvproject{Mobile Client-Management App (Cooperative)}{A React Native + Firebase app letting a cooperative access and manage client information on the go, delivered end to end.}
+
+\cvproject{Sign Language Recognition: Image-to-Text (Academic)}{A computer-vision system reading sign-language gestures from images and converting them to text at 98\% classification accuracy (Python).}
+
+\cvproject{CNN Match Classification: League of Legends (Academic)}{A multiclass-multilabel CNN over spatial heatmap images predicting match outcome, player role, and duration; compared single-input, per-output, Transfer Learning, and Optuna-optimized architectures.}
+
+\cvproject{Further Academic ML \& Computing}{YOLO multi-class object detection at scale; RNN sequence prediction; MATLAB physics and mathematics simulations; SPSS statistical analysis across research cases.}
+
+\cvproject{Game Design \& Development and Maker Practice}{Independent multi-engine game development (Unity, Godot, Blender, VRChat SDK) with published content, plus an ongoing home 3D modelling and printing practice for rapid prototyping.}
+
+% ============================================================
+%   OTHER RELEVANT EXPERIENCE  (select 2-4 in tailored CVs)
+% ============================================================
+
+\section{Other Relevant Experience}
+
 \begin{itemize}
-\item [Language 1] (native), [Language 2] (fluent), [Language 3] (intermediate).
+\item International exposure: travel across 16+ countries, training courses in Finland, Poland, and Portugal, and six months living in Poland (Erasmus+).
+\item Founded a student-run radio station using governmental funds for school-improvement, sourced, and set up the equipment.
+\item 18+ years of Scouting across national and international activities, including World Scout Jamboree participation.
+\item Scout experience for 18+ years; volunteer work across forest conservation, food distribution, and animal welfare; community ambassador roles (Unlimited Future, Quinta da Carvalheira).
+\item Personal maker practice: home-based 3D modelling and printing for rapid prototyping and iterative problem-solving.
+\item Writing: two personal blogs on personal growth/psychology and creative writing.
 \end{itemize}
 
 % ============================================================
-%     PUBLICATIONS (optional)
+%   REFERENCES  (single line; never print referee contact details)
 % ============================================================
 
-\section{Publications}
-\vspace{1pt}
-\begin{itemize}
-\item [Author(s)] ([Year]). [Title]. [Journal/Conference]. \href{[DOI_URL]}{DOI link}
-\end{itemize}
-
-% ============================================================
-%     HONORS AND AWARDS (optional)
-% ============================================================
-
-\section{Honors and Awards}
-\vspace{1pt}
-\begin{itemize}
-\item{\textbf{[Award Name]} -- [Event/Organization] ([Year]).}
-\end{itemize}
-
-% ============================================================
-%     REFERENCES
-% ============================================================
-
+\needspace{4\baselineskip}
 \section{References}
-\vspace{1pt}
-\begin{itemize}
-\item{Available upon request.}
-\end{itemize}
+
+Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.
 
 \end{document}

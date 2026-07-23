@@ -68,7 +68,7 @@ Then install the template dependencies:
 
 ```bash
 tlmgr install \
-  moderncv fontawesome5 fontawesome6 academicons import luatexbase pgf \
+  carlito enumitem moderncv fontawesome5 fontawesome6 academicons import luatexbase pgf \
   titlesec textpos xltxtra xunicode cite realscripts needspace
 ```
 
@@ -113,7 +113,7 @@ initexmf --set-config-value=[MPM]AutoInstall=1
 If you'd rather not rely on on-the-fly installs at all (for example, for a fully offline compile later), pre-install the same package set the macOS TinyTeX section above lists, using MiKTeX's package manager:
 
 ```powershell
-mpm --admin --install=moderncv --install=fontawesome5 --install=fontawesome6 --install=academicons --install=import --install=luatexbase --install=pgf --install=titlesec --install=textpos --install=xltxtra --install=xunicode --install=cite --install=realscripts --install=needspace
+mpm --admin --install=carlito --install=enumitem --install=moderncv --install=fontawesome5 --install=fontawesome6 --install=academicons --install=import --install=luatexbase --install=pgf --install=titlesec --install=textpos --install=xltxtra --install=xunicode --install=cite --install=realscripts --install=needspace
 ```
 
 Drop `--admin` if MiKTeX is installed for the current user only. If a package name doesn't resolve, `mpm --find=<name>` searches the repository for the correct name.
@@ -284,7 +284,7 @@ Set-Location applications; lualatex -output-directory=<company>_<role> <company>
 Set-Location applications; xelatex -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex; Set-Location ..
 ```
 
-These commands apply to the stock templates (moderncv CV, `cover.cls` cover letter). If you'd rather use your own LaTeX template, run `/add-template` — it captures the template's compile engine, fonts, style rules, and page limit, test-compiles it, and wires it into `/apply`. See the "LaTeX templates" section in the README.
+These commands apply to the stock templates (compact single-column CV, `cover.cls` cover letter). If you'd rather use your own LaTeX template, run `/add-template` — it captures the template's compile engine, fonts, style rules, and page limit, test-compiles it, and wires it into `/apply`. See the "LaTeX templates" section in the README.
 
 ## 8. Pulling upstream updates into your fork
 
@@ -310,9 +310,9 @@ This is expected if you haven't set up salary benchmarking. The `/apply` workflo
 Make sure Bun is installed and you ran `bun install` in each CLI directory. The tools require network access to fetch job listings.
 
 ### LaTeX compilation errors
-- CV: uses `lualatex` (pdflatex often fails on modern MiKTeX with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly)
+- CV: uses `lualatex` (the compact template loads the Carlito font by family name via fontspec, which pdflatex cannot do)
 - Cover letter: uses `xelatex` (for custom fonts in `OpenFonts/fonts/`)
-- Make sure your LaTeX distribution includes the `moderncv` package
+- Make sure your LaTeX distribution includes the `carlito` package (and `moderncv` if you still compile pre-flip applications)
 
 ### Fonts not found in cover letter
 The cover letter template expects fonts in `applications/OpenFonts/fonts/`, resolved relative to the compile working directory. Make sure the directory exists with the Lato and Raleway font files, and always compile from `applications/` (with `-output-directory=<company>_<role>`), not from inside the application folder.

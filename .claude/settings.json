@@ -113,7 +113,15 @@
       "Bash(rm -f blazity_ai_engineer/*.aux blazity_ai_engineer/*.log blazity_ai_engineer/*.out)",
       "Bash(sed -i -E 's/main_\\(__TRACKED_VAR__\\)/CV_JoseHenriques_\\\\1/g; s/cover_\\(__TRACKED_VAR__\\)/CL_JoseHenriques_\\\\1/g' .claude/settings.json)",
       "Bash(python -c \"import json; json.load\\(open\\('.claude/settings.json', encoding='utf-8'\\)\\); print\\('valid JSON'\\)\")",
-      "Bash(grep -E \"\\\\.txt$\")"
+      "Bash(grep -E \"\\\\.txt$\")",
+      "Bash(ls \"/g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal\")",
+      "Read(//g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/**)",
+      "Bash(ls \"/g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/CV builder\")",
+      "Bash(luaotfload-tool --find=\"Carlito\")",
+      "Bash(mpm --verify carlito)",
+      "Bash(lualatex -interaction=nonstopmode main_example.tex)",
+      "Bash(lualatex -interaction=nonstopmode main_example.tex >/dev/null 2>&1; rm -f main_example.aux main_example.log main_example.out)",
+      "Bash(pdftotext -layout main_example.pdf -)"
     ],
     "additionalDirectories": [
       "C:\\Users\\josep\\Desktop\\Dev\\USI\\education",

@@ -73,6 +73,13 @@ Read the three packs, then compare against and update each of these targets:
    one the corpus dropped. The About Me paragraph here is a general curated summary; keep
    its wording unless a fact in it is now wrong. When in doubt about a phrasing change,
    leave the wording and flag it in the diff report rather than rewriting.
+6. **`applications/main_example.tex`** — the master CV: `master_cv.md` rendered in the
+   compact LaTeX template, and the verbatim-selection source every tailored CV is copied
+   from. Whenever target #5 changes a line, mirror the same change here (LaTeX-escaped:
+   `\&`, `\%`, `\#`, `\textasciitilde`) so the two masters stay line-for-line identical.
+   Touch only content lines — never the preamble/style. After editing, recompile
+   (`cd applications && lualatex -interaction=nonstopmode main_example.tex`, twice) and
+   confirm it still compiles cleanly, then delete the `.aux`/`.log`/`.out` artifacts.
 
 Update rules:
 
@@ -89,9 +96,10 @@ Update rules:
 
 ## Step 3 — Verify
 
-- No `[PLACEHOLDER]` tokens remain in any of the five targets.
+- No `[PLACEHOLDER]` tokens remain in any of the six targets.
 - Names, dates, titles, and metrics in the profile files match the packs exactly.
 - `applications/master_cv.md` retains its curated CV-voice wording — only facts were reconciled, no bullets rewritten into pack prose.
+- `applications/main_example.tex` matches `master_cv.md` line for line (modulo LaTeX escaping) and compiles cleanly.
 - Nothing marked `audience: private` is phrased as CV-ready copy.
 
 ## When to run
