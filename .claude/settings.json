@@ -5,7 +5,31 @@
       "Bash(bun run:*)",
       "Bash(python salary_lookup.py:*)",
       "Bash(python3 salary_lookup.py:*)",
-      "Bash(pdftotext:*)"
+      "Bash(pdftotext:*)",
+      "PowerShell($b = Get-Command bun -ErrorAction SilentlyContinue; if \\($b\\) { \"bun found: $\\($b.Source\\)\"; bun --version } else { \"bun NOT found on PATH\" }; \"---\"; if \\(Test-Path \"$env:USERPROFILE\\\\.bun\\\\bin\\\\bun.exe\"\\) { \"bun.exe exists at $env:USERPROFILE\\\\.bun\\\\bin\\\\bun.exe \\(just not on PATH\\)\" } else { \"no bun.exe in ~/.bun/bin\" })",
+      "PowerShell(irm bun.sh/install.ps1 | iex)",
+      "PowerShell(irm https://claude.ai/install.ps1 | iex)",
+      "Bash(ls \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\")",
+      "Read(//g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/CV builder/**)",
+      "Bash(find \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\" -maxdepth 2 | head -80)",
+      "Bash(cd \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\" && ls .claude/commands CV_material CL_material FAQ RL_material USI 2>/dev/null)",
+      "Read(//g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/CV builder/USI/**)",
+      "Read(//g/Other computers/Core Folders/Tudo e Mais Alguma Coisa/Curriculum Vitae e Documentação Pessoal/CV builder/.claude/commands/**)",
+      "Bash(cd \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\" && wc -l convert_cv.py convert_cl.py USI/sync_usi.py .claude/commands/*.md && ls \"CVs variations/50_NearfieldInstruments_TechnicalProjectLead_USI_2026-07\")",
+      "Bash(head -40 \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\\\\convert_cv.py\"; ls \"C:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\USI\" 2>/dev/null; ls \"c:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\AI-job-search\\\\documents\\\\applications\" \"c:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\AI-job-search\\\\documents\\\\cv\" 2>/dev/null)",
+      "Bash(cd \"G:\\\\Other computers\\\\Core Folders\\\\Tudo e Mais Alguma Coisa\\\\Curriculum Vitae e Documentação Pessoal\\\\CV builder\" && head -30 FAQ/good_candidate.md && head -20 RL_material/feedback_rl_style.md)",
+      "Bash(python tools/lint_skills.py --help)",
+      "Edit(/.claude/skills/sync-usi/**)",
+      "Bash(python tools/sync_usi.py)",
+      "Bash(python tools/lint_skills.py)",
+      "Bash(python -c ' *)",
+      "Edit(/.claude/skills/job-application-assistant/**)",
+      "Bash(echo \"grep exit: $?\")",
+      "Bash(git -C \"C:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\USI\" status --short)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\josep\\Desktop\\Dev\\USI\\education",
+      "C:\\Users\\josep\\Desktop\\Dev\\USI\\writing"
     ]
   }
 }
