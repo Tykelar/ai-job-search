@@ -25,7 +25,18 @@
       "Bash(python -c ' *)",
       "Edit(/.claude/skills/job-application-assistant/**)",
       "Bash(echo \"grep exit: $?\")",
-      "Bash(git -C \"C:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\USI\" status --short)"
+      "Bash(git -C \"C:\\\\Users\\\\josep\\\\Desktop\\\\Dev\\\\USI\" status --short)",
+      "Bash(xargs grep -l -i \"outcome\\\\|tracker\\\\|upskill\\\\|html-report\\\\|html_report\")",
+      "Bash(xargs grep -l -i \"job_search_tracker\\\\|outcome.md\\\\|application tracker\")",
+      "Bash(find 'C:\\\\Users\\\\josep/.claude' -maxdepth 4 -type d -iname *outcome* -o -maxdepth 4 -type d -iname *html-report*)",
+      "Bash(python \"C:\\\\Users\\\\josep\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-josep-Desktop-Dev-AI-job-search\\\\6c774457-3c96-4873-9130-914d83630d6f\\\\scratchpad\\\\import_history.py\")",
+      "Bash(git check-ignore *)",
+      "Bash(xargs echo \"cv_draft.md files:\")",
+      "Bash(xargs echo \"cover_letter.md files:\")",
+      "Bash(xargs echo \"outcome.md files:\")",
+      "Bash(python -c \"import csv;r=list\\(csv.DictReader\\(open\\('job_search_tracker.csv',encoding='utf-8'\\)\\)\\);from collections import Counter;print\\('rows:',len\\(r\\)\\);print\\('status:',dict\\(Counter\\(x['status'] for x in r\\)\\)\\);print\\('sectors:',dict\\(Counter\\(x['sector'] or '\\(blank\\)' for x in r\\)\\)\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\josep\\Desktop\\Dev\\USI\\education",
