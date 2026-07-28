@@ -72,14 +72,17 @@ Read only the reference files you do not yet have:
 - **Engage nice-to-haves by name in the cover letter** where the profile supports honest adjacency (e.g. "conceptually aligned with <named tool>").
 - **Address stated logistics and prerequisites** in the cover letter where the posting raises them: security clearance willingness, start date or availability, commute or location fit, and the posting's reference/job ID where one exists. When the employer operates across several countries, a truthful language-capabilities sentence mapped to their footprint is high-value targeting.
 
-### CV (`applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`)
+### Naming the application folder (do this first)
+Application folders are numbered in creation order. Before writing either document, list `applications/`, take the **highest existing two-digit prefix and add one** (zero-padded), and use `applications/<NN>_<company>_<role>/`. Never reuse a number, never renumber existing folders, and never let the number encode rank or outcome. The number is on the **folder only** - the files inside stay `CV_JoseHenriques_<company>_<role>.tex` and `CL_JoseHenriques_<company>_<role>.tex` with no number, so nothing sent to an employer carries a sequence number. Past 99, widen to three digits for new folders rather than renumbering old ones.
+
+### CV (`applications/<NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`)
 - In the **CV language from the profile** (the `CV language:` line in CLAUDE.md's Identity section). When the profile does not set one, default to **English**. Never switch language per posting - the CV language is a profile-level choice, so all CVs stay consistent and reusable
 - **Copy `applications/main_example.tex`** to the application folder, then tailor it by **deleting and reordering whole blocks** per the selection rules in `05-cv-templates.md`: lead each section with the role's most relevant lines, demote weak fits, delete only for the 2-page limit (whole units, least relevant first). Select 5-6 Glartek bullets, 6-9 skill rows, 3-5 projects, 2-4 Other-Relevant-Experience bullets.
 - **Rewrite only the About Me** (per the rules in `05-cv-templates.md`); everything else stays identical to the master, except experience bullets you deliberately rephrase under the bounded-rephrasing rule above — keep a mental list of every bullet you touched
 - Keep the `\newpage` before Skills; the tailored CV is exactly 2 pages (page 1 = About Me / Education / Work Experience / Languages, page 2 = Skills / Projects / Other Relevant Experience / References)
 - **Grounding + fidelity audit:** Before writing to disk, (a) audit the About Me paragraph **and every rephrased bullet** against the union of `01-candidate-profile.md` + `applications/master_cv.md` + `CLAUDE.md`'s Candidate Profile section — every fact must be supported, and each rephrased bullet's facts/metrics/scope must match its master line exactly; (b) verify **verbatim fidelity** for everything else: each remaining content line traces character-for-character to a line in the master (a mechanical check, since the file started as a copy).
 
-### Cover Letter (`applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`)
+### Cover Letter (`applications/<NN>_<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`)
 - **Match the language of the job posting** (Danish posting -> Danish cover letter, English posting -> English cover letter)
 - Follow the structure from `06-cover-letter-templates.md`
 - Use the `cover.cls` template
@@ -88,7 +91,31 @@ Read only the reference files you do not yet have:
 - Keep to approximately one page
 - Any mention of agentic coding or AI tooling must reference **Claude Code** by name
 
-Write both files to disk. Keep the exact text of both drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading.
+### Posting link (`applications/<NN>_<company>_<role>/POSTING.md`)
+Write a third, small file into the same folder so the submission URL always travels with the documents. It is the answer to "where do I actually submit this?" months later, when the posting is no longer in your scrollback. Use exactly this shape:
+
+```markdown
+# Posting link - <Company>
+
+- **Company:** <Company>
+- **Role:** <Role title as the posting states it>
+
+## Where to submit
+
+[<Role> - <Company>](<posting URL>)
+
+Plain URL (copy-paste):
+
+​```
+<posting URL>
+​```
+```
+
+- The URL is the one the user supplied in `$ARGUMENTS` (or, if they pasted posting text with no URL, the canonical posting URL from `job_scraper/seen_jobs.json`, resolved from the repo root). If neither exists, write the file with `_No posting URL recorded._` in place of the link rather than skipping the file.
+- Keep both forms — the hyperlink for clicking, the fenced plain URL for copy-pasting into a browser or an application form.
+- This is a plain note, never compiled and never sent to an employer.
+
+Write all three files to disk. Keep the exact text of the CV and cover letter drafts in working memory — you will pass them inline to the reviewer in Step 3 and revise them in Step 4 without re-reading. The reviewer never sees `POSTING.md`.
 
 ---
 
@@ -203,8 +230,8 @@ After all edits are applied, the two files on disk are the final drafts.
 ### 5a. Compile
 
 ```bash
-cd applications && lualatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex
-cd applications && xelatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CL_JoseHenriques_<company>_<role>.tex
+cd applications && lualatex -interaction=nonstopmode -output-directory=<NN>_<company>_<role> <NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex
+cd applications && xelatex -interaction=nonstopmode -output-directory=<NN>_<company>_<role> <NN>_<company>_<role>/CL_JoseHenriques_<company>_<role>.tex
 ```
 
 - **Both compiles run from `applications/` (not from the application folder):** the shared `cover.cls` and `OpenFonts/` live at the `applications/` root and are resolved relative to the working directory. `-output-directory` sends the PDF and build artifacts into the application's own folder.
@@ -217,13 +244,13 @@ If either compile fails, fix the error and re-compile until clean.
 
 Read both PDFs via the Read tool and verify:
 
-**CV (`applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.pdf`):**
+**CV (`applications/<NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.pdf`):**
 - [ ] Exactly 2 pages (not 1, not 3)
 - [ ] Page 1 ends with Languages; page 2 starts with Skills and ends with References (the template's `\newpage` before Skills makes the break deterministic — page 1 content must fit above it)
 - [ ] No orphaned `\cvjob` headers — a job header must never sit alone at the bottom of a page with its bullets on the next (the template's built-in `\needspace` normally prevents this)
 - [ ] Neither page overfull (content pushed past the `\newpage` onto a third page) nor page 1 ending awkwardly early — fix by selecting more/fewer whole master lines, never by rewording
 
-**Cover letter (`applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.pdf`):**
+**Cover letter (`applications/<NN>_<company>_<role>/CL_JoseHenriques_<company>_<role>.pdf`):**
 - [ ] Exactly 1 page
 - [ ] Signature block visible, not cut off or pushed to a second page
 - [ ] Bullet list font matches surrounding body text (both should be Raleway-Medium)
@@ -250,7 +277,7 @@ An ATS parser reads the PDF's embedded **text layer**, not the rendered page —
 **1. Extract the text layer:**
 
 ```bash
-cd applications/<company>_<role> && pdftotext -layout CV_JoseHenriques_<company>_<role>.pdf CV_JoseHenriques_<company>_<role>.txt
+cd applications/<NN>_<company>_<role> && pdftotext -layout CV_JoseHenriques_<company>_<role>.pdf CV_JoseHenriques_<company>_<role>.txt
 ```
 
 Read the `.txt` file.
@@ -298,12 +325,13 @@ Summarize 3-5 key decisions made to tailor the application:
 - Any gaps that were acknowledged or reframed
 
 ### Files Created
-List the files written (both live in the application's own folder):
-- `applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
-- `applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`
+List the files written (all live in the application's own folder):
+- `applications/<NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
+- `applications/<NN>_<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`
+- `applications/<NN>_<company>_<role>/POSTING.md` — the submission link
 
 Tell the user: "Both files are ready for your review. Open them to check the final output before compiling."
 
 ### Next Steps
-- **Submitted?** `/outcome <company>` logs it in the tracker and starts the per-application record that `/setup` later uses to calibrate the fit framework.
+- **Submitted?** `/outcome <company>` logs it in the tracker, retires the posting from the `/scrape` and `/rank` pool, and starts the per-application record that `/setup` later uses to calibrate the fit framework. `/apply` itself writes no scraper state — until `/outcome` runs, the job stays a live candidate.
 - **Interview scheduled?** `/interview` builds a stage-specific prep pack from this posting and the documents you just created.

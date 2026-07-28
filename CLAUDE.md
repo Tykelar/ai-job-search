@@ -22,6 +22,7 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - **CV language:** English
 - **Portfolio:** tykelar.github.io · **LinkedIn:** josepedroh · **GitHub:** Tykelar
 - **Status:** Actively job-seeking. MSc completed July 2026 (18/20); most recent role (Glartek) ended June 2026.
+- **Mobility:** Based in Leiria. **Willing to relocate** to Denmark, Norway, Finland, Poland, the Netherlands, Switzerland, or Luxembourg; open to any EU-remote role regardless of country. Relocation willingness may be stated directly in cover letters.
 - **Headline (default):** "Computer Engineering (MSc) | Process Engineering, AI Automation & Operational Excellence" (role-specific variants live in the USI summary block — select, never invent)
 
 ### Education
@@ -84,7 +85,8 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - No deal-breakers recorded in the USI corpus yet (add a meta block there if any exist)
 
 ## Repo Structure
-- `applications/` - one folder per application (`applications/<company>_<role>/`) holding that application's CV (`CV_JoseHenriques_<company>_<role>.tex`, compact single-column style built by verbatim selection from the master) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`, custom cover.cls) plus their PDFs. Shared assets live at the `applications/` root: `cover.cls`, `OpenFonts/` (Lato/Raleway), `main_example.tex` (the master CV: full content bank in compact LaTeX, the copy-base for every tailored CV), `cover_example.tex`, `master_cv.md` (same content in Markdown, USI-derived), `HYBRID_TRIGGER.md`. Always compile from `applications/` with `-output-directory=<company>_<role>` so the shared class/fonts resolve.
+- `applications/` - one folder per application (`applications/<NN>_<company>_<role>/`) holding that application's CV (`CV_JoseHenriques_<company>_<role>.tex`, compact single-column style built by verbatim selection from the master) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`, custom cover.cls) plus their PDFs, and a `POSTING.md` carrying the posting URL as both a hyperlink and a copy-pasteable plain URL (never compiled, never sent to an employer - it is the canonical answer to "where do I submit this?"). Shared assets live at the `applications/` root: `cover.cls`, `OpenFonts/` (Lato/Raleway), `main_example.tex` (the master CV: full content bank in compact LaTeX, the copy-base for every tailored CV), `cover_example.tex`, `master_cv.md` (same content in Markdown, USI-derived), `HYBRID_TRIGGER.md`. Always compile from `applications/` with `-output-directory=<NN>_<company>_<role>` so the shared class/fonts resolve.
+- **Application folder numbering (hard):** every folder under `applications/` carries a two-digit sequence prefix `<NN>_` reflecting **creation order**, oldest first (`01_blazity_ai_engineer` … `26_volkswagen_junior_ai_data_engineer`). When creating a new application folder, take the **highest existing number and add one**, zero-padded to two digits; never reuse or renumber existing folders, and never renumber to reflect rank, status, or outcome. The number belongs to the folder only: the `.tex` and `.pdf` filenames inside stay `CV_JoseHenriques_<company>_<role>` / `CL_JoseHenriques_<company>_<role>` with no number, so documents sent to an employer never carry a sequence number. Past 99, widen to three digits for new folders rather than renumbering old ones. Note this is a separate namespace from `documents/applications/<company>_<role>/` (the per-application archive written by `/outcome`, `/interview`, and `/gmail-sync`), which is keyed by company+role and is **not** numbered.
 - `.claude/skills/` - AI skill definitions for the application workflow
 - `.agents/skills/` - Job search CLI tools
 - `documents/usi/` - Generated profile packs from the USI corpus (via `python tools/sync_usi.py`; never hand-edit)
@@ -95,7 +97,7 @@ All candidate facts originate in the **USI corpus** (`C:\Users\josep\Desktop\Dev
 ## Workflow for New Job Applications
 1. User provides a job posting (URL or text)
 2. **Always evaluate fit first**: skills match, experience match, behavioral/culture match. Present this assessment to the user before proceeding.
-3. If good fit: create an application folder `applications/<company>_<role>/` with a targeted CV (`CV_JoseHenriques_<company>_<role>.tex`) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`)
+3. If good fit: create an application folder `applications/<NN>_<company>_<role>/` with a targeted CV (`CV_JoseHenriques_<company>_<role>.tex`) and cover letter (`CL_JoseHenriques_<company>_<role>.tex`)
 4. **Verify both documents** (see Verification Checklist below)
 5. Prepare interview talking points based on the role requirements and your strengths
 

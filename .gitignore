@@ -20,9 +20,10 @@ venv/
 
 # Personal data (never commit these)
 salary_data.json
-# Match at any depth: the job-scraper skill resolves `job_scraper/` relative to
-# its own directory, so these land at .claude/skills/job-scraper/job_scraper/*.
-# A rooted `job_scraper/...` pattern silently fails to match them.
+# The canonical store is `job_scraper/*` at the repo root. The `**/` prefix is
+# kept as a safety net so a stray copy written under a skill directory is still
+# ignored rather than committed - see /outcome Step 4b and job-scraper SKILL.md
+# Step 4, which both pin the root path.
 **/job_scraper/seen_jobs.json
 **/job_scraper/notion_sync.json
 **/job_scraper/*.md
@@ -62,6 +63,9 @@ applications/**/*.txt
 applications/**/cover_*.tex
 applications/**/Cover_*.tex
 !applications/cover_example.tex
+# Posting links (one POSTING.md per application folder): these name every
+# employer applied to and where the application was submitted.
+applications/**/POSTING.md
 
 # documents/ subfolder contents are personal — only README and folder structure are tracked
 documents/usi/**

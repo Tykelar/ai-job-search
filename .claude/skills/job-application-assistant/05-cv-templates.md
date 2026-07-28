@@ -29,7 +29,7 @@ bounded-rephrasing allowance for experience bullets (added 2026-07-23):
 - The only fully generative surface: the **About Me paragraph**. The CV header carries no
   headline — name + fixed contact line only.
 
-**Output file:** `applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
+**Output file:** `applications/<NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
 
 ## Template: compact single-column (Carlito)
 
@@ -54,7 +54,7 @@ Semantic commands (defined in the master's preamble — a tailored CV never need
 from `applications/` with `-output-directory` into the application folder:
 
 ```bash
-cd applications && lualatex -interaction=nonstopmode -output-directory=<company>_<role> <company>_<role>/CV_JoseHenriques_<company>_<role>.tex
+cd applications && lualatex -interaction=nonstopmode -output-directory=<NN>_<company>_<role> <NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex
 ```
 
 Expected output: `Output written on ... (2 pages, ...)`. Any other page count is a failure.

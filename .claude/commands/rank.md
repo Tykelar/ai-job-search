@@ -14,16 +14,16 @@ Follow these steps **in order**.
 
 - Nothing → rank all jobs with status `new` in `job_scraper/seen_jobs.json`
 - A focus area (e.g. `/rank data science`) → rank only jobs whose title or stored fit-notes match the focus
-- `--all` → re-rank every job that has not been applied to, including previously ranked ones (useful after the profile changes)
+- `--all` → re-rank every job that has not been applied to, including previously ranked ones (useful after the profile changes). Entries with `"status": "applied"` are excluded even here - `--all` widens the pool to already-`ranked` jobs, never to applied ones
 - `--top <N>` → shortlist size (default 5)
 
 ---
 
 ## Step 1: Load State
 
-1. Read `job_scraper/seen_jobs.json`. If the file is missing or has no entries, tell the user to run `/scrape` first and stop.
-2. Read `job_search_tracker.csv`. Build the exclusion set: any company+role already in the tracker is out of scope regardless of flags - it has been applied to or consciously tracked.
-3. Select candidates: entries with status `new` (or all non-applied entries with `--all`), minus the exclusion set, filtered by the focus area if one was given.
+1. Read `job_scraper/seen_jobs.json`, resolved from the repo root. If the file is missing or has no entries, tell the user to run `/scrape` first and stop.
+2. Read `job_search_tracker.csv`. Build the exclusion set from **both** sources: any entry whose `status` is `applied` or `expired`, plus any company+role already in the tracker - both are out of scope regardless of flags. The two overlap by design; the status flag is the fast path and the tracker is the backstop for applications made outside the workflow.
+3. Select candidates: entries with status `new` (or `new` + `ranked` with `--all`), minus the exclusion set, filtered by the focus area if one was given.
 4. If no candidates remain, say so ("Nothing new to rank - run /scrape to find fresh postings") and stop.
 5. Read the scoring framework and profile **once**:
    - `.claude/skills/job-application-assistant/04-job-evaluation.md`
@@ -80,7 +80,7 @@ Update `job_scraper/seen_jobs.json` in place - these fields are additive to the 
 - Ranked jobs: set `"status": "ranked"` and add `"rank_score": <overall>`, `"rank_verdict": "<band>"`, `"rank_date": "YYYY-MM-DD"`
 - Dead or past-deadline jobs: set `"status": "expired"`
 
-Do not modify `job_search_tracker.csv` - that file records applications, and `/rank` never applies. Re-running `/rank` is idempotent: already-`ranked` jobs are skipped unless `--all` re-scores them.
+Do not modify `job_search_tracker.csv` - that file records applications, and `/rank` never applies. `/rank` also never sets `applied`; only `/outcome` does, when the application is actually logged. Re-running `/rank` is idempotent: already-`ranked` jobs are skipped unless `--all` re-scores them, and `applied` jobs are skipped always.
 
 ---
 
@@ -125,4 +125,4 @@ Rules for the presentation:
 3. **Triage depth only.** No company research, no salary lookups, no reviewer agents - `/rank` exists to be cheap enough to run on every scrape batch.
 4. **Deal-breakers veto scores.** A 90-point job that fails a location deal-breaker is excluded, not ranked first.
 5. **Honest scoring.** Gaps are reported per job; a low-scoring posting is presented as such. The score bands and weights come from `04-job-evaluation.md` - if the user disagrees with a ranking, the fix is updating their profile or the framework, not bending scores.
-6. **State stays consistent.** `seen_jobs.json` fields are only added, never restructured, so `/scrape`'s dedup keeps working; the tracker is read-only for this command.
+6. **State stays consistent.** `seen_jobs.json` fields are only added, never restructured, so `/scrape`'s dedup keeps working; the tracker is read-only for this command. Never downgrade an `applied` entry back to `ranked` - that status is terminal and owned by `/outcome`.

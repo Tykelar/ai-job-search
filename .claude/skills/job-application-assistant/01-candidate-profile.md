@@ -18,7 +18,8 @@ framework_version: 1.0.0
 - **Portfolio:** https://tykelar.github.io
 - **Languages:** Portuguese (Native, C2), English (C2), Spanish (B1), French (A1)
 - **Status:** Actively job-seeking. MSc Computer Engineering completed July 2026 (18/20 average); most recent role (Glartek) ended June 2026.
-- **Constraints:** Based in Leiria, Portugal. None recorded in the USI corpus beyond that.
+- **Mobility:** Based in Leiria, Portugal. **Willing to relocate**, specifically to Denmark, Norway, Finland, Poland, the Netherlands, Switzerland, or Luxembourg. Open to any EU-remote role regardless of country.
+- **Constraints:** None recorded in the USI corpus beyond the mobility position above.
 
 ## Core Profile Summary
 Computer Engineering MSc (completed July 2026, 18/20 average) with professional experience re-engineering delivery infrastructure, improving engineering velocity, and integrating AI into engineering workflows. Demonstrated through a full re-engineering engagement at a technology company and formalized in a master's thesis applying Lean principles to CI/CD and process re-engineering. Built a cooperative from inception and ran it through its full operational lifecycle. Combines systems-level thinking, Lean methodology, and hands-on AI tooling across engineering and operational contexts. Complementary background: VR/AR, digital twins, 3D modelling/printing, technical visualization, cybersecurity/offensive security, and applied AI (CNNs, YOLO, RNNs, LLMs).

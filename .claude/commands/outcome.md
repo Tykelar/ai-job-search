@@ -3,6 +3,7 @@
 You are recording what happened to a job application: progress updates (interview invitations, stages completed, offers) and final resolutions (hired, rejected, no response). The data lands in two places the framework already reads but nothing systematically writes:
 
 - `job_search_tracker.csv` - the status column that `/scrape` and `/rank` use for dedup and exclusion
+- `job_scraper/seen_jobs.json` - the scraper's state store, whose matching entry is retired to `"status": "applied"` so the job stops circulating through `/scrape` and `/rank`
 - `documents/applications/<company>_<role>/` - the per-application archive (posting, submitted drafts, `outcome.md`) that `/setup` Path A mines to calibrate `04-job-evaluation.md` and surface STAR candidates
 
 `/outcome` writes the data; `/setup` interprets it. This command never edits the evaluation framework or profile files itself.
@@ -125,6 +126,19 @@ Update the matched row's `status` column (e.g. `applied` → `interview` → `of
 
 ---
 
+## Step 4b: Retire the Scraper Entry
+
+The tracker records the application; `seen_jobs.json` still holds the posting as a live candidate. Retire it so `/scrape` and `/rank` stop circulating a job that is already spoken for.
+
+1. Read `job_scraper/seen_jobs.json`, resolved from the repo root. If the file does not exist, skip this step silently - the application came from outside the scraper.
+2. Find the matching entry: first by posting URL (normalised - trailing slash and query string ignored), then by case-insensitive company + title. If several match (portals do re-list the same job), retire **all** of them.
+3. On each match set `"status": "applied"` and add `"applied_date": "YYYY-MM-DD"` (the date the application was submitted, from the tracker row - not today's date, unless they are the same). Leave `rank_score`, `rank_verdict`, `rank_date`, `portal`, and every other field untouched - the rank history is what `/setup` reads to calibrate scoring against real outcomes.
+4. If no entry matches, say so in one line in Step 6 and move on. A missing entry is normal for applications made outside `/scrape`; it is never a reason to invent one.
+
+`applied` is terminal. Later `/outcome` runs that move the tracker to `interview`, `rejected`, or `hired` do **not** change this field - the scraper only needs to know the job is out of the pool, not how it ended. That history lives in the tracker and the archive.
+
+---
+
 ## Step 5: Calibration Handoff
 
 Count the `outcome.md` files under `documents/applications/` with a **final** status (not `in_progress`).
@@ -144,6 +158,7 @@ Summarize what was recorded:
 > - `documents/applications/<company>_<role>/outcome.md` - status: <status>, <what changed>
 > - Archived: <which of cv_draft.tex / cover_letter.tex / job_posting.md were copied or fetched, and which were skipped and why>
 > - Tracker: status → <new status>
+> - Scraper: <N> `seen_jobs.json` entr(y/ies) retired to `applied` — or "no matching entry (applied outside /scrape)"
 >
 > [Calibration suggestion from Step 5, if triggered]
 
@@ -162,8 +177,8 @@ If the recorded status is `hired`, congratulate the user warmly first - this is 
 1. **Write data, don't interpret it.** The archive and tracker are the outputs; calibration belongs to `/setup`. This command never edits profile or framework files.
 2. **The archived version is the submitted version.** Existing files in the application folder are never overwritten by fresher drafts.
 3. **Never fabricate.** A dead posting URL gets a user-pasted copy or an explicit "unavailable" stub, not a reconstruction. Feedback is recorded as the user reports it.
-4. **Stay schema-compatible.** `outcome.md` follows the format in `documents/README.md` exactly (`in_progress` is the one addition, for open applications); the tracker keeps its columns.
-5. **Idempotent updates.** Re-running on the same application appends new stages and notes; it never duplicates folders, rows, or history.
+4. **Stay schema-compatible.** `outcome.md` follows the format in `documents/README.md` exactly (`in_progress` is the one addition, for open applications); the tracker keeps its columns; `seen_jobs.json` gains only the `status` change and `applied_date`, never a restructure.
+5. **Idempotent updates.** Re-running on the same application appends new stages and notes; it never duplicates folders, rows, or history. Re-retiring an already-`applied` scraper entry is a no-op, not an error.
 6. **Follow-ups: draft only, never send.** The follow-up branch produces text for the user to send themselves. It never emails, messages, or submits anything, and it must not be wired to tools that do.
 7. **Follow-ups: no new claims.** Every substantive statement in a follow-up or thank-you note comes from the archived submitted materials. Rule 3 applies with no exceptions.
 8. **Maximum two follow-ups per application.** After the second silent follow-up, the honest move is recording the resolution, not persistence.

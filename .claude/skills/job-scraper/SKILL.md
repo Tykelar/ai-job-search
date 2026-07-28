@@ -38,7 +38,7 @@ Optional arguments:
 
 ### Step 0: Load State
 
-1. Read `job_scraper/seen_jobs.json` (create if missing - start with `{"seen": {}}`)
+1. Read `job_scraper/seen_jobs.json`, resolved from the repo root (create if missing - start with `{"seen": {}}`)
 2. Read `job_search_tracker.csv` to extract already-applied companies+roles
 3. Read `search-queries.md` (this directory) for the search strategy
 
@@ -125,7 +125,7 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
       "url": "...",
       "first_seen": "YYYY-MM-DD",
       "fit": "high/medium/low",
-      "status": "new/skipped/evaluated/ranked/expired",
+      "status": "new/skipped/evaluated/ranked/applied/expired",
       "portal": "<source portal skill, e.g. jobindex-search>"
     }
   }
@@ -134,7 +134,11 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
 
 The `portal` field records which CLI skill produced the job (results are already tagged per portal in Step 1b - persist that tag here). Entries written before this field existed lack it; the health check (Step 4.75) attributes those by matching the URL's domain against each portal's base URL, so do not backfill.
 
+This file lives at `job_scraper/seen_jobs.json` **resolved from the repo root** - one canonical store shared by `/scrape`, `/rank`, `/apply`, and `/outcome`. Never create a second copy under the skill's own directory; a split store silently halves the dedup set.
+
 `/rank` extends this schema additively: ranked entries also carry `rank_score` (0–100 overall score), `rank_verdict` (fit band, e.g. "strong fit"), and `rank_date` (ISO date of ranking). The `status` field is set to `"ranked"`. Do not drop any of these fields when re-writing entries.
+
+`/outcome` extends it the same way when an application is logged: `"status": "applied"` plus `applied_date` (ISO date). An `applied` entry is terminal for the scrape/rank pipeline - it is never re-presented and never re-ranked, including under `/rank --all`. Do not drop these fields either.
 
 2. Only present jobs NOT already in the seen list or tracker.
 
@@ -223,7 +227,7 @@ After presenting, ask:
 
 If the user picks a number, invoke the **job-application-assistant** skill workflow (fit evaluation first, then CV + cover letter if approved).
 
-If the run found many new jobs (roughly 8+), also suggest `/rank` - it batch-scores all new postings against the full fit framework and returns a ranked shortlist, which beats eyeballing a long table. (`/rank` sets the `ranked` and `expired` status values in `seen_jobs.json`; treat both as already-seen for dedup purposes.)
+If the run found many new jobs (roughly 8+), also suggest `/rank` - it batch-scores all new postings against the full fit framework and returns a ranked shortlist, which beats eyeballing a long table. (`/rank` sets the `ranked` and `expired` status values in `seen_jobs.json` and `/outcome` sets `applied`; treat all three as already-seen for dedup purposes.)
 
 ### Step 6: Update Tracker (Optional)
 
@@ -234,7 +238,7 @@ If the user decides to apply to any job, add a row to `job_search_tracker.csv`.
 ## Important Rules
 
 1. **Never fabricate job postings.** Only present jobs from actual CLI search/detail output or WebSearch/WebFetch results.
-2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting.
+2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting. An entry with `"status": "applied"` is never re-presented, whatever its fit.
 3. **Focus on configured geographic area.** Skip jobs that require relocation or are clearly outside commute range.
 4. **Only open positions.** Skip postings with expired deadlines or those marked as closed.
 5. **Be efficient with detail fetches.** Don't run `detail` or WebFetch on every search hit — pre-filter by title/snippet, then fetch only promising matches.
