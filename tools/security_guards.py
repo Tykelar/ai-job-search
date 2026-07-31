@@ -52,7 +52,11 @@ REQUIRED_IGNORE_RULES = [
     "applications/**/CL_*.tex",
     "applications/**/main_*.tex",
     "!applications/main_example.tex",
+    # ATS text extractions (/apply step 5d) carry the CV's full text.
+    "applications/**/*.txt",
     "applications/**/cover_*.tex",
+    # /apply also recognizes the uppercase Cover_* naming variant.
+    "applications/**/Cover_*.tex",
     "documents/cv/**",
     "documents/linkedin/**",
     "documents/diplomas/**",
