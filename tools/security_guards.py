@@ -48,6 +48,10 @@ REQUIRED_IGNORE_RULES = [
     # to its own directory, so the state file lands under .claude/skills/... and
     # a repo-rooted rule silently fails to match it.
     "**/job_scraper/seen_jobs.json",
+    "**/job_scraper/notion_sync.json",
+    "**/job_scraper/*.md",
+    "*_BehavioralReport.pdf",
+    "linkedin_Profile.pdf",
     "applications/**/CV_*.tex",
     "applications/**/CL_*.tex",
     "applications/**/main_*.tex",
@@ -62,8 +66,12 @@ REQUIRED_IGNORE_RULES = [
     "documents/diplomas/**",
     "documents/references/**",
     "documents/applications/**",
+    "documents/postings/**",
     "documents/interview/**",
     "job_search_tracker.csv",
+    "gmail_sync/",
+    "reports/",
+    "upskill/*.md",
     # Not personal data but the same failure mode: /add-portal can generate a
     # skill for a portal that only returns usable content through a paid
     # fetching service, and that skill reads an API token from the environment.
