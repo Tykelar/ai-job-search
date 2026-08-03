@@ -10,6 +10,13 @@
 
 The `site:` templates further down are the **WebSearch fallback** — for company career pages or when a CLI fails.
 
+**Language scope:** write every query category in the languages you work in (Portuguese,
+English, Spanish). Translate each category's keywords rather than machine-translating
+word-for-word (e.g. "Frontend Developer" -> "Desarrollador Frontend"). Two *separate*
+language checks then apply to what comes back — the **Language Filter** below (scrape-time,
+on the language a posting is *written* in) and `04-job-evaluation.md`'s **Language Gate**
+(on the languages the role *requires*). See the Language Filter section for how they differ.
+
 ## Target Profile (drives keywords)
 
 - **Primary roles:** AI Automation / AI Integration Engineer (LLM agents, RAG, chatbots — **Claude Code** by name), Engineering Effectiveness / Developer Productivity / DevEx, Platform / Build engineering, CI/CD & delivery-infrastructure re-engineering.
@@ -30,6 +37,8 @@ The `site:` templates further down are the **WebSearch fallback** — for compan
 `--country PT,DK,NO,FI,PL,NL,CH,LU` (comma = OR). Add `--region eu,none` to sweep remote roles that never resolved a geography. Discover live facet values at `/api/v1/jobs/facets?q=<role>` — never invent them.
 
 ## Query Categories
+
+Queries are grouped by priority. Write **each category in every language you work in** (see Language scope above). Combine each query with your location terms where the site supports it.
 
 ### Priority 1: AI Automation / AI Integration
 ```
@@ -101,6 +110,17 @@ Rules that keep this honest:
 > **79/100, the single highest-scoring job of that batch**, plus HOFOR AI Engineer (63) and
 > Eurofins AI Automation Specialist (63). The user applied to Bankdata anyway with an English
 > cover letter. If good Danish-language matches keep getting dropped, revisit this filter.
+
+### Two separate checks, both applied
+
+The table above is a **scrape-time** screen on the language a posting is *written in* — the
+candidate's explicit policy, with its cost recorded in the trade-off note. It is distinct
+from `04-job-evaluation.md`'s **Language Gate**, which runs later (at `/scrape` Step 3 and
+in `/rank`) and reads the languages a posting requires **for the role**: a required language
+not declared at all is a hard FAIL, while a declared language at a stated bar above the
+declared level is a FLAG for the user to judge, never a silent exclusion. Upstream's default
+is that a posting merely *written* in an undeclared language still passes; this fork
+deliberately overrides that with the filter above. Both checks run, and neither is silent.
 
 ## Date Filter
 
