@@ -1,5 +1,5 @@
 ---
-framework_version: 2.0.0
+framework_version: 2.1.0
 ---
 
 # CV Template and Tailoring Guide (compact style, verbatim-first selection)
@@ -83,8 +83,9 @@ Selection budgets (tune to fill both pages, never overfull):
 
 **Structural rules (from the legacy workflow):** fixed contact line; no headline; Education
 is one bold line per degree plus its italic thesis/final-project sub-line; always include a
-Projects section; no "Internship" qualifier on the Glartek title; the en-dash `–` only
-inside date ranges; **no em-dashes anywhere**; References never prints referee names or
+Projects section; no "Internship" qualifier on the Glartek title; date ranges use an
+**ASCII hyphen**, never an en-dash (see "Date fields must be ASCII ranges" below);
+**no em-dashes anywhere**; References never prints referee names or
 contact details — only the fixed available-on-request line.
 
 ## About Me (the only generative content)
@@ -166,3 +167,35 @@ if missing, skip the mechanical check with a warning):
 - **Keyword coverage** — match the posting's required/preferred terms against the
   extraction, in the posting's language. Coverage improves by selection (see above);
   genuine gaps stay visible and are never stuffed.
+- **Date ranges parse** — every `\cvjob` and `\cvedu` entry in the extraction shows a start
+  *and* an end separated by an ASCII hyphen (see below).
+
+### Date fields must be ASCII ranges (confirmed ATS import failure)
+
+This one is worth knowing about because it fails **silently**. A CV that passes every other
+check in this section — clean extraction, no `(cid:)` markers, contact details intact,
+correct reading order — can still have its dates dropped on import. In a real Workday
+resume import upstream, a CV lost the end date of a short role and failed to import **any**
+education entry, forcing manual re-entry. Nothing about the PDF or its text layer looked
+wrong.
+
+Two independent causes, both easy to avoid:
+
+1. **An en-dash in a date field does not parse as a range.** Many parsers split date ranges
+   only on an ASCII hyphen (U+002D); a literal `–` (U+2013), or the `--` ligature LaTeX
+   renders as one, reaches the text layer as a character they do not split on, so they see
+   no range at all. Write the date argument of `\cvjob` / `\cvedu` with a single hyphen:
+
+   ```latex
+   \cvjob{Software Quality Engineer, Glartek}{Sep 2025 - Jun 2026}   % parses
+   \cvjob{Software Quality Engineer, Glartek}{Sep 2025 – Jun 2026}   % en-dash, may not
+   ```
+
+   This applies to the **date argument only**. Keep `--`/`–` everywhere it is
+   typographically correct in prose, for example a numeric range like `EUR 600k--1M`.
+
+2. **A bare single year gives the parser no end date.** A short role written as
+   `{2020}` imports as a start date with nothing to close it. Use an explicit range, with
+   months where the role ran under a year (`Jul 2020 - Sep 2020`). Where a genuine range
+   exists, use it even when a single year would be factually accurate. Never invent a start
+   date; a lone graduation year is fine, just expect it to be typed in by hand.
