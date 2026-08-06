@@ -334,6 +334,33 @@ List the files written (all live in the application's own folder):
 
 Tell the user: "Both files are ready for your review. Open them to check the final output before compiling."
 
+### Step 6b: Record the Application
+
+Do this before the optional offer below, and before ending the turn for any other reason.
+
+1. Read `job_search_tracker.csv`. If it does not exist, create it with the standard header (identical to `/outcome` Step 1.1, so the two commands never diverge):
+   ```
+   date,company,sector,role,role_type,channel,status,contact_person,fit_rating,notes,cv_file,cover_letter_file,source
+   ```
+2. Match existing rows case-insensitively on company and role. **On no match, or when every match holds a final status, append a new row. On a match that is still open, update it.** When you append alongside a final row, say so — the earlier application to that role keeps its own row and its own outcome.
+3. Values for a new row:
+
+   | Column | Value |
+   |---|---|
+   | `date` | today |
+   | `status` | `drafted` |
+   | `fit_rating` | the overall score from Step 1 as a bare number, 0-100 — never `XX/100` or a verdict word, since `/upskill` does arithmetic on this column |
+   | `cv_file`, `cover_letter_file` | the two paths listed under "Files Created" above |
+   | `source` | the posting URL from `$ARGUMENTS`, empty when the posting was pasted as text |
+   | `channel` | `portal` when the posting came from a job portal, `online` for a company careers page, empty when unknown |
+   | `sector`, `role_type`, `contact_person` | from the posting when it states them, empty otherwise |
+
+4. **Updating an open row: never move it backwards.** Refresh `cv_file`, `cover_letter_file`, `fit_rating` and `source`, and append an undated `redrafted` marker to `notes` (undated deliberately — `/outcome` reads the latest *dated* note as the last contact with the employer, and re-drafting a CV is not that). Leave `status` alone, and leave `date` alone unless the status is still `drafted`, in which case it becomes today.
+5. Never restructure the CSV, reorder rows, or touch other rows.
+6. **Do not modify `job_scraper/seen_jobs.json`.** Dedup runs off the tracker instead: `/rank` builds its exclusion set from company+role there regardless of status.
+
+Name the tracker row in the "Files Created" report above.
+
 ### Next Steps
-- **Submitted?** `/outcome <company>` logs it in the tracker, retires the posting from the `/scrape` and `/rank` pool, and starts the per-application record that `/setup` later uses to calibrate the fit framework. `/apply` itself writes no scraper state — until `/outcome` runs, the job stays a live candidate.
+- **Submitted?** `/outcome <company>` moves the `drafted` row to `applied`, retires the posting from the `/scrape` and `/rank` pool, and starts the per-application record that `/setup` later uses to calibrate the fit framework. `/apply` itself writes no scraper state — Step 6b records a `drafted` tracker row and nothing else, so until `/outcome` runs the job stays a live candidate in `seen_jobs.json`.
 - **Interview scheduled?** `/interview` builds a stage-specific prep pack from this posting and the documents you just created.
