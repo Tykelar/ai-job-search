@@ -60,6 +60,11 @@ REQUIRED_IGNORE_RULES = [
     "documents/applications/**",
     "documents/interview/**",
     "job_search_tracker.csv",
+    # Not personal data but the same failure mode: /add-portal can generate a
+    # skill for a portal that only returns usable content through a paid
+    # fetching service, and that skill reads an API token from the environment.
+    ".env",
+    ".env.*",
 ]
 
 # Negation (re-include) rules the template legitimately ships. .gitignore is
