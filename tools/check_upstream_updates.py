@@ -173,7 +173,6 @@ def main() -> int:
             print(f"    Diff command: git diff {ref} -- {up['path']}")
             print()
         print("Review these changes to see if they fit your personalized fork!")
-        return 0
     else:
         if errors or missing_upstream:
             print(
@@ -183,7 +182,13 @@ def main() -> int:
             )
         else:
             print(f"[OK] All framework files are up to date with {ref}!")
-        return 0
+    # Version stamps answer "which of my files changed"; commit-level triage
+    # answers "which upstream commits deserve review". Point at the companion.
+    print(
+        f"\nFor commit-level triage of upstream commits, run: "
+        f"python3 tools/upstream_triage.py --remote {remote}"
+    )
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
