@@ -98,6 +98,12 @@ fields manually.
 For every candidate:
 - Skip if the URL or company+title combo already exists in `seen_jobs.json`
 - Skip if the company+role already appears in `job_search_tracker.csv`
+- Skip if the **posting body language** is outside the candidate's languages - see the
+  **Language Filter** in `search-queries.md` for the table, the override rules, and the
+  recorded trade-off. Judge the language of the posting text itself, never the employer's
+  country: a Danish employer posting in English stays in scope. Record skips with
+  `"status": "skipped"` and `"skip_reason": "language"`, and count them for Step 5 so the
+  exclusion is never silent.
 
 ### Step 2.5: Mass-Posting Detection (within this run)
 
@@ -186,7 +192,10 @@ Scraper-based portal CLIs rot silently: when a portal changes its markup, the pa
 Present new jobs in a table sorted by fit (high first). When Step 1b skipped
 portals (`enabled: false`), report them with the `skipped (disabled):` line below
 so opting one out stays visible rather than silent; omit the line when nothing
-was skipped. When Step 4.75 found a portal degraded, broken, or inconclusive,
+was skipped. When the Step 2 Language Filter excluded postings, report the count
+per language with the `excluded (language):` line; omit it when nothing was
+excluded. French-language postings are included but carry a `⚠ FR` marker in the
+Title cell, since A1 is not working proficiency and the call is the user's. When Step 4.75 found a portal degraded, broken, or inconclusive,
 add one `health:` line per suspect portal (healthy portals get no line); after
 the report, offer to set that portal's `enabled: false` so `/scrape` stops
 running it (and covers it via the Step 1c fallback) until it is fixed - only
@@ -197,6 +206,8 @@ the skill.
 ## New Job Matches - YYYY-MM-DD
 
 Found X new positions (Y high, Z medium, W low match).
+
+excluded (language): N postings - <lang>: n, <lang>: n
 
 skipped (disabled): <portal-name>, <portal-name>
 
@@ -240,6 +251,7 @@ If the user decides to apply to any job, add a row to `job_search_tracker.csv`.
 1. **Never fabricate job postings.** Only present jobs from actual CLI search/detail output or WebSearch/WebFetch results.
 2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting. An entry with `"status": "applied"` is never re-presented, whatever its fit.
 3. **Focus on configured geographic area.** Skip jobs that require relocation or are clearly outside commute range.
+3a. **Language exclusion is never silent and never geographic.** The Language Filter drops postings by the language of the **posting body**, never by employer country; every excluded posting is counted in the Step 5 output. A candidate-language change belongs in the USI corpus first (then `/sync-usi`), not hand-edited into the filter table.
 4. **Only open positions.** Skip postings with expired deadlines or those marked as closed.
 5. **Be efficient with detail fetches.** Don't run `detail` or WebFetch on every search hit — pre-filter by title/snippet, then fetch only promising matches.
 6. **Parallel searches.** Run portal CLI searches in parallel; use WebSearch only for gaps the CLIs don't cover.

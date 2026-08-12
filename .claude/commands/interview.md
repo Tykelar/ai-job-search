@@ -25,9 +25,10 @@ v1 preps for a **specific application**. Generic no-target practice is out of sc
    - `job_posting.md` - the exact posting the user applied to
    - `cv_draft.tex` and `cover_letter.tex` - what was actually submitted. **These are what the interviewer read**; every talking point must be consistent with their claims.
    - `outcome.md` - the stage reached so far and any recorded feedback from earlier stages. Feedback from stage N is the highest-value input for stage N+1 prep.
-2. **Fallbacks** (the application may predate `/outcome`): posting via WebFetch on the tracker row's `source` URL, or ask the user to paste it; CV via `applications/<company>*/CV_JoseHenriques_<company>*.tex` and cover letter via `applications/<company>*/CL_JoseHenriques_<company>_*.tex`. State plainly which context is missing rather than guessing - and suggest `/outcome <company>` to build the archive for next time.
-3. **Ask the user what this interview is** (skip anything `outcome.md` already records): stage (phone screen / technical / case / final round), date, format (phone, video, onsite), and who is interviewing (names and titles, if known).
-4. **Read the frameworks once** - do not re-read them in later steps:
+2. **The application folder** (written by `/apply`): `applications/<NN>_<company>_<role>/`, or `applications/INTERVIEW_<NN>_<company>_<role>/` if a previous `/interview` run already flagged it. Locate it with a glob that tolerates both prefixes - `applications/*<company>*/` - and note the exact folder name; Step 3 writes the prep pack here and Step 3b renames the folder.
+3. **Fallbacks** (the application may predate `/outcome`): posting via WebFetch on the tracker row's `source` URL, or ask the user to paste it; CV via `applications/*<company>*/CV_JoseHenriques_<company>*.tex` and cover letter via `applications/*<company>*/CL_JoseHenriques_<company>_*.tex`. State plainly which context is missing rather than guessing - and suggest `/outcome <company>` to build the archive for next time. If no application folder exists at all (application made outside `/apply`), fall back to saving the pack in `documents/applications/<company>_<role>/`, skip Step 3b, and say so.
+4. **Ask the user what this interview is** (skip anything `outcome.md` already records): stage (phone screen / technical / case / final round), date, format (phone, video, onsite), and who is interviewing (names and titles, if known).
+5. **Read the frameworks once** - do not re-read them in later steps:
    - `.claude/skills/job-application-assistant/07-interview-prep.md`
    - `.claude/skills/job-application-assistant/01-candidate-profile.md`
    - `.claude/skills/job-application-assistant/02-behavioral-profile.md`
@@ -76,7 +77,27 @@ Pick 4-6 from `07`'s categories, customized to the research and the stage: role 
 ### 6. Logistics
 The phone/video tips from `07` when the format calls for them, plus date and interviewer names as a header.
 
-Save the pack to `documents/applications/<company>_<role>/interview_prep_<stage>.md` (create the folder if this application predates `/outcome`). The folder is gitignored, so the pack stays personal; one file per stage, so earlier packs remain as history. Present the pack in chat as well - the file is the artifact, the conversation is the delivery.
+Save the pack to the application folder found in Step 1, as `interview_prep_<stage>.md` - alongside the CV and cover letter that were actually submitted, so everything about this application lives in one place. One file per stage, so earlier packs remain as history. `applications/**/interview_*.md` is gitignored, so the pack stays personal even though the application folders themselves are not ignored wholesale. Present the pack in chat as well - the file is the artifact, the conversation is the delivery.
+
+---
+
+## Step 3b: Flag the Application Folder
+
+Rename the application folder so the interviewing applications are identifiable at a glance in a directory listing:
+
+```
+applications/<NN>_<company>_<role>/  ->  applications/INTERVIEW_<NN>_<company>_<role>/
+```
+
+Rules:
+
+- **The sequence number is preserved, never changed.** The `INTERVIEW_` prefix is added in front of the existing `<NN>_` prefix; the rest of the folder name is untouched. Creation-order numbering still holds - `/apply` computes the next number by reading the `<NN>_` prefix and ignoring any `INTERVIEW_` in front of it.
+- **Idempotent.** If the folder is already prefixed (a second or third round on the same application), leave the name as it is - never stack a second `INTERVIEW_`.
+- **Never renamed back.** The flag records that the application reached an interview stage; `/outcome` recording a rejection does not remove it.
+- **The files inside are untouched.** `CV_JoseHenriques_<company>_<role>.tex/.pdf`, `CL_...`, and `POSTING.md` keep their names - nothing sent to an employer ever carries the flag or the number.
+- Use `git mv` if any file in the folder is tracked (`applications/*/job_posting.md` can be), plain `mv` otherwise.
+- **Fix the references the rename breaks:** update the `cv_file` and `cover_letter_file` columns of this application's `job_search_tracker.csv` row to the new path, and any folder path mentioned in that row's `notes`. Do the rename before writing the prep pack's header so the pack points at the new path too.
+- If Step 1 found no application folder, skip this step and note it in the chat delivery.
 
 ---
 
@@ -104,4 +125,4 @@ If Step 3 drafted new STAR answers the user approved for keeps, remind them thos
 2. **Honesty on gaps.** Weak matches get bridge answers (acknowledge → adjacent experience → learning path), never invented experience. Same rule as everywhere else in this repo.
 3. **Verified research only.** Company specifics go in the pack only after independent confirmation. Interviewer notes stick to public professional information.
 4. **Stage-appropriate prep.** A phone screen pack and a final-round pack are different documents; recorded feedback from earlier stages takes priority over generic question lists.
-5. **Write only to the application archive.** The prep pack lands in `documents/applications/<company>_<role>/`; framework and profile files are never edited, except appending user-approved STAR examples to `07-interview-prep.md` on explicit request.
+5. **Write only to the application folder.** The prep pack lands in `applications/INTERVIEW_<NN>_<company>_<role>/`, next to the submitted documents; the only other writes are this application's `job_search_tracker.csv` row (paths broken by the rename) and, on explicit request, user-approved STAR examples appended to `07-interview-prep.md`. Framework and profile files are otherwise never edited, and the `documents/applications/<company>_<role>/` archive is **read-only** here - `/outcome` owns it.

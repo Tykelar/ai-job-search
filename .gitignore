@@ -66,6 +66,10 @@ applications/**/Cover_*.tex
 # Posting links (one POSTING.md per application folder): these name every
 # employer applied to and where the application was submitted.
 applications/**/POSTING.md
+# Interview prep packs (written by /interview into the application folder):
+# these name the interviewers, quote what was submitted, and set out the
+# candidate's weak points.
+applications/**/interview_*.md
 
 # documents/ subfolder contents are personal — only README and folder structure are tracked
 documents/usi/**

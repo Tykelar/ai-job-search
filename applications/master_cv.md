@@ -26,9 +26,13 @@ Portuguese | (+351) 912 678 001 | josepedronolasco@gmail.com | Portfolio: tykela
 ## About Me
 <!-- Rendered WITHOUT the "About Me" heading on the CV: separator rule + text only.
      The headline line was dropped from the CV header on 2026-07-23 (José's call);
-     headline variants still exist in the USI summary block for LinkedIn/other use. -->
+     headline variants still exist in the USI summary block for LinkedIn/other use.
+     Self-description in the opening clause is "Software Engineer" (default, this
+     file) or "AI Automation Engineer" for AI-agent/AI-automation-heavy roles -
+     pick per posting. Never "Software Quality Engineer" as self-description;
+     that stays only as the literal Work Experience job header for Glartek. -->
 
-Computer Engineering MSc and Software Quality Engineer who re-engineers delivery infrastructure, improves engineering velocity, and integrates AI into engineering workflows. At a technology company I led a Lean-driven re-engineering of the delivery pipeline, from diagnosing accumulated technical debt through to measurable gains in delivery speed and reliability, formalized in a master's thesis on Lean CI/CD and AI-ready infrastructure. Alongside this I founded and ran a cooperative through its full operational lifecycle, and bring a systems-level perspective spanning applied AI, immersive technologies, and cybersecurity. Get to know me better [here](https://tykelar.github.io)!
+Computer Engineering MSc and Software Engineer who re-engineers delivery infrastructure, improves engineering velocity, and integrates AI into engineering workflows. At a technology company I led a Lean-driven re-engineering of the delivery pipeline, from diagnosing accumulated technical debt through to measurable gains in delivery speed and reliability, formalized in a master's thesis on Lean CI/CD and AI-ready infrastructure. Alongside this I founded and ran a cooperative through its full operational lifecycle, and bring a systems-level perspective spanning applied AI, immersive technologies, and cybersecurity. Get to know me better [here](https://tykelar.github.io)!
 
 ---
 
@@ -60,7 +64,7 @@ Computer Engineering MSc and Software Quality Engineer who re-engineers delivery
 - Integrated the automated test battery into GitLab CI pipeline jobs, enabling fully automated execution as part of workflow.
 - Led the Cypress to Playwright migration, including trade-off evaluation, implementation, and documentation.
 - Standardized test naming and data conventions and introduced seed-driven data setup to reduce coupling and instability.
-- Scripted reproducible local and virtual test environments (seed, rebuild, reinitialize services) in Shell/Bash to dev experience.
+- Scripted reproducible local and virtual test environments (seed, rebuild, reinitialize services) in Shell/Bash to improve dev experience.
 - Maintained and extended an existing Cypress battery; analyzed self-built reports and failure patterns to prioritize fixes.
 
 ### Founder & President, Florescer (Cooperative) | Jan 2023 – May 2026

@@ -69,6 +69,39 @@ freehire  --category qa  --country <codes> --jobage 21
 
 Portugal roles: verify commute from Leiria, or remote/hybrid feasibility. Relocation-OK countries: accept onsite/hybrid (relocation expected). Reject only markets outside the list above (unless fully remote-EU).
 
+## Language Filter
+
+The candidate's languages (source of truth: the `Languages:` line in the candidate profile /
+CLAUDE.md Identity section) are **Portuguese (Native, C2), English (C2), Spanish (B1),
+French (A1)**.
+
+A posting **written in** a language outside that set is a strong proxy for the job requiring
+that language day to day. Filter on the language of the **posting body**, not the employer's
+country:
+
+| Posting body language | Action |
+|---|---|
+| English, Portuguese, Spanish | **Include.** Working proficiency. |
+| French | **Include but mark `⚠ FR`.** A1 is not professional working proficiency; the user decides. |
+| Danish, Norwegian, Swedish, Finnish, Polish, German, Dutch, or any other language outside the set | **Exclude.** Record in `seen_jobs.json` with `"status": "skipped"` and `"skip_reason": "language"`, and count it in the Step 5 summary. |
+
+Rules that keep this honest:
+
+- **Filter on the posting body, not the employer.** A Danish company posting in English is
+  **in scope** - that is the common case for Nordic tech roles and excluding it would gut the
+  Denmark leg of the search.
+- **A stated English-working-language line overrides the body language.** If a
+  Danish-language posting explicitly says the working language is English, include it.
+- **Never silently drop.** Excluded postings are counted in the Step 5 output so the user can
+  see what the filter cost them, and they stay in `seen_jobs.json` so dedup still works.
+- **Mixed-language postings** (Danish intro, English requirements) count as English.
+
+> **Trade-off, recorded 2026-08-10:** this filter is applied at the user's explicit request.
+> On the 2026-08-10 run it would have excluded **Bankdata Platform Engineer**, which ranked
+> **79/100, the single highest-scoring job of that batch**, plus HOFOR AI Engineer (63) and
+> Eurofins AI Automation Specialist (63). The user applied to Bankdata anyway with an English
+> cover letter. If good Danish-language matches keep getting dropped, revisit this filter.
+
 ## Date Filter
 
 Last 14 days by default (30 for the thinner Priority-2/4 categories). If a posting date can't be determined, include and flag "date unknown".

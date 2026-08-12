@@ -157,7 +157,7 @@ Any signal about what they valued or didn't?
 
 `in_progress` marks an application that is still open (used by `/outcome` for interview-stage updates before a resolution). `/setup`'s calibration draws conclusions only from applications with a final status.
 
-Application folders may also contain **`interview_prep_<stage>.md`** files written by `/interview` (one per interview stage, kept as history). `/setup` reads only the four files named above and ignores these.
+**`interview_prep_<stage>.md`** files (written by `/interview`, one per interview stage) no longer live here - they are saved into the application's own folder at `applications/INTERVIEW_<NN>_<company>_<role>/`, next to the CV and cover letter that were submitted. `/setup` reads only the four files named above from this archive and ignores any extras it finds.
 
 **What `/setup` learns from outcome.md:**
 - Which role types and companies have led to interviews (signals strong fit areas)
