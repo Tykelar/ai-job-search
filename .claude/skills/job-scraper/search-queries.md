@@ -36,9 +36,43 @@ on the language a posting is *written* in) and `04-job-evaluation.md`'s **Langua
 ### freehire facets per market
 `--country PT,DK,NO,FI,PL,NL,CH,LU` (comma = OR). Add `--region eu,none` to sweep remote roles that never resolved a geography. Discover live facet values at `/api/v1/jobs/facets?q=<role>` — never invent them.
 
+## Search Matrix (pinned — do not improvise)
+
+Run exactly these query × market × pass combinations. Leaving breadth to run-time judgement is
+what made past yields incomparable (42 to 516 entries, with no way to tell a quiet market from
+a narrow search).
+
+- **Core markets (4)** — `Portugal` · `Remote` · `Netherlands` · `Denmark`
+- **Extended (5)** — `Norway` · `Finland` · `Poland` · `Switzerland` · `Luxembourg`
+
+| Priority | Recency pass (page 1) | Breadth pass | Breadth pages |
+|---|---|---|---|
+| 1 — AI Automation / Integration | Core + Extended | Core | 2 |
+| 2 — DevEx / Platform / CI-CD | Core | Core | 1 |
+| 3 — Software / Data Engineer | Core | Core | 1 |
+| 4 — Process / Test (`broad` only) | Core | Core | 1 |
+
+Priority 1 gets the Extended sweep and the extra page because it is the primary target sector.
+**freehire** takes comma-separated country facets, so one call covers all markets:
+`--country PT,DK,NO,FI,PL,NL,CH,LU --region eu,none`. **Danish portals** are single-market —
+one call per pass each.
+
+**Expected: ~105 portal calls** for a default run (Priorities 1-3) — ~91 LinkedIn (it is
+per-market, so the matrix multiplies there), ~10 freehire, ~6 Danish. Report the actual count
+on Step 5's `searched:` line; landing far below it means something failed, not that the market
+was quiet. Keep LinkedIn volume in this range rather than growing it — the CLI's ToS note asks
+for restraint, and the recency pass is where the yield is.
+
+**Language variants are scoped, not multiplied** — Portuguese against `Portugal` only, Spanish
+only under `/scrape broad`. The Nordic and Dutch tech markets post in English, so running three
+languages across nine markets would triple the matrix to buy almost nothing.
+
 ## Query Categories
 
-Queries are grouped by priority. Write **each category in every language you work in** (see Language scope above). Combine each query with your location terms where the site supports it.
+Queries are grouped by priority. Substitute `<market>` from the **Search Matrix** above — never
+pick markets ad hoc. The `--jobage` values below are the **breadth-pass** windows; the recency
+pass overrides them per `SKILL.md` Step 1b (`--jobage-minutes 2880` on LinkedIn, `--jobage 3`
+on freehire).
 
 ### Priority 1: AI Automation / AI Integration
 ```
@@ -124,7 +158,13 @@ deliberately overrides that with the filter above. Both checks run, and neither 
 
 ## Date Filter
 
-Last 14 days by default (30 for the thinner Priority-2/4 categories). If a posting date can't be determined, include and flag "date unknown".
+Two windows, one per pass (flags in `SKILL.md` Step 1b):
+
+- **Recency pass:** last ~48 hours.
+- **Breadth pass:** last 14 days by default; 30 for the thinner Priority-2/4 categories.
+
+If a posting date can't be determined, include it, store `posted_date: null`, and flag it
+"date unknown" in the Step 5 table — never substitute today's date.
 
 ## WebSearch fallback (`site:` templates)
 

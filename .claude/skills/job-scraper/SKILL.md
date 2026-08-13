@@ -66,13 +66,37 @@ For each **enabled** portal skill:
 
 1. Read its `SKILL.md` to find the correct `bun run …` invocation and supported flags.
 2. Translate the query terms from `search-queries.md` into that portal's flag format (e.g. `--key`, `--search-string`, `--query`, filter codes — whatever the portal's SKILL.md specifies).
-3. Scope to the last 14 days using the portal's supported recency flag (`--jobage`, `--since <YYYY-MM-DD>`, `--order PublicationDate`, etc. — as documented per portal).
-4. Cap results to ~20 per call using the portal's limit flag.
-5. Use `--format json` for machine-readable output.
+3. Run the query **twice**: once as a **recency pass** and once as a **breadth pass** (see below).
+4. Use `--format json` — **except for portals that inline full descriptions in search results**,
+   where json carries the whole corpus of text you are about to discard on the title. On
+   `freehire-search` the same 25 results cost 134k characters as json and 4.6k as `--format
+   table` (a 29x cut) with the triage fields and the slug intact. Use `table` for those sweeps
+   and fetch `detail <slug>` in Step 2 for the few that survive pre-filtering.
 
-Run all portal CLI calls in parallel where possible using the Agent tool. Collect all `results` arrays into a single pool for Step 2, keeping each result tagged with its source portal skill (for Step 2 `detail` lookups).
+**Why two passes.** Portal search ranks by **relevance, not date**, and sort-by-date parameters
+are ignored (verified on LinkedIn and freehire). Under a 14-day window a five-day-old posting
+lands wherever relevance puts it — often page 3 — and surfaces on a later run only because the
+ordering shifted, which looks like a job appearing late when it was in range all along. The
+recency *window* is a hard filter that does work, so narrowing it is the lever.
 
-If a CLI tool exits with a non-zero code, log the error message and continue — do not abort the whole search.
+**Recency pass (first).** Last ~48h, page 1 only — at that width nearly everything returned is
+fresh. Flags: `--jobage-minutes 2880` (linkedin, conflicts with `--jobage`), `--jobage 3`
+(freehire), `--jobage 1 --sort date` (jobindex), `--order PublicationDate` (jobnet, its
+default), `--since <today-2>` (jobbank); elsewhere the finest recency flag that portal's
+SKILL.md documents.
+
+**Breadth pass (second).** The Date Filter window from `search-queries.md`, read to the page
+depth the **Search Matrix** sets for that tier via `--page`. Pages are the unit of coverage: on
+`linkedin-search` page size is **fixed at 10** and `--limit`/`-n` only slices that one page, so
+`-n 20` silently yields 10.
+
+**Run every portal call inside a subagent (Agent tool), in parallel.** Each subagent returns
+**compact rows only** — title, company, location, posted date, URL, portal — never raw CLI
+output. It also deduplicates its own two passes (the recency results are a subset of the
+breadth window) and reports its **call count**, which Step 5 sums onto the `searched:` line so
+a thin run is distinguishable from a quiet market.
+
+If a CLI tool exits with a non-zero code, log the error message and continue — do not abort the search.
 
 #### 1c. WebSearch fallback
 
@@ -92,6 +116,11 @@ and URL. For jobs worth a deeper look, fetch full detail with that portal's `det
 command (see its SKILL.md — do not guess flags) to extract **key requirements**,
 **application deadline**, and a brief description snippet.
 
+**Pre-filter on title and snippet before fetching anything.** Full descriptions are pulled only
+for the handful of results that survive that filter — never for a whole page of search hits.
+This is what keeps a sweep affordable now that some portals will hand back every description at
+once if asked in json (see Step 1b item 4).
+
 **From WebSearch results:** Use `WebFetch` on the posting URL and extract the same
 fields manually. If it returns HTTP 403, retry with browser headers via curl per
 `.claude/skills/job-application-assistant/09-web-research.md` before giving up — most
@@ -105,7 +134,11 @@ site for the role and store that URL instead, or drop the candidate rather than 
 fragment link.
 
 For every candidate:
-- Skip if the URL or company+title combo already exists in `seen_jobs.json`
+- Skip if the **normalized URL** or the **normalized company+title** already exists in
+  `seen_jobs.json` — see **Dedup keys** in Step 4 for how both are derived. Compare on the
+  normalized forms, never on the raw strings: portals vary their own tracking parameters
+  between runs (freehire alternates `utm_source=freehire.dev` and `utm_source=freehire.me`
+  on otherwise identical URLs), and a raw-string comparison re-admits those as new.
 - Skip if the company+role already appears in `job_search_tracker.csv`
 - Skip if the **posting body language** is outside the candidate's languages - see the
   **Language Filter** in `search-queries.md` for the table, the override rules, and the
@@ -136,10 +169,11 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
 ```json
 {
   "seen": {
-    "<url_or_company_title_key>": {
+    "<normalized_url_or_company_title_key>": {
       "title": "...",
       "company": "...",
       "url": "...",
+      "posted_date": "YYYY-MM-DD | null",
       "first_seen": "YYYY-MM-DD",
       "fit": "high/medium/low",
       "status": "new/skipped/evaluated/ranked/applied/expired",
@@ -150,6 +184,23 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
 ```
 
 The `portal` field records which CLI skill produced the job (results are already tagged per portal in Step 1b - persist that tag here). Entries written before this field existed lack it; the health check (Step 4.75) attributes those by matching the URL's domain against each portal's base URL, so do not backfill.
+
+**`posted_date`** is when the *employer* published the posting (from the portal's `date`
+field), as distinct from `first_seen`, when *this workspace* saw it — the gap between them is
+the lag this skill exists to minimize. Store `null`, never today's date, when the portal
+reports none; Step 5 renders that as "date unknown". Entries predating the field lack it —
+tolerate the absence, never backfill.
+
+**Dedup keys.** Both are checked, always normalized, never compared raw:
+
+- **URL** — lowercase scheme and host, drop the **whole query string** and any `#fragment`,
+  strip a trailing slash. Portals rotate tracking parameters there (freehire alternates
+  `utm_source=freehire.dev`/`.me`), which splits one job across several entries.
+- **company+title** — lowercased, whitespace collapsed. Backstop for one posting reachable at
+  two URLs (an ATS link and an aggregator's copy).
+
+Matching **either** means already seen. Key entries by normalized URL when one exists,
+company+title otherwise.
 
 This file lives at `job_scraper/seen_jobs.json` **resolved from the repo root** - one canonical store shared by `/scrape`, `/rank`, `/apply`, and `/outcome`. Never create a second copy under the skill's own directory; a split store silently halves the dedup set.
 
@@ -200,7 +251,12 @@ Scraper-based portal CLIs rot silently: when a portal changes its markup, the pa
 
 ### Step 5: Present Results
 
-Present new jobs in a table sorted by fit (high first). When Step 1b skipped
+Present new jobs in a table sorted by fit (high first), and **within each fit band by
+`posted_date`, newest first** — a fresh high-match belongs above a two-week-old one. Entries
+with a `null` posted date sort last within their band and render as "unknown".
+
+Open with the `searched:` line reporting the Step 1b call count, so a thin run reads as a thin
+run rather than as a quiet market. When Step 1b skipped
 portals (`enabled: false`), report them with the `skipped (disabled):` line below
 so opting one out stays visible rather than silent; omit the line when nothing
 was skipped. When the Step 2 Language Filter excluded postings, report the count
@@ -216,7 +272,9 @@ the skill.
 ```
 ## New Job Matches - YYYY-MM-DD
 
-Found X new positions (Y high, Z medium, W low match).
+Found X new positions (Y high, Z medium, W low match). N posted in the last 48h.
+
+searched: <N> portal calls (<Q> queries x <M> markets, recency + breadth passes, <P> pages)
 
 excluded (language): N postings - <lang>: n, <lang>: n
 
@@ -225,9 +283,9 @@ skipped (disabled): <portal-name>, <portal-name>
 health: <portal-name> - degraded (company null on all 12 results); parsing anchors in .agents/skills/<portal-name>/url-reference.md
 health: <portal-name> - broken (0 results for the SKILL.md test query and a broader retry); parsing anchors in .agents/skills/<portal-name>/url-reference.md
 
-| # | Fit | Title | Company | Location | Deadline | URL |
-|---|-----|-------|---------|----------|----------|-----|
-| 1 | High | ... | ... | ... | ... | [Link](...) |
+| # | Fit | Posted | Title | Company | Location | Deadline | URL |
+|---|-----|--------|-------|---------|----------|----------|-----|
+| 1 | High | 2026-08-12 | ... | ... | ... | ... | [Link](...) |
 
 If Step 2.5 flagged a mass-posting pattern, note it in the Title cell (e.g. "Frontend Developer (posted in 6 cities)") rather than burying it. Do the same for a declared-language-insufficient-level flag from the Language Gate (e.g. "Backend Engineer ⚠ fluent English required") - both are signals the user should see at a glance, not just in the detail highlights below.
 
@@ -260,7 +318,9 @@ If the user decides to apply to any job, the tracker row is written by **job-app
 ## Important Rules
 
 1. **Never fabricate job postings.** Only present jobs from actual CLI search/detail output or WebSearch/WebFetch results.
-2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting. An entry with `"status": "applied"` is never re-presented, whatever its fit.
+1a. **Freshness comes from the recency pass, not from intent.** Never collapse Step 1b's two passes into one, and never trade a deeper read for a wider window - relevance ranking buries fresh postings either way.
+2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting, comparing on the **normalized** keys defined in Step 4. An entry with `"status": "applied"` is never re-presented, whatever its fit.
+2a. **The search matrix is pinned.** Run exactly the combinations in `search-queries.md`'s Search Matrix and report the call count in Step 5. If the matrix is wrong, change it there rather than deviating silently.
 3. **Focus on configured geographic area.** Skip jobs that require relocation or are clearly outside commute range.
 3a. **Language exclusion is never silent and never geographic.** The Language Filter drops postings by the language of the **posting body**, never by employer country; every excluded posting is counted in the Step 5 output. A candidate-language change belongs in the USI corpus first (then `/sync-usi`), not hand-edited into the filter table.
 4. **Only open positions.** Skip postings with expired deadlines or those marked as closed.
