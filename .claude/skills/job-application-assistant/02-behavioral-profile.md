@@ -1,5 +1,5 @@
 ---
-framework_version: 1.0.0
+framework_version: 1.1.0
 ---
 
 # Behavioral Profile
@@ -37,6 +37,8 @@ José's self-assessment identifies him as a **systems-level builder-owner** patt
 - **Formal certifications lag practice:** hands-on Lean re-engineering with measured outcomes, but no Lean/Six Sigma certificate yet - frame as "practitioner first, formalizing next"
 - **Platform-tooling depth:** strong CI/CD optimization experience in GitLab; broader DevOps platform stack (K8s, Terraform, etc.) is a stated learning direction
 - **Reporting tooling:** KPI design experience, Power BI exposure still to build
+- **VR/AR portfolio depth:** hands-on immersive-tech project experience, but no dedicated portfolio-ready VR/AR case studies yet
+- **Security certification path:** practical SIEM/OSINT/footprinting experience exists, but no formal security certification yet
 
 ## Mapping to Job Posting Language
 

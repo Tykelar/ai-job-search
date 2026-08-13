@@ -8,7 +8,21 @@
   - KEPT IN SYNC BY /sync-usi (Step 2, target #5): the skill reconciles FACTS ONLY against the
     USI packs (dates, metrics, titles, entries) while preserving the curated CV-voice phrasing.
     Do not hand-edit facts here. New facts go into the USI corpus, then re-run /sync-usi.
-  - Last reconciled against USI: 2026-07-23 (fixed MSc completion Jun->Jul 2026; countries 20+->16+).
+  - Last reconciled against USI: 2026-08-13. Two passes: (1) tooling/skills refresh - Qwen, LangChain,
+    ChromaDB, OpenClaw, Docker, Cloudflare Tunnel, UiPath/RPA, eval-harness design, PII-redaction
+    design, containerized deployment; countries 16+->20+; finance-markets interest bullet.
+    (2) COVERAGE AUDIT against all 57 cv-audience USI blocks - found two whole projects missing from
+    this bank (project-usi-rag, the only unrepresented `featured: true` block, and project-usi-corpus)
+    and added them; rewrote the RAG entry, which had been carrying only v1 (rag-mini) and badly
+    understated the work. Audit for MISSING BLOCKS on every sync, not just facts inside existing lines.
+
+  PROJECT ENTRY FORMAT (mandatory since 2026-08-13)
+  - Every project is THREE lines: **Title**, then *Tech stack: a · b · c*, then the description.
+    The .tex twin renders this as \cvproject{Title}{Tech stack}{Description} (three args).
+  - The stack line must fit ONE rendered line (~95 chars incl. the "Tech stack: " label).
+    Trim items rather than wrap. Items trace to the USI block's `stack` frontmatter.
+  - Titles and descriptions must NOT repeat the stack: no "(Python + Ollama)" title suffix,
+    no "built with X, Y, Z" prose. Description = what it is + what came of it.
 
   ROLE UNDER THE HYBRID /apply WORKFLOW (active since 2026-07-23)
   - This file IS the verbatim-selection master: every tailored-CV line except the About Me
@@ -97,16 +111,16 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 
 ## Skills
 
-**Process, Operations & Continuous Improvement:** Process analysis and mapping · Workflow re-engineering · Operational efficiency · Waste identification and prioritization · Procedure standardization · Task ownership and handover design · KPI design and tracking · Lean Software Development · Technical debt diagnosis and remediation · Continuous improvement (PDCA / Kaizen)
-**QA, Testing & Reliability:** Software QA (manual and automated) · End-to-end test framework design (Playwright) · Reusable test helpers and utilities · Cypress maintenance and extension · API integration testing · Component-level unit testing · Test pyramid design and coverage rebalancing · Flaky test mitigation · Seed-driven test data · Failure-pattern and log analysis · Shift-left quality
-**CI/CD, DevOps & Delivery:** CI/CD foundations and practical application · Pipeline optimization and feedback-loop reduction · Build/test resource efficiency · CI job integration for test batteries · Test parallelization · GitLab MR label and workflow governance · Local environment automation scripting · Environment reproducibility · Tooling and migration assessment
-**Applied AI & Machine Learning:** CNNs and image classification · YOLO object detection · RNNs and sequence prediction · Transfer Learning · Hyperparameter optimization (Optuna) · LLM integration and AI agents · RAG system design, testing and evaluation (recall@k benchmarking) · Chatbot and embedded AI chat · Local LLM deployment (Ollama, Gemma) · Prompt engineering
-**Cybersecurity & Defensive Engineering:** Offensive security · OSINT and footprinting · Vulnerability assessment and reporting · SIEM implementation and log centralization · Threat detection and alerting · Host-based intrusion detection (HIDS) · File integrity monitoring · Wazuh and Elastic Stack (ELK)
+**Process, Operations & Continuous Improvement:** Process analysis and mapping · Workflow re-engineering · Operational efficiency · Waste identification and prioritization · Procedure standardization · Task ownership and handover design · KPI design and tracking · Lean Software Development · Technical debt diagnosis and remediation · Continuous improvement (PDCA / Kaizen) · Process automation (RPA, UiPath)
+**QA, Testing & Reliability:** Software QA (manual and automated) · End-to-end test framework design (Playwright) · Reusable test helpers and utilities · Cypress maintenance and extension · API integration testing · Component-level unit testing · Test pyramid design and coverage rebalancing · Flaky test mitigation · Seed-driven test data · Failure-pattern and log analysis · Shift-left quality · Eval and benchmark harness design (golden sets, controlled A/B)
+**CI/CD, DevOps & Delivery:** CI/CD foundations and practical application · Pipeline optimization and feedback-loop reduction · Build/test resource efficiency · CI job integration for test batteries · Test parallelization · GitLab MR label and workflow governance · Local environment automation scripting · Environment reproducibility · Containerized deployment (Docker Compose) · Tooling and migration assessment
+**Applied AI & Machine Learning:** CNNs and image classification · YOLO object detection · RNNs and sequence prediction · Transfer Learning · Hyperparameter optimization (Optuna) · LLM integration and AI agents · RAG system design, testing and evaluation (recall@k benchmarking) · Vector databases (Chroma) · LangChain · Chatbot and embedded AI chat · Local LLM deployment (Ollama, Gemma, Qwen) · Prompt engineering
+**Cybersecurity & Defensive Engineering:** Offensive security · OSINT and footprinting · Vulnerability assessment and reporting · SIEM implementation and log centralization · Threat detection and alerting · Host-based intrusion detection (HIDS) · File integrity monitoring · Wazuh and Elastic Stack (ELK) · Data privacy and PII redaction pipeline design
 **Immersive Tech, 3D & Visualization:** Virtual and Augmented Reality · Digital Twins · 3D modelling and printing · VTK 2D/3D/VR visualization · Unity (C#) · Godot · Blender · VRChat SDK · Additive manufacturing and rapid prototyping
 **Data, Analysis & Reporting:** Excel database creation and maintenance · Data structuring and reporting · SQL data handling · SPSS statistics · KPI and operational metric tracking · Analytical reasoning
 **Engineering Foundations:** Physics and Mathematics (classical and quantum mechanics) · Scientific computing and simulation (MATLAB) · Engineering drawings · Systems and computer hardware architecture · Elementary electrical circuits
 **Programming Languages:** Python · TypeScript · JavaScript · Java · C# (Unity) · React Native · SQL Server / SQL · MATLAB · Shell / Bash · Assembly · C
-**Tools & Platforms:** Playwright · Cypress · GitLab CI · Bash / Shell · Git · MS Project · Excel · SQL · SPSS · Unity · Godot · Blender · VRChat SDK · VTK · Ollama (Gemma) · Wazuh · Elastic Stack (ELK) · Microsoft 365
+**Tools & Platforms:** Playwright · Cypress · GitLab CI · Bash / Shell · Git · MS Project · Excel · SQL · SPSS · Unity · Godot · Blender · VRChat SDK · VTK · Ollama (Gemma, Qwen) · LangChain · ChromaDB · OpenClaw · Docker / Docker Compose · Cloudflare Tunnel · UiPath · Wazuh · Elastic Stack (ELK) · Microsoft 365
 **Soft Skills:** Initiative and autonomy · Problem-solving (root-cause-first) · Fast learning and resilience · Leadership and team dynamics · Communication with technical and non-technical stakeholders · Adaptability
 
 ---
@@ -114,57 +128,80 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 ## Projects
 
 **Lean-Driven QA & CI/CD Re-Engineering Towards AI-Ready Infrastructures (Master's Thesis)**
+*Tech stack: CI/CD architecture · QA architecture · Test-suite optimization · Research*
 Research into engineering infrastructures that stay scalable, understandable, and ready for AI integration: CI/CD architecture, QA integration, shift-left quality, flakiness dynamics, and toolchain-migration criteria. Directly informed by the Glartek work.
 
 **Big Data Analysis & Representation: NO2 Air Pollution in VR (Bachelor's Final Project)**
-A VR system for visualizing large-scale NO2 air-pollution data across an urban area, built with OpenXR, VTK, and Unity, with a user study comparing VR and desktop interaction. Supervised by Prof. Paulo Dias (IEETA, University of Aveiro).
+*Tech stack: OpenXR · VTK · Unity · 3D*
+A VR system for visualizing large-scale NO2 air-pollution data across an urban area, with a user study comparing VR and desktop interaction. Supervised by Prof. Paulo Dias (IEETA, University of Aveiro).
 
 **Niche-Field SaaS Marketing & Admin Platform**
-A full-stack, multi-tenant SaaS web platform delivered solo end to end in a pnpm monorepo: React + Vite frontend and an Express REST API deployed as serverless functions on Vercel, sharing one Zod-derived, end-to-end type-safe API contract; PostgreSQL via Drizzle ORM with schema-first validation; stateless JWT auth chosen specifically for the serverless backend; server-side Mapbox geocoding and Cloudflare R2 file storage via presigned uploads; Upstash-backed rate limiting; and a Playwright e2e test suite.
+*Tech stack: TypeScript · React · Express · PostgreSQL · Drizzle · Zod · Playwright · Vercel*
+A multi-tenant SaaS platform helping businesses in a niche field market themselves and manage the information central to their operations. Built solo end to end: architecture, data model, API, UI, auth, testing, and deploy.
 
 **Shared Expense Tracker (Serverless PWA)**
-A private, installable expense-tracking PWA for two people, delivered solo end to end with no backend of my own to run: React, Vite, and Supabase (managed Postgres, Auth, Realtime), authorization enforced entirely through Postgres Row-Level Security, a hand-rolled ~60-line reactive data layer replacing Redux/Zustand, Google OAuth sign-in, and Workbox-based offline/installable support, deployed as static hosting only.
+*Tech stack: TypeScript · React · Supabase · PostgreSQL (RLS) · Google OAuth · Workbox*
+A private, installable expense-tracking PWA for two people, deliberately built with no backend of my own to maintain, with authorization enforced in the database rather than in the client. Delivered solo end to end.
 
-**Minimal Local RAG System (Python + Ollama)**
-A from-scratch, fully local retrieval-augmented-generation pipeline indexing personal project documentation and answering questions entirely offline (Python, Ollama, nomic-embed-text, Gemma). Built a recall@k evaluation harness against a golden question set, then identified and corrected an overly permissive evaluation methodology, turning the retrieval-depth (k) choice from an assumption into an empirically justified decision.
+**USI-RAG: Production RAG Chatbot**
+*Tech stack: Python · LangChain · ChromaDB · Ollama · Docker Compose · Cloudflare Tunnel*
+A publicly deployed chatbot answering visitor questions over a structured personal knowledge corpus. Every retrieval change is gated by a 27-case golden evaluation set; controlled A/B testing exposed a silent embedding-tokenizer defect degrading every measurement, and fixing it raised recall@5 from 56% to 70%. Ships behind an audience-filtering and PII-redaction safety gate.
+
+**From-Scratch Local RAG Pipeline**
+*Tech stack: Python · Ollama · nomic-embed-text · numpy*
+A framework-free local RAG pipeline built to turn RAG theory into hands-on implementation. Built a recall@k evaluation harness, then caught the evaluation itself being too permissive: tightening the ground truth dropped apparent recall@1 from 71% to 14%, turning retrieval depth from an assumption into a measured choice.
+
+**USI: Unified Source of Information (Personal Knowledge Corpus)**
+*Tech stack: Python · YAML · Markdown*
+A person-agnostic single-source-of-truth corpus holding identity, skills, projects, and experience as tagged Markdown blocks, ending the drift of maintaining the same facts across a CV, a portfolio site, and an assistant's context. Schema-level audience gating keeps each export to what is appropriate. Powers CV automation, the portfolio site, and the USI-RAG chatbot.
 
 **SIEM Implementation: Security Monitoring & Detection**
-Designed and deployed a working SIEM (Wazuh + Elastic Stack) centralizing log collection, with detection rules, alerting, file integrity monitoring, and host-based intrusion detection, validated against simulated attacks.
+*Tech stack: Wazuh · Elasticsearch · Logstash · Kibana · HIDS · FIM*
+Designed and deployed a working SIEM centralizing log collection, with detection rules, alerting, file integrity monitoring, and host-based intrusion detection, validated against simulated attacks.
 
 **Cybersecurity Assessment & Footprinting (Client Project)**
-External attack-surface mapping through footprinting and OSINT for a small cooperative; delivered a prioritized vulnerability and remediation report and presented it to the client.
+*Tech stack: OSINT · Offensive security · Vulnerability assessment*
+External attack-surface mapping for a small cooperative; delivered a prioritized vulnerability and remediation report and presented it to the client.
 
 **Digital Twin & Animal Tracking App**
-A mobile system keeping a live digital twin of tracked animals across large-scale environments, with two-way communication and an AR layer mapping positions in real space. Built with Kotlin, React Native, Firebase, and A-Frame.
+*Tech stack: Kotlin · React Native · Firebase · A-Frame*
+A mobile system keeping a live digital twin of tracked animals across large-scale environments, with two-way communication and an AR layer mapping positions in real space.
 
 **1:1 Architectural VR Walkthrough (Client Project)**
-Accurate 1:1-scale 3D building models navigable on desktop and in VR (Unity), used by clients to plan interior decoration in a spatially accurate representation of their space.
+*Tech stack: Unity · 3D modelling · Desktop + headset*
+Accurate 1:1-scale 3D building models navigable on desktop and in VR, used by clients to plan interior decoration in a spatially accurate representation of their space.
 
 **Mobile Client-Management App (Cooperative)**
-A React Native + Firebase app letting a cooperative access and manage client information on the go, delivered end to end.
+*Tech stack: React Native · Firebase*
+A mobile app letting a cooperative access and manage client information on the go, delivered end to end.
 
 **Sign Language Recognition: Image-to-Text (Academic)**
-A computer-vision system reading sign-language gestures from images and converting them to text at 98% classification accuracy (Python).
+*Tech stack: Python · Computer vision · ML*
+A computer-vision system reading sign-language gestures from images and converting them to text at 98% classification accuracy.
 
 **CNN Match Classification: League of Legends (Academic)**
+*Tech stack: Python · CNNs · Transfer Learning · Optuna*
 A multiclass-multilabel CNN over spatial heatmap images predicting match outcome, player role, and duration; compared single-input, per-output, Transfer Learning, and Optuna-optimized architectures.
 
 **Further Academic ML & Computing**
+*Tech stack: Python · YOLO · RNNs · MATLAB · SPSS*
 YOLO multi-class object detection at scale; RNN sequence prediction; MATLAB physics and mathematics simulations; SPSS statistical analysis across research cases.
 
 **Game Design & Development and Maker Practice**
-Independent multi-engine game development (Unity, Godot, Blender, VRChat SDK) with published content, plus an ongoing home 3D modelling and printing practice for rapid prototyping.
+*Tech stack: Unity · Godot · Blender · VRChat SDK · FDM printing*
+Independent multi-engine game development with published content, plus an ongoing home 3D modelling and printing practice for rapid prototyping.
 
 ---
 
 ## Other Relevant Experience
 
-- International exposure: travel across 16+ countries, training courses in Finland, Poland, and Portugal, and six months living in Poland (Erasmus+).
+- International exposure: travel across 20+ countries (Africa, America, Asia, Europe), training courses in Finland, Poland, and Portugal, and six months living in Poland (Erasmus+).
 - Founded a student-run radio station using governmental funds for school-improvement, sourced, and set up the equipment.
 - 18+ years of Scouting across national and international activities, including World Scout Jamboree participation.
-- Scout experience for 18+ years; volunteer work across forest conservation, food distribution, and animal welfare; community ambassador roles (Unlimited Future, Quinta da Carvalheira).
+- Recurring Banco Alimentar food-bank volunteer (2018–2025); further volunteer work across forest conservation and animal welfare; community ambassador roles (Unlimited Future, Quinta da Carvalheira, Erasmus Student Network).
 - Personal maker practice: home-based 3D modelling and printing for rapid prototyping and iterative problem-solving.
 - Writing: two personal blogs on personal growth/psychology and creative writing.
+- Personal interest in financial markets and portfolio management: equities and options trading, margin accounts, and risk/position sizing via a live brokerage account (surface only for finance-adjacent roles).
 
 ---
 

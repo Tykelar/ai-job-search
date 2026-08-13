@@ -64,7 +64,13 @@ Read the three packs, then compare against and update each of these targets:
    headline rules, voice notes from `usi-strategy.md`). Do not touch the framework's
    generic writing rules above that section.
 5. **`applications/master_cv.md`** — the curated master CV content bank (CV-voice bullet / skill /
-   project wording). Reconcile **facts only** against the packs: dates, metrics, job
+   project wording). **Coverage audit first:** diff the corpus's block list against this bank and
+   report any cv-audience block with no entry here — a `featured: true` block missing from the bank
+   is always a defect. Reconciling facts inside existing entries is not enough; whole projects have
+   gone missing that way. **Project entries are three lines** (title, `*Tech stack: a · b · c*`,
+   description): keep the stack line in sync with the USI block's `stack` frontmatter, keep it to
+   one rendered line, and never let the stack be repeated in the title or description.
+   Then reconcile **facts only** against the packs: dates, metrics, job
    titles, company names, degree/thesis details, language levels, and whole added/removed
    entries. **Preserve the approved CV-voice phrasing** — this file is a curated
    presentation, not a mechanical dump of the packs, so never overwrite a well-worded

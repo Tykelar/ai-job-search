@@ -48,12 +48,15 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 
 ### Technical Skills
 - **Primary:** Python, process re-engineering & Lean Software Development, Playwright/e2e test architecture, GitLab CI pipeline optimization, AI integration (LLM agents, RAG, chatbots, prompt engineering)
-- **Secondary:** TypeScript/JavaScript, SQL, MATLAB, C# (Unity), React Native, computer vision (CNNs, YOLO, Transfer Learning), local LLMs (Ollama)
+- **Secondary:** TypeScript/JavaScript, SQL, MATLAB, C# (Unity), React Native, computer vision (CNNs, YOLO, Transfer Learning), local LLMs (Ollama, Qwen), RAG/vector search (LangChain, Chroma)
 - **Domain:** engineering effectiveness/DevEx, QA & delivery infrastructure, immersive tech (VR/AR, digital twins, 3D printing), cybersecurity (SIEM/Wazuh+ELK, OSINT, vulnerability assessment)
-- **Software:** Playwright, Cypress, GitLab CI, Unity, Godot, Blender, VTK, Ollama, Wazuh/ELK, SPSS, MS Project, Microsoft 365
+- **Software:** Playwright, Cypress, GitLab CI, Unity, Godot, Blender, VTK, Ollama, LangChain, ChromaDB, OpenClaw, Docker/Docker Compose, Cloudflare Tunnel, UiPath, Wazuh/ELK, SPSS, MS Project, Microsoft 365
 
 ### Certifications
 - None recorded in the USI corpus (add there if obtained, then re-run /sync-usi)
+
+### Personal Interests (non-professional)
+- Financial markets, trading & portfolio management (equities, options, margin) and crypto/blockchain - personal interests, not credentials. Surface only for finance/fintech/Web3-adjacent roles or conversations.
 
 ### Publications
 - Henriques, J. P. N. (2026). *Lean-Driven QA and CI/CD Re-Engineering Towards AI-Ready Infrastructures.* MSc thesis, Polytechnic University of Leiria (reviewer: Prof. Ricardo Gomes). 18/20.
@@ -66,8 +69,13 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - **Ownership from idea to reality** - starts things from scratch and carries them to operational (cooperative, pipeline, physical spaces)
 - **Systems-level thinking** - looks at how the whole fits together; root-cause-first problem solving
 - **Strengths:** initiative & autonomy, fast learning & resilience, leadership & team coordination, communication with technical and non-technical stakeholders, adaptability across digital and industrial contexts
-- **Growth areas:** formal Lean/Six Sigma certification, Power BI, deeper DevOps platform tooling, security certifications
+- **Growth areas:** formal Lean/Six Sigma certification, Power BI, deeper DevOps platform tooling, security certifications, portfolio-ready VR/AR case studies
 - **Thrives in:** environments with autonomy and end-to-end ownership, continuous-improvement culture, cross-functional work
+
+### Flagship Projects (USI `featured: true` - lead with these)
+- **USI-RAG** - publicly deployed production RAG chatbot (LangChain, Chroma, Ollama, Docker): 27-case golden eval set, found an embedding-tokenizer defect (chunk recall@5 56%→70%), two-layer PII/audience safety gate. The strongest AI-engineering evidence in the profile
+- **Lean-Driven QA & CI/CD Re-Engineering Towards AI-Ready Infrastructures** - MSc thesis (18/20)
+- **Big Data Analysis & Representation: NO2 Air Pollution in VR** - BSc final project (17/20)
 
 ### What Excites You
 - Re-engineering how engineering teams deliver: finding waste, shortening feedback loops, building quality in
@@ -121,6 +129,7 @@ After creating or updating a CV or cover letter, re-read the generated file and 
 - [ ] Nice-to-have requirements are engaged in the cover letter where there is a match
 
 ### Fidelity (CV)
+- [ ] **Every project entry carries its mandatory one-line `Tech stack:` subtitle** (`\cvproject{Title}{Tech stack}{Description}` - three args). Stack items are selected from the master's stack line for that project (a subset is fine, inventions are not), separated by ` · `, and the rendered line must never wrap to two lines - drop items rather than wrap. The stack is never repeated in the project title or description
 - [ ] **Skill rows, projects, education lines, and work headers are exact copies of lines in `applications/master_cv.md` / `applications/main_example.tex`.** Experience bullets are verbatim-first: each traces to one specific master bullet, either copied exactly or lightly rephrased for role fit with **identical facts, metrics, and scope** (no new claims, no escalated numbers, no merged achievements). Invented lines with no master counterpart are violations (the About Me paragraph is the only fully generative surface). Structural wording problems get fixed in the USI corpus + `/sync-usi`, never in the tailored copy.
 
 ### Consistency
@@ -141,6 +150,7 @@ After creating or updating a CV or cover letter, re-read the generated file and 
 Both documents MUST be compiled and visually inspected via the Read tool on the PDF output. "Looks fine in the .tex" is not acceptable - LaTeX page-break decisions are unpredictable. Iterate until these all pass:
 - [ ] CV compiled with **lualatex** (the compact template loads the system Carlito font via fontspec; pdflatex cannot). Cover letter compiled with **xelatex** (cover.cls requires fontspec).
 - [ ] **CV is exactly 2 pages** - not 1, not 3 - with page 1 ending at Languages and page 2 starting at Skills
+- [ ] **No wrapped `Tech stack:` line** - inspect every project entry in the PDF (or `pdftotext -layout`, where a wrap shows as a continuation line before the description); a stack line spilling onto a second line is a failure, fixed by dropping items
 - [ ] **No orphaned `\cvjob` headers** - a job header must never sit at the bottom of a page with its bullets spilling to the next (the template's built-in `\needspace` normally prevents this). Fix page overflow/underflow by deselecting/restoring whole master lines, never by rewording; `\enlargethispage{2-3\baselineskip}` may rescue a near-miss trailing spill
 - [ ] **Cover letter is exactly 1 page** - signature block must fit with the body, never overflow
 - [ ] **Cover letter bullet font matches body font** - `\lettercontent{}` must not wrap `\begin{itemize}...\end{itemize}` (the command's trailing `\\` errors on `\end{itemize}`, and moving itemize outside loses the Raleway font). Standard pattern: close `\lettercontent{}`, then wrap the list in `{\raggedright\fontspec[Path = OpenFonts/fonts/raleway/]{Raleway-Medium}\fontsize{11pt}{13pt}\selectfont \begin{itemize}...\end{itemize}\par}`

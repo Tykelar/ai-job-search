@@ -1,5 +1,5 @@
 ---
-framework_version: 1.0.0
+framework_version: 1.1.0
 ---
 
 # Candidate Profile
@@ -74,8 +74,9 @@ Malta. Early consulting role abroad, research and business outreach.
 <!-- Full write-ups in documents/usi/usi-content.md; select per role -->
 - **Niche-Field SaaS Marketing & Admin Platform** (solo, end-to-end): multi-tenant SaaS. pnpm monorepo, React+Vite, Express serverless on Vercel, PostgreSQL/Drizzle, Zod-driven end-to-end type safety, stateless JWT auth, Cloudflare R2 presigned uploads, Upstash rate limiting, Playwright e2e suite
 - **Shared Expense Tracker** (solo): serverless PWA. Supabase + Postgres Row-Level Security (no custom server), Google OAuth, custom ~60-line reactive layer over useSyncExternalStore, hash routing, Workbox PWA, Vercel static hosting
-- **Minimal Local RAG System** (Python + Ollama): from-scratch ~110-line local RAG over own project docs; built recall@k eval harness and caught own evaluation being too permissive (recall@1 71% → true 14% after chunk-level ground truth)
-- **USI - Unified Source of Information**: person-agnostic single-source-of-truth corpus (tagged Markdown blocks, audience gating, Python export API) powering CV automation, portfolio site, and AI context packs
+- **USI-RAG - Production RAG Chatbot** (Python, LangChain, ChromaDB, Ollama/qwen3.5, Docker Compose, Cloudflare Tunnel) — **USI flagship (`featured: true`)**: publicly deployed "Ask about me" chatbot over the USI corpus; v2 rebuild of the from-scratch v1 onto a production stack, kept comparable row-by-row. LangChain LCEL chain, persistent Chroma/HNSW store, Markdown header-aware chunking plus a frontmatter "fact-card" splitter, dependency-free stdlib HTTP server (CORS allow-list, per-IP rate limiting, unsafe-config startup gate). 27-case golden eval set with recall@1/3/5/10 + MRR in a public results log; found an embedding-tokenizer defect collapsing capitalized tokens to one vector (**chunk recall@5 56% → 70%**, strict 48% → 70%). Two-layer safety gate: block-level audience filtering + line-level PII redaction verified against the live index every deploy
+- **From-Scratch Local RAG Pipeline** (Python + Ollama, v1, frozen baseline): ~110-line framework-free local RAG over own project docs; direct Ollama REST, nomic-embed-text with asymmetric prefixes, numpy cosine store; built recall@k eval harness and caught own evaluation being too permissive (recall@1 71% → true 14% after chunk-level ground truth)
+- **USI - Unified Source of Information**: person-agnostic single-source-of-truth corpus (tagged Markdown blocks, canonical YAML frontmatter, audience gating public/cv/ai-context/private, Python export API) powering CV automation, portfolio site, AI context packs, and USI-RAG
 - **Big Data VR Visualization** (BSc final project): NO2 air-pollution VR visualization (VTK, OpenXR, Unity), user study VR vs desktop. Supervisor: Prof. Paulo Dias (IRIS group, IEETA, University of Aveiro)
 - **Digital Twin & Animal Tracking App**: real-time digital twin of tracked animals with AR spatial view (A-Frame), Kotlin + React Native + Firebase
 - **1:1 Architectural VR Walkthrough**: client-facing 1:1 building models in Unity, desktop + VR
@@ -99,10 +100,12 @@ Malta. Early consulting role abroad, research and business outreach.
 ### AI & Machine Learning
 - LLM integration & AI agents (advanced; agentic workflows, **Claude Code**)
 - CNNs / image classification (advanced); YOLO object detection, RNNs, Transfer Learning, Optuna (working)
-- RAG system design & testing, chatbot/embedded AI chat, local LLM deployment (Ollama, Gemma) (working); prompt engineering (proficient)
+- RAG system design & testing (advanced); RAG/retrieval evaluation methodology - recall@k, golden sets, MRR, A/B testing (advanced)
+- Vector databases (Chroma/HNSW), LangChain (LCEL, retrievers, embedding adapters), chatbot/embedded AI chat, local LLM deployment (Ollama, Gemma, Qwen), personal AI assistant tooling (OpenClaw) (working); prompt engineering (proficient)
 
 ### Process, Quality & Delivery
 - Process analysis/mapping, workflow re-engineering, operational efficiency (advanced); Lean Software Development (advanced); technical-debt diagnosis & remediation (advanced)
+- Process automation / RPA (UiPath) (working)
 - E2e test framework design with Playwright (advanced); test-pyramid design, test-infrastructure restructuring, shift-left quality (advanced); Cypress, API/component testing, flakiness mitigation, seed-driven data (proficient)
 - Pipeline optimization / feedback-loop reduction (advanced); GitLab CI job integration, test parallelization, environment automation scripting (proficient)
 
@@ -113,8 +116,11 @@ Malta. Early consulting role abroad, research and business outreach.
 - Data & analysis: Excel databases, data structuring/reporting, KPI tracking (proficient); SPSS (working)
 - Engineering foundations: physics/maths simulation, engineering drawings, hardware architecture, elementary electrical circuits
 
+### Finance & Markets (personal interest, not a professional credential - surface only for finance/fintech-adjacent roles)
+- Equity & options markets (order types, market mechanics), margin trading & leverage (margin-call risk, hands-on via a live brokerage account), portfolio & risk management (diversification, position sizing) - all working level, self-directed
+
 ### Software & Tools
-Playwright, Cypress, GitLab CI, Bash/Shell, MS Project, Excel/SQL/SPSS, Unity, Godot, Blender, VRChat SDK, VTK, Ollama (local LLMs), OpenClaw, Wazuh/Elastic Stack (ELK), Microsoft 365
+Playwright, Cypress, GitLab CI, Bash/Shell, MS Project, Excel/SQL/SPSS, Unity, Godot, Blender, VRChat SDK, VTK, Ollama (local LLMs, Gemma/Qwen), LangChain, ChromaDB, OpenClaw, Docker/Docker Compose, Cloudflare Tunnel, UiPath, Wazuh/Elastic Stack (ELK), Microsoft 365
 
 ## Impact Metrics (quantified, verbatim-safe)
 | Metric | Outcome | Source |
@@ -124,6 +130,9 @@ Playwright, Cypress, GitLab CI, Bash/Shell, MS Project, Excel/SQL/SPSS, Unity, G
 | ~30% | reduction in time consumed via task distribution + handover redesign | Glartek |
 | up to 20% | handling/distribution efficiency gain in warehouse process optimization | Airking |
 | 98% | classification accuracy, sign-language recognition | BSc capstone |
+| 56% → 70% | retrieval chunk recall@5, after diagnosing and fixing an embedding-tokenizer defect | USI-RAG |
+| 27 | case golden eval set gating every retrieval change | USI-RAG |
+| 0 | redacted PII spans leaked into a live public index, verified on every deploy | USI-RAG |
 
 ## Community & Involvement
 - **Scouting, 18+ years** (national and international; World Scout Jamboree, Japan)
@@ -132,7 +141,7 @@ Playwright, Cypress, GitLab CI, Bash/Shell, MS Project, Excel/SQL/SPSS, Unity, G
 - **Erasmus+**: training in Finland, Poland, Portugal; lived in Poland 6 months; ESN event organization
 - **Quinta da Carvalheira eco project**: construction, land work, community building
 - **Unlimited Future**: student ambassador (NGO bridging students and companies)
-- **Other:** travel across 16+ countries; workshops in project/time management, IT, AI, physics, leadership; two personal blogs (themadmanmaidmachine.blogspot.com, emotionsandmomentum.blogspot.com); personal interest in crypto/blockchain (surface only for Web3-adjacent roles)
+- **Other:** travel across 20+ countries (Africa, America, Asia, Europe); workshops in project/time management, IT, AI, physics, leadership, career development; misc volunteering (forest cleaning/replanting, food distribution, animal-shelter support); small projects for businesses/institutions (architectural model building/testing, SaaS delivery for small clients); two personal blogs (themadmanmaidmachine.blogspot.com, emotionsandmomentum.blogspot.com); personal interest in crypto/blockchain (surface only for Web3-adjacent roles) and financial markets/trading incl. margin (surface only for finance-adjacent roles - see Technical Skills)
 
 ## Publications
 1. Henriques, J. P. N. (2026). *Lean-Driven QA and CI/CD Re-Engineering Towards AI-Ready Infrastructures.* MSc thesis, Polytechnic University of Leiria. Reviewed by Prof. Ricardo Gomes. Graded 18/20.

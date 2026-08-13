@@ -1,5 +1,5 @@
 ---
-framework_version: 2.1.0
+framework_version: 2.2.0
 ---
 
 # CV Template and Tailoring Guide (compact style, verbatim-first selection)
@@ -46,9 +46,29 @@ Semantic commands (defined in the master's preamble — a tailored CV never need
 \cvedu{Degree}{Institution}{Sep 2024 – Jul 2026}  % one bold education line
 \cvedusub{Thesis: Title (18/20)}                  % italic thesis/final-project line under a \cvedu
 \cvskill{Category}{item · item · item}            % one skills row
-\cvproject{Title}{Description paragraph.}         % project entry
+\cvproject{Title}{Tech stack}{Description.}       % project entry - stack arg is MANDATORY, see below
 \cvrule                                           % bare separator rule (used above About Me, which has no heading)
 ```
+
+### The mandatory project tech-stack line
+
+`\cvproject` takes **three** arguments. Argument 2 renders as an italic one-line
+`Tech stack: a · b · c` subtitle between the bold title and the description. Rules:
+
+- **Never omit it.** Every project entry has one; a two-argument `\cvproject` is a
+  template error, not a shorthand.
+- **One line, always.** Keep the whole line under ~95 characters including the
+  `Tech stack: ` label. If it would wrap, **drop items** (least role-relevant first) —
+  never shrink the font, never let it run to two lines. Verify in the compiled PDF, not
+  the `.tex`.
+- **Items come from the USI block's `stack` frontmatter**, trimmed and reordered for the
+  role. Selecting a subset is expected; inventing a tool that isn't in the block is a
+  fidelity violation.
+- **Separator is ` · `** (the same middot used in skill rows), not commas.
+- **Never repeat the stack in the title or description.** The stack line owns the tooling,
+  so titles carry no `(Python + Ollama)` suffix and descriptions carry no "built with X,
+  Y, and Z" prose. Descriptions say *what the thing is and what came of it*; the stack
+  line says what it was built with.
 
 **Compile with lualatex** (fontspec + system Carlito font; pdflatex cannot load it). Run
 from `applications/` with `-output-directory` into the application folder:
@@ -77,14 +97,15 @@ Selection budgets (tune to fill both pages, never overfull):
 | Airking / IMPACT bullets | 2-3 each |
 | Education | MSc + BSc with their `\cvedusub` thesis/final-project lines (Thesis 18/20; Final Project 17/20); Electrotechnical line OFF by default (only if the JD explicitly requires electrotechnical knowledge) |
 | Skills rows | 6-9, role-relevant first; always keep the tool-name rows (Programming Languages, Tools & Platforms) for ATS |
-| Projects | 3-5, thesis entry first by default (the Projects entries carry the full descriptions; the Education sub-lines carry title + grade) |
+| Projects | 3-5, thesis entry first by default (the Projects entries carry the full descriptions; the Education sub-lines carry title + grade). Every entry needs its mandatory one-line `Tech stack:` subtitle |
 | Other Relevant Experience | 2-4 bullets |
 | References | single fixed line, always last |
 
 **Structural rules (from the legacy workflow):** fixed contact line; no headline; Education
 is one bold line per degree plus its italic thesis/final-project sub-line; always include a
-Projects section; no "Internship" qualifier on the Glartek title; date ranges use an
-**ASCII hyphen**, never an en-dash (see "Date fields must be ASCII ranges" below);
+Projects section, every entry carrying its mandatory one-line `Tech stack:` subtitle;
+no "Internship" qualifier on the Glartek title; date ranges use an **ASCII hyphen**,
+never an en-dash (see "Date fields must be ASCII ranges" below);
 **no em-dashes anywhere**; References never prints referee names or
 contact details — only the fixed available-on-request line.
 
