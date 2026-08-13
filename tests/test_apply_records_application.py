@@ -83,6 +83,12 @@ class ApplyRecordsApplication(unittest.TestCase):
         application there would reproduce the bug this step fixes.
         """
         text = APPLY.read_text(encoding="utf-8")
+        # Fork reconciliation: this fork has not ported #212, so /apply has no
+        # optional application-form artifact and nothing after Step 6b ends the
+        # turn on a question. The invariant is vacuously held; keep the
+        # assertion live so it starts guarding again if #212 is ever ported.
+        if "### Application-Form Fields" not in text:
+            self.skipTest("fork has no optional application-form offer (#212 not ported)")
         self.assertLess(
             text.index("### Step 6b: Record the Application"),
             text.index("### Application-Form Fields"),
