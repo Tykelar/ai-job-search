@@ -38,8 +38,21 @@ The command is **silently optional**: when the destination is not reachable, the
 
 Validate the cheap, local precondition before creating anything external. A run with nothing to sync must exit with **zero side effects** - no database created, no state file written.
 
-1. Read `job_scraper/seen_jobs.json` and `job_search_tracker.csv` (either may be missing).
-2. Select `seen_jobs.json` entries with status `ranked` whose `rank_score` meets the threshold from Step 0. `--all` lifts the threshold entirely.
+1. Read `job_search_tracker.csv` (may be missing). For `job_scraper/seen_jobs.json`, **never `Read` the file** - see *Never read this file into context in full* in `job-scraper/SKILL.md` Step 4. Select the sync set with a script, substituting the Step 0 threshold for `MIN` (use `0` for `--all`):
+
+```bash
+python -c "
+import json,csv,sys
+m=float(sys.argv[1])
+d=json.load(open('job_scraper/seen_jobs.json',encoding='utf-8-sig'))['seen']
+try: t={((r.get('company') or '').strip().lower(),(r.get('role') or '').strip().lower()) for r in csv.DictReader(open('job_search_tracker.csv',encoding='utf-8'))}
+except FileNotFoundError: t=set()
+f=('title','company','url','portal','status','rank_score','rank_verdict','rank_date','location','language_gate','posted_date')
+keep=lambda v:(v.get('status')=='ranked' and (v.get('rank_score') or 0)>=m) or ((v.get('company') or '').strip().lower(),(v.get('title') or '').strip().lower()) in t
+print(json.dumps({k:{x:v.get(x) for x in f} for k,v in d.items() if keep(v)},indent=0))" MIN
+```
+
+2. That filter **is** step 2's selection: status `ranked` at or above the threshold. It additionally keeps **every entry a tracker row matches, whatever its status and score** - not to sync those as ranked matches, but because step 3 matches tracker rows back to their `seen_jobs.json` **key**, and that key is the Key property's dedup anchor (see the property table below). An entry that falls out of the slice falls back to a `<company>_<role>` Key, changing its anchor and duplicating its row on the next sync. Filtering on `ranked`/`applied` status alone is **not** sufficient here: a job the language filter marked `skipped`, or one still sitting at `drafted` in the tracker because `/outcome` has not run, keeps a non-`applied` ledger status while very much belonging to the sync set. Join on the tracker, not on a guess about status. The field list is exactly what steps 3-4 map into database properties; `strengths`/`gaps` are deliberately excluded, since this sync publishes scores and status, not the scoring rationale. If the file is missing, treat the ledger set as empty and continue with tracker rows alone.
 3. Every tracker row joins the sync set (an applied-to job always syncs, ranked or not), matched to `seen_jobs.json` entries case-insensitively on company + role where possible. Tracker rows with no `seen_jobs.json` entry sync too - build their Key as `<company>_<role>` lowercased with underscores.
 4. **Status precedence:** the tracker wins. A job that is `ranked` in `seen_jobs.json` but `interview` in the tracker syncs as `interview`. Jobs only in `seen_jobs.json` keep their stored status.
 5. **If the sync set is empty** (no ranked entries meet the threshold and there are no tracker rows), say "Nothing to sync - run `/scrape` and `/rank` first" (or, when jobs exist but all score below the threshold, say so and suggest `--min-score`/`--all`) and **stop**.

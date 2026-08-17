@@ -1,5 +1,5 @@
 ---
-framework_version: 2.2.0
+framework_version: 2.4.0
 ---
 
 # CV Template and Tailoring Guide (compact style, verbatim-first selection)
@@ -8,16 +8,17 @@ framework_version: 2.2.0
 
 CVs are built by **verbatim-first selection** from a curated master — the content law proven
 over 44 legacy applications (`build-cv-usi`), running on the LaTeX pipeline, with a
-bounded-rephrasing allowance for experience bullets (added 2026-07-23):
+bounded-rephrasing allowance for experience bullets (added 2026-07-23) and the composed
+Core Competencies section restored from the original framework (2026-08-14):
 
 - **Master CV (LaTeX):** `applications/main_example.tex` — the FULL curated content bank
   rendered in the compact style. It is simultaneously the LaTeX skeleton and the verbatim
-  content source. It compiles to ~4 pages by design; only tailored CVs have the 2-page rule.
+  content source. It compiles to ~5 pages by design; only tailored CVs have the 2-page rule.
 - **Master content bank (Markdown):** `applications/master_cv.md` — the same content,
   USI-derived, kept in sync by `/sync-usi`. The `.tex` master must always match it line for
   line; if they diverge, the Markdown bank (and behind it the USI corpus) wins.
 - A tailored CV is `main_example.tex` **copied, then reduced**: keep the blocks relevant to
-  the role, delete the rest, reorder within sections. Skill rows, projects, education
+  the role, delete the rest, reorder within sections. Projects, education
   lines, and work headers stay **character-for-character identical** to the master.
 - **Experience bullets are verbatim-first**: keep the master's wording unless a light
   rephrase genuinely improves role fit (tightening, aligning to the posting's
@@ -26,8 +27,11 @@ bounded-rephrasing allowance for experience bullets (added 2026-07-23):
   achievements. Verbatim remains the default when rephrasing adds nothing.
 - Structurally wrong wording is a master problem: fix it in the USI corpus, re-run
   `/sync-usi`, regenerate — never patch the tailored copy.
-- The only fully generative surface: the **About Me paragraph**. The CV header carries no
-  headline — name + fixed contact line only.
+- **Two surfaces are composed per role, never copied:** the **About Me paragraph** (fully
+  generative) and the **Core Competencies** section (5-7 bullets written for the posting,
+  from master material — see below). Core Competencies **replaces** the master's Skills
+  section; a tailored CV never prints both. The CV header carries no headline — name +
+  fixed contact line only.
 
 **Output file:** `applications/<NN>_<company>_<role>/CV_JoseHenriques_<company>_<role>.tex`
 
@@ -45,8 +49,10 @@ Semantic commands (defined in the master's preamble — a tailored CV never need
 \cvcontext{One-line italic context under a work header.}
 \cvedu{Degree}{Institution}{Sep 2024 – Jul 2026}  % one bold education line
 \cvedusub{Thesis: Title (18/20)}                  % italic thesis/final-project line under a \cvedu
-\cvskill{Category}{item · item · item}            % one skills row
+\cvskill{Category}{item · item · item}            % one row of the MASTER-ONLY skills bank
+\cvcomp{Label}{Concrete items. What it buys.}     % one Core Competencies bullet (inside itemize)
 \cvproject{Title}{Tech stack}{Description.}       % project entry - stack arg is MANDATORY, see below
+\cvmoreprojects{short list. Portfolio link.}      % mandatory closing "Also built:" line
 \cvrule                                           % bare separator rule (used above About Me, which has no heading)
 ```
 
@@ -70,6 +76,40 @@ Semantic commands (defined in the master's preamble — a tailored CV never need
   Y, and Z" prose. Descriptions say *what the thing is and what came of it*; the stack
   line says what it was built with.
 
+### The four-project floor (hard)
+
+**Selected Projects always carries at least four full `\cvproject` entries**, not counting
+the `Also built:` line (2026-08-15). Three-entry builds were shipping while page 2 still had
+room: the master carries sixteen projects, and a reader who only sees three detailed entries
+under-reads the breadth. Consequences:
+
+- **Four is a floor, not a target.** Five or six is better when the page holds them.
+- **The `Also built:` line does not count toward the floor.** It is a catch-all, not a
+  fourth entry.
+- **A fourth project is never the fix for an overfull page 2.** Cut a competency bullet
+  (down to five), trim a value clause, or drop an optional Other-Relevant-Information
+  bullet first. Projects fall below four only if every one of those is exhausted — and a
+  build that lands there should be re-checked, because it usually means the competency
+  bullets ran to three lines each.
+- Deselecting a project still moves it into the `Also built:` line rather than deleting it.
+
+### The mandatory "Also built:" closing line
+
+The section is titled **Selected Projects**, so it has to read as a selection rather than as
+the whole inventory. `\cvmoreprojects` closes it with a one-line catch-all naming what was
+left out — the same move the pre-2026 CVs made with their "More on my GitHub" bullet. Rules:
+
+- **Never omit it.** Every tailored CV has one, directly after the last `\cvproject`.
+- **One rendered line** (two at the absolute limit). Compress each cut project to a short
+  descriptor, not its full title: "a client cybersecurity assessment", not
+  "Cybersecurity Assessment & Footprinting (Client Project)".
+- **Only master projects.** Every item names a project that exists in
+  `applications/master_cv.md` and was *not* selected above. Never a project the master does
+  not carry, and never one already listed above it.
+- **Order by role relevance**, highest first — the reader skims the first two items only.
+- **Close with the portfolio link** (`More at \href{https://tykelar.github.io}{tykelar.github.io}.`)
+  so the reader has somewhere to go.
+
 **Compile with lualatex** (fontspec + system Carlito font; pdflatex cannot load it). Run
 from `applications/` with `-output-directory` into the application folder:
 
@@ -81,12 +121,20 @@ Expected output: `Output written on ... (2 pages, ...)`. Any other page count is
 
 ## Fixed 2-page structure
 
-The master carries a `\newpage` before Skills. Tailored CVs keep it, making the page break
-deterministic:
+The master carries a `\newpage` before Core Competencies. Tailored CVs keep it, making the
+page break deterministic:
 
 - **Page 1:** Header (name + bold contact line, no headline) · About Me (separator rule,
   no heading) · Education · Work Experience · Languages
-- **Page 2:** Skills · Projects · Other Relevant Experience · References
+- **Page 2:** Core Competencies · Selected Projects · Other Relevant Information
+
+There is **no standalone References section** (removed 2026-08-14). Its line —
+`Formal recommendation letter from the CTO of Glartek, available on request; additional
+references on request.` — is now the mandatory first bullet of Other Relevant Information,
+so the CV closes on that section.
+
+The master's `\section{Skills}` block is **deleted outright** in a tailored CV — it is the
+evidence bank Core Competencies is composed from, not a section the CV prints.
 
 Selection budgets (tune to fill both pages, never overfull):
 
@@ -96,20 +144,59 @@ Selection budgets (tune to fill both pages, never overfull):
 | Florescer bullets | 3-4 |
 | Airking / IMPACT bullets | 2-3 each |
 | Education | MSc + BSc with their `\cvedusub` thesis/final-project lines (Thesis 18/20; Final Project 17/20); Electrotechnical line OFF by default (only if the JD explicitly requires electrotechnical knowledge) |
-| Skills rows | 6-9, role-relevant first; always keep the tool-name rows (Programming Languages, Tools & Platforms) for ATS |
-| Projects | 3-5, thesis entry first by default (the Projects entries carry the full descriptions; the Education sub-lines carry title + grade). Every entry needs its mandatory one-line `Tech stack:` subtitle |
-| Other Relevant Experience | 2-4 bullets |
-| References | single fixed line, always last |
+| Core Competencies | 5-7 `\cvcomp` bullets, composed for the posting, highest-relevance first (see below) |
+| Skills bank | 0 rows — the section is deleted, never printed alongside Core Competencies |
+| Selected Projects | **4 minimum**, 4-6 typical, thesis entry first by default (the project entries carry the full descriptions; the Education sub-lines carry title + grade). Every entry needs its mandatory one-line `Tech stack:` subtitle, and the section closes with the mandatory `\cvmoreprojects` line, which does **not** count toward the four |
+| Other Relevant Information | the mandatory references bullet first, then 2-4 optional bullets; always the last section |
+
+Replacing 6-9 dense skill rows with 5-7 competency bullets frees roughly a third of page 2;
+that budget goes to Selected Projects (4-6 rather than 3-5) and the `Also built:` line. The
+compile loop is the arbiter, not the table — except for the four-project floor, which the
+compile loop does not get to overrule.
+
+### Measured starting selection (use this, not the middle of the ranges)
+
+The ranges above are what is *allowed*; this is what actually **filled two pages** in a
+calibrated build (Euronext AI Delivery Engineer, 2026-08-14, lualatex/Carlito, standard
+geometry):
+
+| Page | Selection that filled it |
+|---|---|
+| Page 1 | 3-sentence About Me · MSc + BSc education lines · **7** Glartek bullets · **4** Florescer bullets · **3** Airking bullets · Languages |
+| Page 2 | **5-6** competency bullets held to **2** rendered lines each · **4** project entries · a 1-line `Also built:` line · **4** Other Relevant Information bullets (references bullet + 3 optional) |
+
+Start here and adjust by one line at a time. **Grow into an empty page; never plan to trim
+an overfull one.** Restoring the best line you left out is a single compile, while cutting
+an overfull page takes several rounds, because removing one line changes which line is now
+the lowest-scoring. Calibration notes worth keeping:
+
+- Seven competency bullets at three lines each pushed page 2 onto a third page on their
+  own. Six is the practical ceiling, and only at two rendered lines each.
+- A project entry costs about five rendered lines. Four of them fit **only** if the
+  competency bullets are held to two lines each — so budget the competency bullets around
+  the four projects, not the other way round. If page 2 is tight, the competency section
+  gives way first: six two-line bullets, then five.
+- "Two lines each" means two **full** lines. A bullet running one line plus a three-word
+  stub costs the same vertical space as a two-line bullet while saying a third less, so the
+  widow sweep in the compile loop is what makes these numbers hold in practice.
+- The original calibration (six 2-3 line competency bullets, three projects, a 2-line
+  `Also built:`) is what the four-project floor supersedes. It filled the page, but it
+  spent the space on competency prose rather than on evidence.
+
+These numbers assume the standard compact template. A custom template registered through
+`/add-template` needs its own calibration row.
 
 **Structural rules (from the legacy workflow):** fixed contact line; no headline; Education
 is one bold line per degree plus its italic thesis/final-project sub-line; always include a
-Projects section, every entry carrying its mandatory one-line `Tech stack:` subtitle;
+Selected Projects section carrying **at least four full `\cvproject` entries**, every entry
+with its mandatory one-line `Tech stack:` subtitle and the section closing with
+`\cvmoreprojects` (which does not count toward the four);
 no "Internship" qualifier on the Glartek title; date ranges use an **ASCII hyphen**,
 never an en-dash (see "Date fields must be ASCII ranges" below);
-**no em-dashes anywhere**; References never prints referee names or
+**no em-dashes anywhere**; the references bullet never prints referee names or
 contact details — only the fixed available-on-request line.
 
-## About Me (the only generative content)
+## About Me (fully generative)
 
 Write it fresh for the role, anchored in the master's paragraph as the voice/quality
 baseline (adapt, don't invent a new story):
@@ -120,11 +207,72 @@ baseline (adapt, don't invent a new story):
   `Get to know me better \href{https://tykelar.github.io}{here}!`
 - Lead with the most role-relevant point, then close with the broader profile
   (systems-level breadth) as context.
+- **No widow line.** In the compiled PDF, the paragraph's last rendered line must not be a
+  three-word stub. Because the mandatory closing sentence is fixed verbatim, trim the
+  sentence before it until the paragraph closes on a full line.
 - Match the role's lead content: Process / Engineering-Effectiveness roles → Glartek
   re-engineering + outcomes; AI Automation → AI agent/integration work (name **Claude
   Code** where agentic tooling is mentioned); QA / CI → Glartek outcomes + process
   (respect the QA-framing suppression rule in CLAUDE.md); VR / AR → BSc final project +
   immersive; Ops / Process → efficiency outcomes + cross-functional work.
+
+## Core Competencies (the second composed surface)
+
+The section restored from the original framework in place of the raw Skills bank. It opens
+page 2, so it is the first thing a reader sees after the experience — it has to answer
+"what is this person for?" in six lines.
+
+**How to build it** (the original framework's rules, unchanged):
+
+- **Reorder and emphasize based on the role. Use bold category labels.**
+- **List 5-7 key competencies in bullet format, tailored to the specific job.** For each
+  competency, briefly explain how it adds value to the position.
+- **Use the posting's own core term in the matching bullet's bold label when it truthfully
+  applies** — ATS and skim-reading hiring managers match literally, and "MLOps" in a
+  heading outperforms a paraphrase like "ML Deployment".
+
+**How it renders here** (the compact-template adaptation):
+
+```latex
+\section{Core Competencies}
+
+\begin{itemize}
+\cvcomp{Label}{Concrete items, comma-separated. Then one clause on what it buys this role.}
+...
+\end{itemize}
+```
+
+- **Body = concrete first, value second.** Name specific skills, frameworks, tools, and
+  metrics — the same items the Skills bank carries — then close with a short clause on what
+  the competency does for *this* role. Abstract competency prose with no tool names in it
+  is a failed bullet: it loses the ATS surface the Skills bank used to provide.
+- **Two rendered lines per bullet** (three only where the content genuinely earns it),
+  comma-separated (not the ` · ` middot, which belongs to skill rows and stack lines).
+- **No widow lines.** A bullet whose last rendered line carries three words or fewer — or
+  fills less than about a quarter of the text width — is spending a full line height on
+  almost nothing. Page 2 typically holds five or six competency bullets, so two widows cost
+  roughly a whole project entry. Fix by **cutting words from the value clause** until the
+  bullet closes on the previous line: drop hedges ("which allows me to", "helping to"),
+  collapse "X and Y" pairs to whichever is stronger, and cut the value clause to a single
+  short phrase. Never fix a widow by padding the bullet out to fill the line, and never by
+  deleting a concrete tool name — those carry the keywords, so the value clause is always
+  what gives way. Widows are only visible in the compiled PDF; check every bullet there.
+- **Cover the tooling.** Between them, the 5-7 bullets must carry the concrete tool and
+  language names a parser looks for (Python, Playwright, GitLab CI, Docker, LangChain, and
+  so on). With the Skills bank gone, these bullets are the CV's whole keyword surface, so
+  check coverage here deliberately in step 5d rather than assuming it.
+- **Every named tool, method, and metric must trace** to `applications/master_cv.md` /
+  `applications/main_example.tex` or to `01-candidate-profile.md`. What is free is the
+  composition: which items group under which label, how the label is worded, what the value
+  clause says, and the ordering. What is not free is inventing a tool, escalating a metric,
+  or claiming a depth of experience the master does not support.
+- **No overlap with a selected experience bullet's own claim.** If a competency bullet and a
+  Glartek bullet would say the same thing in the same words, the competency bullet is the
+  one that changes — it abstracts, the experience bullet stays concrete evidence.
+- **Respect the QA-framing suppression** in CLAUDE.md: for a non-QA role, a testing
+  competency never leads and never carries the words "QA Engineer".
+- The master's worked example (`applications/main_example.tex`) is **calibration, not
+  content** — a tailored CV rewrites all of its bullets for its own posting.
 
 ## Glartek bullet ordering (default / general)
 
@@ -136,21 +284,25 @@ follows the role, but for general or non-QA roles the QA detail never displaces 
 impact/AI bullets. Ordering is always a selection operation; any wording change stays
 within the bounded-rephrasing rule.
 
-## Keywords: matched by selection first
+## Keywords: matched by composition and selection
 
-Surface the master skill row or bullet that already carries the posting's term. A selected
-experience bullet may be lightly retermed to the posting's exact vocabulary where
-truthfully equivalent (the posting's tool/method name for the master's synonym — never a
-claim the master line does not make); skill rows and headings stay verbatim. The master's
-broad Skills section is the ATS keyword surface; the About Me and cover letter (generative)
-are where the posting's vocabulary can be engaged directly, where truthfully applicable.
+**Core Competencies is now the primary keyword surface**, since the dense Skills bank is no
+longer printed. A posting term is covered by (a) putting it in a competency label where it
+truthfully applies, (b) naming it among that bullet's concrete items — drawn from the
+master's skill rows — or (c) surfacing the master experience bullet or project that already
+carries it. A selected experience bullet may be lightly retermed to the posting's exact
+vocabulary where truthfully equivalent (the posting's tool/method name for the master's
+synonym — never a claim the master line does not make); project entries and headings stay
+verbatim. The About Me and cover letter (generative) are where the posting's vocabulary can
+be engaged directly, where truthfully applicable.
 If the profile genuinely has a skill but no master line carries it, that is a
 master-coverage gap: report it, fix it in the USI corpus, re-run `/sync-usi`.
 
 ## Section headings must match the CV's language
 
-Section names (`Education`, `Work Experience`, `Languages`, `Skills`, `Projects`,
-`Other Relevant Experience`, `References`) are literal text in the template (About Me has
+Section names (`Education`, `Work Experience`, `Languages`, `Core Competencies`,
+`Selected Projects`, `Other Relevant Information`) are literal text in the
+template, as is the bold `Also built:` lead-in that `\cvmoreprojects` prints (About Me has
 no printed heading). If the CV
 language (see `CV language` in the candidate profile) were ever not English, translate all
 of them, not just body prose — check explicitly during verification. (Skill-row and bullet
@@ -160,19 +312,50 @@ content is verbatim master content and only changes language if the master does.
 
 1. Compile (command above); confirm exactly 2 pages.
 2. Read the PDF via the Read tool and inspect both pages:
-   - Page 1 ends with Languages; page 2 starts with Skills and ends with References.
+   - Page 1 ends with Languages; page 2 starts with Core Competencies and ends with
+     Other Relevant Information, whose first bullet is the references line. The Skills
+     bank and any standalone References section must be gone entirely.
    - No orphaned `\cvjob` header (built-in `\needspace` normally prevents it).
+   - **Count the project entries: four or more.** Three is a failure even if the page
+     otherwise looks right.
+   - The `Also built:` line is present and renders on **one line** (two at the limit).
+   - **Widow sweep on the composed surfaces.** Look at the last rendered line of every
+     `\cvcomp` bullet and of the About Me paragraph: any that carries three words or fewer
+     gets its value clause cut until the text closes on the previous line. Two widows on
+     page 2 are about one project entry's worth of space. This is a per-build check, not an
+     optional polish — a first draft usually produces two or three of them.
    - No overfull page (content pushed past the `\newpage` or onto page 3) and no page
      ending awkwardly early.
+2a. If the count is wrong, prefer **growing** over shrinking. Starting from the measured
+   selection above, a page that ends early is one compile away from correct; an overfull
+   page needs the cut re-scored after every removal. When a line is borderline, leave it
+   out of the first build and add it back if the page ends early.
 3. Fix by **selection**: deselect whole lines (least relevant first) from an overfull
    page; restore the highest-relevance omitted line to a sparse page. Never fix layout by
    rewording to shrink, tightening spacing, or changing geometry.
    `\enlargethispage{2-3\baselineskip}` is allowed for a near-miss trailing spill on
-   page 2.
+   page 2. Core Competencies is the one exception to "never reword to fit": dropping a
+   competency bullet from 7 to 6, or trimming its value clause, is a legitimate fit tool
+   because the section is composed rather than selected — never below 5 bullets, and never
+   by deleting the concrete tool names that carry the keywords.
+   **Widow-trimming is confined to the two composed surfaces** (About Me, Core
+   Competencies). Master-traced text — experience bullets, project titles and descriptions,
+   education lines — is never reworded to kill a widow; a short trailing line there is
+   fixed by selection or simply lived with, because fidelity outranks density. (The
+   `Tech stack:` and `Also built:` lines have their own one-line rules above.)
+   **Space reclaimed from widows is spent, not banked**: two recovered lines is most of a
+   fifth project entry or an extra Other-Relevant-Information bullet. A page 2 that now
+   ends early is a page 2 with room for more evidence.
+   On an overfull page 2,
+   **Core Competencies gives way before Selected Projects does**: trim value clauses, then
+   drop to five bullets, then cut an optional Other-Relevant-Information bullet, and only
+   then consider a project — which still may not take the section below four entries.
 4. Selection scoring when cutting: keep lines that (a) hit THIS posting's keywords and
    responsibilities, (b) carry unique claims (the quantified >50% / 20% / 30% bullets
    survive), (c) the cover letter depends on. Cut the lowest-scoring line first, regardless
-   of section.
+   of section. When a claim appears in **both** a competency bullet and an experience
+   bullet, cut the competency version — the experience bullet is the more concrete
+   evidence.
 
 ## ATS parseability
 
@@ -186,8 +369,10 @@ if missing, skip the mechanical check with a warning):
 - **Reading order** — single-column, so extraction order matches visual order; verify
   section headings appear in sequence.
 - **Keyword coverage** — match the posting's required/preferred terms against the
-  extraction, in the posting's language. Coverage improves by selection (see above);
-  genuine gaps stay visible and are never stuffed.
+  extraction, in the posting's language. Coverage improves by composition and selection
+  (see above); genuine gaps stay visible and are never stuffed. Check this **harder than
+  before**: with the Skills bank no longer printed, a term the CV used to pick up for free
+  from a 20-item skill row now only lands if a competency bullet names it.
 - **Date ranges parse** — every `\cvjob` and `\cvedu` entry in the extraction shows a start
   *and* an end separated by an ASCII hyphen (see below).
 

@@ -331,7 +331,7 @@ This proactive suggestion step helps users discover career paths they might not 
 Once data collection is complete, generate or finish populating the following files. **For Path A**, the seven skill files are already populated by Step A7; check each before writing and skip if its content is no longer placeholder text.
 
 ### 1. Update `CLAUDE.md`
-Replace all `[PLACEHOLDER]` tokens with the user's actual information. Keep the structure, workflow, and verification checklist intact.
+Replace all `[PLACEHOLDER]` tokens with the user's actual information. Keep the structure, workflow, and verification checklist intact. Also set the **`CV filename slug:`** line in the Identity section — a short, no-space name used in generated filenames (`CV_<slug>_<company>_<role>.tex`), e.g. `FirstLast`. Derive it from the user's name by default (first name + last name, no spaces or accents) and confirm it with them rather than asking a separate question outright.
 
 ### 2. Populate `01-candidate-profile.md` *(Path B and C; skip if Path A populated it)*
 Write the full candidate profile with structured sections: Identity (including Languages, with levels), Education, Professional Experience, Independent Projects, Technical Skills, Publications, Awards, References.
@@ -357,10 +357,11 @@ Create STAR examples from their actual experience (at least 3-4 examples). Path 
 Replace placeholder personal data with their actual name, contact info, and add their education and most recent experience entries.
 
 ### 8. Generate `.claude/skills/job-scraper/search-queries.md`
-Replace all placeholder tokens in the search queries file with the user's actual information from Section 9 (or the equivalent follow-up questions in Path A's Step A7):
+This file is **personal and gitignored** — it is never committed, so every fork gets the same tracked `search-queries.template.md` and generates its own local copy. Copy `.claude/skills/job-scraper/search-queries.template.md` to `.claude/skills/job-scraper/search-queries.md` (if the local file doesn't already exist — if it does, this is a re-run, so update it in place rather than starting over), then replace all placeholder tokens with the user's actual information from Section 9 (or the equivalent follow-up questions in Path A's Step A7):
 - Replace `[YOUR_PRIMARY_ROLE_TYPE]`, `[YOUR_PRIMARY_JOB_TITLE]`, etc. with actual role titles
 - Replace `[YOUR_KEY_SKILL]`, `[YOUR_DOMAIN_KEYWORD_1]`, etc. with actual skills and domain terms
-- Replace `[YOUR_CITY]`, `[YOUR_COUNTRY]`, `[YOUR_REGION]` with actual location
+- Replace `[YOUR_HOME_MARKET]`, `[YOUR_RELOCATION_COUNTRIES]`, `[YOUR_CORE_MARKETS]`, `[YOUR_REGION]`, etc. with actual location and market scope
+- Replace `[YOUR_LANGUAGES_WITH_LEVELS]` with the same values as the `Languages:` line in CLAUDE.md's Identity section, so the two never drift apart
 - Fill in the location filter tiers (ideal, acceptable, borderline, too far) based on commute constraints
 - Organize queries into priority categories matching the user's career direction:
   - Priority 1: Their strongest/most desired role direction

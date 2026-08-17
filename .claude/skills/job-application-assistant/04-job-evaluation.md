@@ -46,6 +46,22 @@ Judge the level comparison the same way you judge everything else in this framew
 
 **Worked example:** a candidate whose Languages table lists Spanish (Native) and English (B1/B2). A posting requiring "fluent Russian" → **FAIL**, Russian isn't declared at all. A posting requiring "fluent English" → **FLAG**, English is declared but "fluent" plausibly exceeds B1/B2 — score and draft the application, but tell the candidate this posting's bar may be a stretch and let them decide. A posting requiring "conversational English" or unspecified English → **PASS**, B1/B2 clears a "conversational" bar cleanly.
 
+## Experience Gate — run before scoring
+
+The ceiling itself is **not** set here - it is a single configurable value in CLAUDE.md's Positioning Rules (currently: exclude postings requiring 3+ years). This section only defines the mechanism, so a fork can change the number in one place without touching this logic. Distinct from the **Experience Match** scoring dimension below: this gate is a hard pass/fail on the posting's *stated minimum requirement*, independent of how well the candidate's actual background matches the role - a posting can pass this gate and still score low on Experience Match, or vice versa.
+
+Read the posting's stated experience requirement **as written**, and identify the **minimum required** years for the role being evaluated - not a "nice to have," not an aspirational range's upper bound, and not a figure that belongs to a different seniority tier the same posting also lists (e.g., a posting with separate Junior/Mid tracks: gate only the track actually being evaluated).
+
+| Posting's stated minimum required experience vs. the CLAUDE.md ceiling | Verdict |
+|---|---|
+| At or above the ceiling, stated as a requirement (e.g. ceiling = 3: "3+ years", "minimum 3 years", "3-5 years") | **FAIL — hard stop.** Do not score, do not draft. Quote the exact requirement line. |
+| Below the ceiling (e.g. ceiling = 3: "1-2 years", "2+ years") | **PASS.** |
+| Mentioned only as "preferred," "a plus," "nice to have," or not stated as a hard requirement at all | **PASS.** Never infer a requirement the posting doesn't actually state as required. |
+
+**Worked example** (ceiling = 3): a posting requiring "3+ years of relevant experience" → **FAIL**. A posting requiring "2-4 years" → **PASS** - the *stated minimum* is 2, below the ceiling, even though the range's upper bound exceeds it; the posting does not require 3+. A posting saying "3+ years preferred, but we'll consider strong junior candidates" → **PASS**, since the hard requirement is waived - note the stretch under Gaps instead. A posting silent on years of experience → **PASS**.
+
+When the requirement is genuinely ambiguous (e.g., a vague "experienced professional" with no number), don't guess a number - treat it as silent and **PASS**, then let the Experience Match dimension below do the qualitative judgment.
+
 ## Scoring Dimensions
 
 Evaluate each job posting against these five dimensions:

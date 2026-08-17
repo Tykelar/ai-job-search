@@ -255,7 +255,7 @@ If you prefer editing files directly instead of using `/setup`:
 | `04-job-evaluation.md` | Skill match areas, career goals, motivation filters |
 | `05-cv-templates.md` | Profile statement templates for different role types |
 | `07-interview-prep.md` | Your STAR examples from actual experience |
-| `search-queries.md` | Job search queries for your skills and location |
+| `search-queries.md` | Job search queries for your skills and location — generated from `search-queries.template.md`, gitignored (personal to your fork, never committed) |
 
 ### Updating your search queries
 

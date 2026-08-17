@@ -152,8 +152,19 @@ Update the matched row's `status` column using the canonical spellings from **Tr
 
 The tracker records the application; `seen_jobs.json` still holds the posting as a live candidate. Retire it so `/scrape` and `/rank` stop circulating a job that is already spoken for.
 
-1. Read `job_scraper/seen_jobs.json`, resolved from the repo root. If the file does not exist, skip this step silently - the application came from outside the scraper.
-2. Find the matching entry: first by posting URL (normalised - trailing slash and query string ignored), then by case-insensitive company + title. If several match (portals do re-list the same job), retire **all** of them.
+1. Locate the matching entries in `job_scraper/seen_jobs.json`, resolved from the repo root. If the file does not exist, skip this step silently - the application came from outside the scraper. **Never `Read` the file** (see *Never read this file into context in full* in `job-scraper/SKILL.md` Step 4); match with a script instead, substituting this application's values for `URL`/`COMPANY`/`TITLE`:
+
+```bash
+python -c "
+import json,sys
+U,C,T=sys.argv[1],sys.argv[2].lower(),sys.argv[3].lower()
+n=lambda u:(u or '').split('?')[0].split('#')[0].rstrip('/').lower()
+d=json.load(open('job_scraper/seen_jobs.json',encoding='utf-8-sig'))['seen']
+print(json.dumps({k:v for k,v in d.items() if (U and n(v.get('url'))==n(U)) or ((v.get('company') or '').lower()==C and (v.get('title') or '').lower()==T)},indent=1))" "URL" "COMPANY" "TITLE"
+```
+
+   A truncating read would return **no match** here, and step 4 below treats "no match" as the normal outside-the-scraper case - so the job would silently stay a live candidate in `/scrape` and `/rank` while looking like a clean run. That is why this lookup is scripted rather than read.
+2. The script matches by normalised posting URL (query string and fragment dropped, trailing slash stripped) and by case-insensitive company + title. If several match (portals do re-list the same job), retire **all** of them.
 3. On each match set `"status": "applied"` and add `"applied_date": "YYYY-MM-DD"` (the date the application was submitted, from the tracker row - not today's date, unless they are the same). Leave `rank_score`, `rank_verdict`, `rank_date`, `portal`, and every other field untouched - the rank history is what `/setup` reads to calibrate scoring against real outcomes.
 4. If no entry matches, say so in one line in Step 6 and move on. A missing entry is normal for applications made outside `/scrape`; it is never a reason to invent one.
 

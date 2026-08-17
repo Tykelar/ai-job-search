@@ -9,21 +9,32 @@
 %% HOW TO BUILD A TAILORED CV (verbatim selection):
 %%   1. Copy this file to applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex
 %%   2. SELECT + REORDER: keep the blocks relevant to the role, delete the rest,
-%%      reorder within each section. Content is verbatim-FIRST: skill rows,
-%%      projects, education lines, and headers stay character-for-character.
+%%      reorder within each section. Content is verbatim-FIRST: projects,
+%%      education lines, and headers stay character-for-character.
 %%      Experience bullets may be LIGHTLY rephrased when it genuinely improves
 %%      role fit (tightening, aligning to the posting's terminology), but facts,
 %%      metrics, and scope stay exactly the master's - no new claims, no
 %%      escalated numbers, no merged achievements. Verbatim stays the default.
-%%      The only fully generative content is the About Me paragraph.
+%%   2a. TWO surfaces are composed per role, never copied: the About Me
+%%      paragraph (fully generative) and the CORE COMPETENCIES section (5-7
+%%      \cvcomp bullets written for THIS posting). Core Competencies REPLACES
+%%      the Skills bank below - a tailored CV prints Core Competencies and
+%%      deletes \section{Skills} entirely. Every tool, method, and metric named
+%%      in a competency bullet must trace to this master or to the candidate
+%%      profile; the composing, labelling, and ordering are what is free.
 %%   2b. EVERY project entry carries a mandatory one-line "Tech stack:" subtitle
 %%      (\cvproject arg 2). Stacks trace to the USI block's `stack` frontmatter,
 %%      trimmed to the most role-relevant items so the line never wraps. Keep it
 %%      under ~95 characters; drop items rather than let it run to two lines.
 %%      Never repeat stack items in the project title or description.
-%%   3. Keep the \newpage before SKILLS: tailored CVs are exactly 2 pages -
-%%      page 1 = About Me / Education / Work Experience / Languages,
-%%      page 2 = Skills / Projects / Other Relevant Experience / References.
+%%   2c. SELECTED PROJECTS closes with a mandatory one-line \cvmoreprojects
+%%      "Also built:" catch-all naming the master projects that were cut, so the
+%%      selection reads as a selection rather than the whole inventory.
+%%   3. Keep the \newpage before CORE COMPETENCIES: tailored CVs are exactly
+%%      2 pages - page 1 = About Me / Education / Work Experience / Languages,
+%%      page 2 = Core Competencies / Selected Projects / Other Relevant
+%%      Information. There is no standalone References section: its line is
+%%      the mandatory first bullet of Other Relevant Information.
 %%   4. The About Me paragraph must END with the verbatim sentence:
 %%      Get to know me better \href{https://tykelar.github.io}{here}!
 %%   5. Self-description in the About Me opening is "Software Engineer" by
@@ -85,7 +96,17 @@
 % Bare blue separator rule (used where a section has no heading, e.g. above About Me)
 \newcommand{\cvrule}{\par\vspace{2pt}{\color{cvblue!55}\rule{\textwidth}{0.5pt}}\par}
 % Skills row: \cvskill{Category}{item · item · item}
+% MASTER-ONLY in tailored CVs: these rows are the evidence bank Core Competencies
+% is composed from, not a section a tailored CV prints.
 \newcommand{\cvskill}[2]{\par{\bfseries #1:} #2\par}
+% Core-competency bullet: \cvcomp{Label}{Concrete items, then what it buys the role.}
+% Used INSIDE an itemize. Composed per role (see header note 2a) - 5-7 bullets,
+% label carries the posting's own core term wherever that is truthful.
+\newcommand{\cvcomp}[2]{\item {\bfseries #1:} #2}
+% Catch-all closing line for Selected Projects: \cvmoreprojects{short list. Portfolio link.}
+% ONE rendered line (two at the absolute most); names only master projects that
+% were not selected above.
+\newcommand{\cvmoreprojects}[1]{\needspace{2\baselineskip}\vspace{2pt}{\bfseries Also built:} #1\par}
 % Project entry: \cvproject{Title}{Tech stack}{Description}
 % The tech-stack line is MANDATORY and must stay on ONE line (keep it under ~95
 % characters including the "Tech stack: " label). Separate items with " · ".
@@ -190,12 +211,36 @@ Computer Engineering MSc and Software Engineer who re-engineers delivery infrast
 Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 
 % ============================================================
-%   PAGE BREAK - tailored CVs keep this so page 2 = Skills onward
+%   PAGE BREAK - tailored CVs keep this so page 2 = Core Competencies onward
 % ============================================================
 \newpage
 
 % ============================================================
-%   SKILLS  (select 6-9 rows per role; keep tool-name rows for ATS)
+%   CORE COMPETENCIES  (COMPOSED PER ROLE - the bullets below are a
+%   WORKED EXAMPLE for a general process/engineering-effectiveness +
+%   AI posting, NOT content to copy. A tailored CV rewrites all of
+%   them for its own posting: 5-7 bullets, bold label carrying the
+%   posting's own core term where truthful, body listing concrete
+%   items drawn from the SKILLS bank below and closing with what the
+%   competency buys THIS role. Every named tool, method, and metric
+%   must trace to this master or to the candidate profile.)
+% ============================================================
+
+\section{Core Competencies}
+
+\begin{itemize}
+\cvcomp{Process \& Delivery Re-Engineering}{Process analysis and mapping, workflow re-engineering, waste identification, and technical-debt diagnosis and remediation under Lean Software Development. Cut total pipeline job time by more than 50\% and supported up to 20\% more features deployed per sprint.}
+\cvcomp{AI Integration \& LLM Engineering}{LLM integration and AI agents (Claude Code), RAG design and evaluation (recall@k benchmarking, golden sets), LangChain, ChromaDB, and local models via Ollama. Shipped AI agent skills, an embedded chatbot, and a RAG system into a production platform.}
+\cvcomp{CI/CD \& Engineering Effectiveness}{Pipeline optimization and feedback-loop reduction, CI job integration for test batteries, test parallelization, environment reproducibility, and containerized deployment (GitLab CI, Docker Compose). Shortens the distance between a commit and trustworthy feedback.}
+\cvcomp{Test Architecture \& Reliability}{End-to-end framework design in Playwright, reusable helpers and utilities, seed-driven test data, flaky-test mitigation, and failure-pattern analysis. Builds quality in early instead of inspecting it in late.}
+\cvcomp{Software Engineering}{Python, TypeScript/JavaScript, SQL, and Shell/Bash across full-stack and automation work, from a multi-tenant SaaS platform to a framework-free RAG pipeline. Delivers end to end: architecture, data model, API, UI, testing, and deploy.}
+\cvcomp{Ownership \& Communication}{Initiative and autonomy, root-cause-first problem solving, and communication with technical and non-technical stakeholders. Founded and ran a cooperative through its full operational lifecycle with no prior institutional support.}
+\end{itemize}
+
+% ============================================================
+%   SKILLS  (SOURCE POOL - the evidence bank Core Competencies is
+%   composed from. A tailored CV DELETES this whole section; it is
+%   never printed alongside Core Competencies.)
 % ============================================================
 
 \section{Skills}
@@ -213,11 +258,12 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 \cvskill{Soft Skills}{Initiative and autonomy · Problem-solving (root-cause-first) · Fast learning and resilience · Leadership and team dynamics · Communication with technical and non-technical stakeholders · Adaptability}
 
 % ============================================================
-%   PROJECTS  (always include; thesis entry first by default;
-%   select 3-5 per role in tailored CVs)
+%   SELECTED PROJECTS  (always include; thesis entry first by default;
+%   select 4-6 per role in tailored CVs, then close with the mandatory
+%   \cvmoreprojects "Also built:" line naming what was cut)
 % ============================================================
 
-\section{Projects}
+\section{Selected Projects}
 
 \cvproject{Lean-Driven QA \& CI/CD Re-Engineering Towards AI-Ready Infrastructures (Master's Thesis)}{CI/CD architecture · QA architecture · Test-suite optimization · Research}{Research into engineering infrastructures that stay scalable, understandable, and ready for AI integration: CI/CD architecture, QA integration, shift-left quality, flakiness dynamics, and toolchain-migration criteria. Directly informed by the Glartek work.}
 
@@ -251,13 +297,24 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 
 \cvproject{Game Design \& Development and Maker Practice}{Unity · Godot · Blender · VRChat SDK · FDM printing}{Independent multi-engine game development with published content, plus an ongoing home 3D modelling and printing practice for rapid prototyping.}
 
+% --- Mandatory closing catch-all. WORKED EXAMPLE: in a tailored CV this line
+% --- names the master projects that did NOT make the selection above, so the
+% --- section reads as a selection. One rendered line; titles compressed to
+% --- short descriptors; never a project absent from this master.
+\cvmoreprojects{a SIEM implementation (Wazuh + ELK), a client cybersecurity assessment, a digital twin with an AR layer, 1:1 architectural VR walkthroughs, academic ML (sign-language recognition, CNN/YOLO), and independent game development. More at \href{https://tykelar.github.io}{tykelar.github.io}.}
+
 % ============================================================
-%   OTHER RELEVANT EXPERIENCE  (select 2-4 in tailored CVs)
+%   OTHER RELEVANT INFORMATION  (closes the CV; select 2-4 of the
+%   optional bullets in tailored CVs. The references bullet is
+%   MANDATORY and always leads the section - it absorbed the old
+%   standalone References section on 2026-08-14. It never prints
+%   referee names or contact details.)
 % ============================================================
 
-\section{Other Relevant Experience}
+\section{Other Relevant Information}
 
 \begin{itemize}
+\item Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.
 \item International exposure: travel across 20+ countries (Africa, America, Asia, Europe), training courses in Finland, Poland, and Portugal, and six months living in Poland (Erasmus+).
 \item Founded a student-run radio station using governmental funds for school-improvement, sourced, and set up the equipment.
 \item 18+ years of Scouting across national and international activities, including World Scout Jamboree participation.
@@ -266,14 +323,5 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 \item Writing: two personal blogs on personal growth/psychology and creative writing.
 \item Personal interest in financial markets and portfolio management: equities and options trading, margin accounts, and risk/position sizing via a live brokerage account (surface only for finance-adjacent roles).
 \end{itemize}
-
-% ============================================================
-%   REFERENCES  (single line; never print referee contact details)
-% ============================================================
-
-\needspace{4\baselineskip}
-\section{References}
-
-Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.
 
 \end{document}

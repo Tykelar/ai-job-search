@@ -25,8 +25,15 @@
     no "built with X, Y, Z" prose. Description = what it is + what came of it.
 
   ROLE UNDER THE HYBRID /apply WORKFLOW (active since 2026-07-23)
-  - This file IS the verbatim-selection master: every tailored-CV line except the About Me
-    paragraph must be an exact copy of a line in here. /apply picks and orders; it never rewords.
+  - This file IS the verbatim-selection master: every tailored-CV line except the two composed
+    surfaces must be an exact copy of a line in here. /apply picks and orders; it never rewords.
+  - THE TWO COMPOSED SURFACES (since 2026-08-14): the About Me paragraph (fully generative) and
+    the CORE COMPETENCIES section (5-7 bullets written for each posting). Core Competencies
+    REPLACES the Skills section on a tailored CV - the Skills bank below is never printed, it is
+    the evidence pool the competency bullets are composed from. Every tool, method, and metric
+    a competency bullet names must trace to this bank or to the candidate profile.
+  - The Projects section prints as SELECTED PROJECTS on a tailored CV and closes with a mandatory
+    one-line "Also built:" catch-all naming the projects that were cut.
   - applications/main_example.tex is this same content rendered in the compact LaTeX template
     (the copy-base for tailored CVs). /sync-usi keeps the two line-for-line identical.
   - See applications/HYBRID_TRIGGER.md and the cv-tailoring-philosophy memory.
@@ -110,6 +117,10 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 ---
 
 ## Skills
+<!-- SOURCE POOL, not a printed section. A tailored CV prints CORE COMPETENCIES instead:
+     5-7 bullets, bold label carrying the posting's own core term where truthful, body
+     listing concrete items drawn from the rows below and closing with what the competency
+     buys THAT role. See the worked example in applications/main_example.tex. -->
 
 **Process, Operations & Continuous Improvement:** Process analysis and mapping · Workflow re-engineering · Operational efficiency · Waste identification and prioritization · Procedure standardization · Task ownership and handover design · KPI design and tracking · Lean Software Development · Technical debt diagnosis and remediation · Continuous improvement (PDCA / Kaizen) · Process automation (RPA, UiPath)
 **QA, Testing & Reliability:** Software QA (manual and automated) · End-to-end test framework design (Playwright) · Reusable test helpers and utilities · Cypress maintenance and extension · API integration testing · Component-level unit testing · Test pyramid design and coverage rebalancing · Flaky test mitigation · Seed-driven test data · Failure-pattern and log analysis · Shift-left quality · Eval and benchmark harness design (golden sets, controlled A/B)
@@ -125,7 +136,9 @@ Portuguese: Native (C2) · English: C2 · Spanish: B1 · French: A1
 
 ---
 
-## Projects
+## Selected Projects
+<!-- Full bank here; a tailored CV selects 4-6 entries under the heading "Selected Projects"
+     and closes with the mandatory one-line "Also built:" catch-all naming what was cut. -->
 
 **Lean-Driven QA & CI/CD Re-Engineering Towards AI-Ready Infrastructures (Master's Thesis)**
 *Tech stack: CI/CD architecture · QA architecture · Test-suite optimization · Research*
@@ -193,8 +206,12 @@ Independent multi-engine game development with published content, plus an ongoin
 
 ---
 
-## Other Relevant Experience
+## Other Relevant Information
+<!-- Closes the CV. The references bullet is MANDATORY and always leads the section - it
+     absorbed the old standalone References section on 2026-08-14. Select 2-4 of the
+     optional bullets below it. Referee names and contact details are never printed. -->
 
+- Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.
 - International exposure: travel across 20+ countries (Africa, America, Asia, Europe), training courses in Finland, Poland, and Portugal, and six months living in Poland (Erasmus+).
 - Founded a student-run radio station using governmental funds for school-improvement, sourced, and set up the equipment.
 - 18+ years of Scouting across national and international activities, including World Scout Jamboree participation.
@@ -202,9 +219,3 @@ Independent multi-engine game development with published content, plus an ongoin
 - Personal maker practice: home-based 3D modelling and printing for rapid prototyping and iterative problem-solving.
 - Writing: two personal blogs on personal growth/psychology and creative writing.
 - Personal interest in financial markets and portfolio management: equities and options trading, margin accounts, and risk/position sizing via a live brokerage account (surface only for finance-adjacent roles).
-
----
-
-## References
-
-Formal recommendation letter from the CTO of Glartek, available on request; additional references on request.

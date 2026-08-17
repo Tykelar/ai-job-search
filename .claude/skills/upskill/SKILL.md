@@ -37,7 +37,19 @@ In targeted mode, derive a slug from the job title and company for the report fi
 1. Read `job_search_tracker.csv`. Extract all rows. The columns are:
    `date, company, sector, role, role_type, channel, status, contact_person, fit_rating, notes, cv_file, cover_letter_file, source`
 2. For each row, note the `role`, `company`, and `fit_rating`. The `fit_rating` column is a 0–100 score where 100 = perfect fit. You will use it to weight gaps — a lower fit rating means the role exposed more gaps.
-3. Read `job_scraper/seen_jobs.json`. Keep entries with `"status": "ranked"` and `rank_score >= 45` — the Moderate Fit floor from `04-job-evaluation.md` (below that, a job is Weak/Poor Fit and would otherwise dominate the heatmap with jobs the user shouldn't chase). For each kept entry, note its `title`, `company`, `rank_score`, and — when present — its recorded `gaps`. An entry with no `gaps` field (ranked before gap persistence existed) is skipped, counted, and reported once in the terminal: *"N ranked jobs were scored before gap persistence and contribute nothing; `/rank --all` re-scores them."* Never back-fill a missing `gaps` field by guessing from the title.
+3. Select the ranked slice of `job_scraper/seen_jobs.json`. **Never `Read` the file** — see *Never read this file into context in full* in `job-scraper/SKILL.md` Step 4. Filter with a script, which is also the only place `gaps` prose enters context (a full read would pull in every entry's, for jobs this mode discards):
+
+```bash
+python -c "
+import json
+d=json.load(open('job_scraper/seen_jobs.json',encoding='utf-8-sig'))['seen']
+f=('title','company','rank_score','gaps')
+s=[{x:v.get(x) for x in f} for v in d.values() if v.get('status')=='ranked' and (v.get('rank_score') or 0)>=45]
+print('no_gaps:',sum(1 for e in s if not e.get('gaps')))
+print(json.dumps([e for e in s if e.get('gaps')],indent=0))"
+```
+
+   The filter keeps `"status": "ranked"` and `rank_score >= 45` — the Moderate Fit floor from `04-job-evaluation.md` (below that, a job is Weak/Poor Fit and would otherwise dominate the heatmap with jobs the user shouldn't chase). For each kept entry, note its `title`, `company`, `rank_score`, and — when present — its recorded `gaps`. An entry with no `gaps` field (ranked before gap persistence existed) is skipped, counted, and reported once in the terminal: *"N ranked jobs were scored before gap persistence and contribute nothing; `/rank --all` re-scores them."* Never back-fill a missing `gaps` field by guessing from the title.
 4. Read `.claude/skills/job-application-assistant/01-candidate-profile.md` to get the candidate's current skills and experience.
 5. Check `upskill/` for the most recent aggregate report file (`report-YYYY-MM-DD.md`) — if one exists, note its date and load it for the diff in Step 8.
 

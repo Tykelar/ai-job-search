@@ -20,6 +20,7 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - **Location:** Leiria, Portugal
 - **Languages:** Portuguese (Native, C2), English (C2), Spanish (B1), French (A1)
 - **CV language:** English
+- **CV filename slug:** JoseHenriques <!-- repo-specific output-filename convention (CV_<slug>_<company>_<role>.tex); not sourced from USI, /sync-usi leaves it untouched -->
 - **Portfolio:** tykelar.github.io · **LinkedIn:** josepedroh · **GitHub:** Tykelar
 - **Status:** Actively job-seeking. MSc completed July 2026 (18/20); most recent role (Glartek) ended June 2026.
 - **Mobility:** Based in Leiria. **Willing to relocate** to Denmark, Norway, Finland, Poland, the Netherlands, Switzerland, or Luxembourg; open to any EU-remote role regardless of country. Relocation willingness may be stated directly in cover letters.
@@ -90,7 +91,8 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 ### Positioning Rules (hard)
 - **QA framing suppression:** never position as a QA Engineer. Glartek title is always "Software Quality Engineer"; QA-adjacent roles default to Software Quality Engineer framing unless the role exclusively targets a dedicated QA Engineer
 - **Headlines:** "Graduate" only when the posting explicitly targets graduate/very-junior hires
-- No deal-breakers recorded in the USI corpus yet (add a meta block there if any exist)
+- **Experience ceiling (deal-breaker, hard):** exclude postings whose stated minimum required experience is **3+ years**. This is the single configurable value for the rule - change only this number to raise or lower the ceiling. Applied structurally by `04-job-evaluation.md`'s Experience Gate (a posting requiring at or above this ceiling is a hard FAIL; a posting silent or below it is a PASS) via `/rank` Step 2/3 and `/apply` Step 1. Do not duplicate this number elsewhere - every consumer reads it from here.
+- No other deal-breakers recorded in the USI corpus yet (add a meta block there if any exist)
 - **Language requirements are not a deal-breaker line.** They are handled structurally from the Languages line above by `04-job-evaluation.md`'s Language Gate (a required-but-undeclared language is a hard FAIL; a declared language at a higher stated bar is a FLAG for José to judge). Do not duplicate them here.
 
 ## Repo Structure
@@ -124,16 +126,21 @@ After creating or updating a CV or cover letter, re-read the generated file and 
 
 ### Targeting
 - [ ] About Me / opening paragraph is tailored to the specific role (not generic)
-- [ ] CV skills and experience bullets are **selected and ordered** to match the job requirements (bullets rephrased only within the bounded rule - see Fidelity below)
+- [ ] Core Competencies is written for this posting - 5-7 bullets, bold labels carrying the posting's own core terms where truthful, bodies naming concrete tools/methods and closing with what each buys the role
+- [ ] CV projects and experience bullets are **selected and ordered** to match the job requirements (bullets rephrased only within the bounded rule - see Fidelity below)
 - [ ] Key job requirements are addressed (with gaps acknowledged where relevant)
 - [ ] Nice-to-have requirements are engaged in the cover letter where there is a match
 
 ### Fidelity (CV)
 - [ ] **Every project entry carries its mandatory one-line `Tech stack:` subtitle** (`\cvproject{Title}{Tech stack}{Description}` - three args). Stack items are selected from the master's stack line for that project (a subset is fine, inventions are not), separated by ` · `, and the rendered line must never wrap to two lines - drop items rather than wrap. The stack is never repeated in the project title or description
-- [ ] **Skill rows, projects, education lines, and work headers are exact copies of lines in `applications/master_cv.md` / `applications/main_example.tex`.** Experience bullets are verbatim-first: each traces to one specific master bullet, either copied exactly or lightly rephrased for role fit with **identical facts, metrics, and scope** (no new claims, no escalated numbers, no merged achievements). Invented lines with no master counterpart are violations (the About Me paragraph is the only fully generative surface). Structural wording problems get fixed in the USI corpus + `/sync-usi`, never in the tailored copy.
+- [ ] **Projects, education lines, and work headers are exact copies of lines in `applications/master_cv.md` / `applications/main_example.tex`.** Experience bullets are verbatim-first: each traces to one specific master bullet, either copied exactly or lightly rephrased for role fit with **identical facts, metrics, and scope** (no new claims, no escalated numbers, no merged achievements). Invented lines with no master counterpart are violations. Structural wording problems get fixed in the USI corpus + `/sync-usi`, never in the tailored copy.
+- [ ] **The two composed surfaces are grounded.** About Me is fully generative from master facts. Core Competencies is composed per role: the grouping, labelling, and ordering are free, but **every tool, method, and metric a competency bullet names traces to a master skill row, experience bullet, project, or the candidate profile** - no invented tools, no escalated metrics, no claimed depth the master does not support
+- [ ] **The master's `\section{Skills}` block is deleted** - it is the evidence bank Core Competencies is composed from, and the two are never printed together
+- [ ] **Selected Projects presents at least 4 full project entries in detail** - four is a hard floor (4-6 typical), and the `Also built:` line does not count toward it. Page-2 overflow is absorbed by Core Competencies and Other Relevant Information before any project is cut
+- [ ] **The `Also built:` line closes Selected Projects** and names only master projects that are not already listed above it
 
 ### Consistency
-- [ ] CV follows the standard 2-page compact format (page 1: About Me / Education / Work Experience / Languages; page 2: Skills / Projects / Other Relevant Experience / References, with the template's `\newpage` before Skills)
+- [ ] CV follows the standard 2-page compact format (page 1: About Me / Education / Work Experience / Languages; page 2: Core Competencies / Selected Projects / Other Relevant Information, with the template's `\newpage` before Core Competencies). There is no standalone References section - its line is the mandatory first bullet of Other Relevant Information, which closes the CV
 - [ ] Cover letter uses cover.cls template and established structure
 - [ ] Tone is consistent across CV and cover letter
 - [ ] No contradictions between CV and cover letter content
@@ -144,12 +151,15 @@ After creating or updating a CV or cover letter, re-read the generated file and 
 - [ ] Agentic coding / AI tooling references mention **Claude Code** by name
 - [ ] Cover letter is addressed to the correct person (or "Dear Hiring Manager" if unknown)
 - [ ] Cover letter fits approximately one page
-- [ ] CV section headings (`\section{...}`) and the References boilerplate line match the CV's language, not left as the English template defaults (see `05-cv-templates.md`)
+- [ ] CV section headings (`\section{...}`) and the references boilerplate bullet match the CV's language, not left as the English template defaults (see `05-cv-templates.md`)
 
 ### Compiled PDF verification (MANDATORY - never skip)
 Both documents MUST be compiled and visually inspected via the Read tool on the PDF output. "Looks fine in the .tex" is not acceptable - LaTeX page-break decisions are unpredictable. Iterate until these all pass:
 - [ ] CV compiled with **lualatex** (the compact template loads the system Carlito font via fontspec; pdflatex cannot). Cover letter compiled with **xelatex** (cover.cls requires fontspec).
-- [ ] **CV is exactly 2 pages** - not 1, not 3 - with page 1 ending at Languages and page 2 starting at Skills
+- [ ] **CV is exactly 2 pages** - not 1, not 3 - with page 1 ending at Languages and page 2 starting at Core Competencies
+- [ ] **At least 4 `\cvproject` entries render in Selected Projects** - count them in the compiled PDF; three is a failure even when the page otherwise looks correct
+- [ ] **No widow lines on the composed surfaces** - no Core Competencies bullet and not the About Me paragraph ends on a rendered line of three words or fewer, since each widow burns a full line height. Fix by trimming the value clause (never a concrete tool name, never by padding to fill), then spend the recovered space on content. Master-traced text (experience bullets, project descriptions, education lines) is never reworded for widows
+- [ ] **No wrapped `Also built:` line** - the Selected Projects catch-all renders on one line (two at the absolute limit), fixed by compressing descriptors rather than by dropping the line
 - [ ] **No wrapped `Tech stack:` line** - inspect every project entry in the PDF (or `pdftotext -layout`, where a wrap shows as a continuation line before the description); a stack line spilling onto a second line is a failure, fixed by dropping items
 - [ ] **No orphaned `\cvjob` headers** - a job header must never sit at the bottom of a page with its bullets spilling to the next (the template's built-in `\needspace` normally prevents this). Fix page overflow/underflow by deselecting/restoring whole master lines, never by rewording; `\enlargethispage{2-3\baselineskip}` may rescue a near-miss trailing spill
 - [ ] **Cover letter is exactly 1 page** - signature block must fit with the body, never overflow
@@ -160,4 +170,4 @@ ATS parsers read the PDF's embedded text layer, not the rendered page. Extract i
 - [ ] CV text layer extracts cleanly - no `(cid:*)` markers, `�` replacement characters, or text visible in the PDF but absent from the extraction
 - [ ] Email appears as **literal text** in the extraction (the compact template prints it as text; a contact detail carried only by an icon or hyperlink is invisible to ATS)
 - [ ] Reading order of the extracted text matches the visual order (single-column stock template is safe; multi-column custom templates are where this breaks)
-- [ ] Posting keywords covered or honestly absent - coverage achieved by **selecting** the master skill rows/bullets that already carry the posting's terms (never by inserting keywords into bullets); missing terms the profile genuinely supports are reported as master-coverage gaps (fix via USI corpus + `/sync-usi`); genuine gaps left visible and **never stuffed**
+- [ ] Posting keywords covered or honestly absent - **Core Competencies is now the CV's keyword surface** (the dense Skills bank is no longer printed), so coverage is achieved by naming the term in a competency label or among its concrete items, sourced from a master skill row, or by selecting the master experience bullet/project that already carries it; never by inserting a keyword the master does not support. Missing terms the profile genuinely supports are reported as master-coverage gaps (fix via USI corpus + `/sync-usi`); genuine gaps left visible and **never stuffed**

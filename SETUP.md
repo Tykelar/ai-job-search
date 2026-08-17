@@ -218,7 +218,7 @@ All three paths produce the same result: fully populated profile files.
 | `05-cv-templates.md` | Profile statement templates for your background |
 | `07-interview-prep.md` | STAR examples from your experience |
 | `applications/main_example.tex` | Your LaTeX CV with actual details |
-| `search-queries.md` | Job search queries for `/scrape` |
+| `search-queries.md` | Job search queries for `/scrape` — generated from `search-queries.template.md`, gitignored (personal to your fork, never committed) |
 
 ### Re-running setup
 
