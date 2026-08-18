@@ -13,7 +13,62 @@ per-file diff commands.
 
 ## [Unreleased]
 
-_Changes landed on `master` since the last release will be listed here._
+### Added
+
+- **`config/gates.md`** - user configuration holding every hard-gate value in one
+  readable file outside the skills tree: work authorization, the Languages table with
+  levels, the experience ceiling, and the authorized-relocation countries with base
+  location and remote scope. It is now the single source of truth those gates read.
+  `/setup` writes it on all three onboarding paths and `/sync-usi` keeps it in sync
+  with the USI corpus.
+- **`/rank` personalization check (Step 1a)** - the run stops when
+  `04-job-evaluation.md` still holds placeholder tokens or a gate table in
+  `config/gates.md` is unfilled. An unpersonalized framework used to score silently:
+  placeholder skill areas and career goals produce plausible-looking numbers across
+  60% of the weighting, and an empty gate table degrades that gate to a PASS on every
+  posting.
+
+### Changed
+
+- **The four hard gates now execute exactly once, in `/rank` Step 2a.** Previously
+  `/rank` ran three gates, `/apply` ran two, and the Eligibility Gate ran nowhere at
+  all. `/scrape` runs none (its geography and body-language filters are collection
+  filters, not gates) and `/apply` re-runs none - a cold posting handed straight to it
+  is reported as **Ungated** at its Step 1c shortlist gate rather than being treated as
+  gate-cleared. Gate order is fixed: eligibility, language, experience, location, with
+  the first FAIL winning.
+- **`04-job-evaluation.md` holds gate mechanisms only, no values.** Thresholds, country
+  lists, and language levels moved to `config/gates.md`; CLAUDE.md,
+  `01-candidate-profile.md`, and `search-queries.md` now point at it instead of
+  restating it. Location dimension 4 is documented as the fourth hard gate, and its
+  blanket relocation-is-a-deal-breaker rule - which contradicted a profile that
+  authorizes relocation to named countries - is now authorized-list logic.
+- **`/rank` hands off to `/apply` without asking it to re-evaluate.** The two specs
+  contradicted each other: `/rank` told `/apply` to re-run its full Step 1 evaluation
+  while `/apply` Step 1 forbade re-scoring a job `/rank` had scored. The triage verdict
+  is now carried forward unchanged, and the depth `/apply` adds is company research
+  after approval.
+- **`/scrape` produces no applications.** Its route into the job-application-assistant
+  drafting workflow is removed; a run ends at `/rank`, or at `/apply` for one named
+  job. That path skipped the numbered application folder, `POSTING.md`, `/apply`'s
+  validation gate, the reviewer pass, and the mandatory PDF/ATS verification. The
+  skill's own drafting steps now use `applications/<NN>_<company>_<role>/` and the
+  profile's CV filename slug, per CLAUDE.md's hard naming rules.
+- **`/scrape` records geographic exclusions.** The geography skip reason was documented
+  in the schema but written by no step; the geographic filter now writes it and Step 5
+  reports the count, alongside the language-exclusion line.
+
+### Fixed
+
+- Language Gate documentation asserted that nothing in the framework tracked language
+  requirements, which had been false since `/rank` began persisting its language-gate
+  verdict. It now also separates the two different language checks: what the *role
+  requires* (the gate) versus what language the *ad is written in* (`/scrape`'s
+  collection filter).
+- An `archived` status was named as a `seen_jobs.json` exit status in two prune rules
+  but was absent from the schema enum and written by nothing; `evaluated` was in the
+  enum and produced by nothing. Both removed.
+- `04-job-evaluation.md` announced five scoring dimensions over a list of six.
 
 ## [1.0.0] - 2026-07-22
 

@@ -68,6 +68,75 @@ class RankCommandSpec(unittest.TestCase):
             "Rule 5 must note that gaps are persisted (Step 4), not just printed (Step 5)",
         )
 
+    def test_step2_gates_before_scoring_with_short_return_shape(self):
+        """A gate FAIL must short-circuit inside the agent, before any scoring.
+
+        04-job-evaluation.md defines the gates as 'do not score' hard stops.
+        Before this was pinned, Step 2 demanded scores/strengths/gaps for every
+        job unconditionally and the vetoes were only applied in Step 3, so every
+        deal-breaker posting was fully scored and stored before being discarded.
+        """
+        sections = _sections(COMMAND.read_text(encoding="utf-8"))
+        step2 = next(v for k, v in sections.items() if k.startswith("Step 2"))
+        self.assertIn(
+            '"status": "vetoed"',
+            step2,
+            "Step 2 must define a short 'vetoed' return shape for gate failures",
+        )
+        self.assertIn(
+            "before any scoring",
+            step2,
+            "Step 2 must state that gates run before scoring work begins",
+        )
+        for field in ('"scores"', '"strengths"', '"gaps"'):
+            self.assertNotIn(
+                field,
+                step2.split('"status": "vetoed"')[1].split("```")[0],
+                f"the vetoed return shape must not carry {field}",
+            )
+
+    def test_step3_does_not_rescore_vetoed_jobs(self):
+        sections = _sections(COMMAND.read_text(encoding="utf-8"))
+        step3 = next(v for k, v in sections.items() if k.startswith("Step 3"))
+        self.assertIn(
+            "never enter the ranking",
+            step3,
+            "Step 3 must pass vetoed jobs through rather than scoring them",
+        )
+
+    def test_step4_writes_vetoed_jobs_as_skipped_with_reason(self):
+        """A veto must leave the pool, or --all re-fetches it forever."""
+        sections = _sections(COMMAND.read_text(encoding="utf-8"))
+        step4 = sections.get("Step 4: Update State", "")
+        self.assertIn('"status": "skipped"', step4)
+        self.assertIn('"skip_reason"', step4, "Step 4 must record which gate vetoed the job")
+        self.assertIn('"skip_note"', step4, "Step 4 must record the quoted requirement line")
+
+    def test_vetoed_jobs_are_excluded_from_future_runs(self):
+        sections = _sections(COMMAND.read_text(encoding="utf-8"))
+        text = COMMAND.read_text(encoding="utf-8")
+        step1 = sections.get("Step 1: Load State", "")
+        self.assertIn(
+            "skipped",
+            step1,
+            "Step 1's exclusion set must cover skipped entries so vetoes are not re-fetched",
+        )
+        self.assertIn(
+            "--rescan-vetoed",
+            text,
+            "a flag must exist to re-admit vetoed jobs after the gate inputs change",
+        )
+
+    def test_job_scraper_schema_note_documents_skip_fields(self):
+        text = SCRAPER_SKILL.read_text(encoding="utf-8")
+        self.assertIn("skip_note", text, "schema note must document /rank's skip_note field")
+        self.assertIn(
+            "never scored",
+            text,
+            "schema note must say a skipped entry legitimately lacks scores, so readers "
+            "do not treat the absence as a truncated write",
+        )
+
     def test_job_scraper_schema_note_mentions_strengths_and_gaps(self):
         text = SCRAPER_SKILL.read_text(encoding="utf-8")
         self.assertIn("strengths", text)

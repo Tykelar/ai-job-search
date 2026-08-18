@@ -94,7 +94,7 @@ Read each document found in Step A1. Process subfolders in this order: `cv/`, `l
 
 **`cv/` documents:** name, contact (email, phone, LinkedIn, GitHub), education (degree, institution, dates, thesis), work experience (title, company, dates, location, bullets), skills, languages (with any stated proficiency), publications, awards, profile/summary.
 
-**`linkedin/` documents:** About/summary section (full text, used for behavioral inference), work experience, education, skills and endorsements, **Languages section** (language name + self-rated proficiency level, e.g. "Spanish - Native or bilingual proficiency" - a high-confidence structured source, feeds the Language Gate in `04-job-evaluation.md`), certifications, volunteer work, publications, recommendations received (full text). If multiple LinkedIn exports are present, use the most recently modified file.
+**`linkedin/` documents:** About/summary section (full text, used for behavioral inference), work experience, education, skills and endorsements, **Languages section** (language name + self-rated proficiency level, e.g. "Spanish - Native or bilingual proficiency" - a high-confidence structured source for the Languages table in `config/gates.md`, which is what the Language Gate compares postings against; the gate *mechanism* lives in `04-job-evaluation.md` and holds no levels of its own), certifications, volunteer work, publications, recommendations received (full text). If multiple LinkedIn exports are present, use the most recently modified file.
 
 **`diplomas/` documents:** official degree title and level, institution name (official spelling), graduation date, grade or distinction or GPA if visible.
 
@@ -218,12 +218,17 @@ Documents cover skills, experience, education, references, and behavioral signal
 - Career goals and target role types
 - What excites the user in their next role
 - Deal-breakers and must-haves
-- Languages you work in professionally, with proficiency levels (only if not already extracted from `cv/` or `linkedin/` above) - this feeds the Language Gate in `04-job-evaluation.md`, so ask directly rather than skipping it
 - Salary expectations / baseline (optional)
-- Commute or location constraints (if not visible from CV)
 - Job search configuration (use the questions from Path C Section 9 below)
 
-Then proceed to Step 3 to populate the non-skill files (`CLAUDE.md`, `applications/main_example.tex`, `.claude/skills/job-scraper/search-queries.md`). Step 3 will detect that the seven skill files are already populated and skip those substeps.
+**The four hard-gate values, all of them, however complete the documents looked.** Documents never carry these: a CV states languages but not the level the user would *claim*, and it states nothing at all about work authorization or how senior a posting may be. All four are written to `config/gates.md` in Step 3.3b, and `/rank` refuses to run while any is unfilled, so none of these questions is skippable:
+
+- **Work authorization:** citizenship or permanent residency, any permit-timing constraint, and which countries would require sponsorship. Nothing in the documents folder records this
+- **Languages with proficiency levels:** confirm the levels even when `cv/` or `linkedin/` already supplied them - the Language Gate compares postings against this table, so the user should own the number
+- **Experience ceiling:** the highest *stated minimum* years-of-experience a posting may require before it is not worth applying to (a bare number)
+- **Authorized countries:** base location, what is commutable from it, the explicit list of countries the user would relocate to, and whether remote is in scope and within which region. This replaces the older "commute or location constraints" question, which collected too little for the location gate
+
+Then proceed to Step 3 to populate the non-skill files (`CLAUDE.md`, `config/gates.md`, `applications/main_example.tex`, `.claude/skills/job-scraper/search-queries.md`). Step 3 will detect that the seven skill files are already populated and skip those substeps - `config/gates.md` is **not** one of them and is always written, from the answers above.
 
 ---
 
@@ -234,8 +239,9 @@ If the user provides a single CV/resume:
 1. Read the document thoroughly.
 2. Extract all structured information: name, contact, education, experience, skills, languages, publications, awards.
 3. Present a summary of what was extracted.
-4. Ask follow-up questions for gaps (behavioral profile, career goals, deal-breakers, languages and proficiency levels if not already extracted, salary expectations, references).
-5. Proceed to Step 3 (file generation).
+4. Ask follow-up questions for gaps (behavioral profile, career goals, deal-breakers, salary expectations, references).
+5. Ask the **four hard-gate questions** from Path A's Step A7 - work authorization, languages with proficiency levels, experience ceiling, authorized countries. A CV carries none of them in usable form, and `config/gates.md` (written in Step 3.3b) is not optional: `/rank` stops while any block is unfilled.
+6. Proceed to Step 3 (file generation).
 
 ---
 
@@ -301,6 +307,12 @@ If not, ask behavioral questions:
 - What environments to avoid
 - Commute/location constraints
 
+**The four gate values are collected here** and written to `config/gates.md` in Step 3.3b. Ask for each one explicitly rather than inferring it:
+- **Work authorization:** citizenship or permanent residency, any permit-timing constraint, and whether sponsorship would be needed anywhere they would otherwise apply
+- **Experience ceiling:** the highest *stated minimum* years-of-experience a posting can require before it is not worth applying to (a bare number)
+- **Authorized countries:** base location, how far is commutable, the explicit list of countries they would relocate to, and whether remote is in scope and within which region
+- **Languages:** confirm the levels from Section 1, since the Language Gate compares postings against them
+
 ### Section 8: References (optional)
 For each reference:
 - Name, title, company, email, phone
@@ -338,6 +350,15 @@ Write the full candidate profile with structured sections: Identity (including L
 
 ### 3. Populate `02-behavioral-profile.md` *(Path B and C; skip if Path A populated it)*
 Write the behavioral profile based on assessment results or synthesized answers.
+
+### 3b. Write `config/gates.md` - the hard-gate configuration
+This file is the **single source of truth for every hard gate**, and `/rank` refuses to run while any of it is unfilled (its Step 1a personalization check), so it is not optional. It is written on **every path**: fill all four blocks from Path C Sections 1, 2, 7 and 9, or from Path A's Step A7 gap questions, or from Path B's follow-ups. Never leave a block empty because a path's documents did not cover it - ask instead:
+- **Gate 1 - work authorization:** citizenship and the countries it covers, any permit-timing constraint, and which countries would require sponsorship. Ask directly; this is the one gate value no other file records.
+- **Gate 2 - Languages:** one row per language with its declared level, the same values Section 1 collected. Do not also write them into CLAUDE.md or `01-candidate-profile.md` - those point here.
+- **Gate 3 - experience ceiling:** ask "What is the highest *stated minimum* years-of-experience requirement a posting can have before it is not worth applying to?" and record the bare number. This is a search-strategy choice, not a profile fact.
+- **Gate 4 - authorized countries:** base location, commutable cities, the explicit list of countries the user would relocate to, and the remote scope. This list is what the location gate compares a posting against, and the geography tiers in `search-queries.md` are derived from it - keep the two consistent, with this file as the source.
+
+State plainly that these four values are what silently veto postings, so a wrong value here is invisible in the output: a too-low ceiling or a missing country reads as "no jobs matched".
 
 ### 4. Update `04-job-evaluation.md` *(Path B and C; skip if Path A populated it)*
 Replace skill match areas with the user's actual skills:
@@ -381,6 +402,7 @@ Present a summary:
 > - `.claude/skills/job-application-assistant/01-candidate-profile.md` - Structured profile
 > - `.claude/skills/job-application-assistant/02-behavioral-profile.md` - Behavioral assessment
 > - `.claude/skills/job-application-assistant/04-job-evaluation.md` - Personalized evaluation framework
+> - `config/gates.md` - your four hard gates: work authorization, languages, experience ceiling, authorized countries
 > - `.claude/skills/job-application-assistant/05-cv-templates.md` - CV templates with your profile statements
 > - `.claude/skills/job-application-assistant/07-interview-prep.md` - STAR examples from your experience
 > - `applications/main_example.tex` - Your LaTeX CV template

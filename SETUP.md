@@ -205,16 +205,17 @@ Claude will offer three paths:
 - **Path B (single CV import):** Share one CV/resume by mentioning the file with `@` or pasting the text. Claude extracts it and asks follow-up questions for anything missing.
 - **Path C (interview mode):** Answer structured interview questions section by section.
 
-All three paths produce the same result: fully populated profile files.
+All three paths produce the same result: fully populated profile files. All three also ask the four hard-gate questions and write `config/gates.md` - a CV or documents folder cannot supply work authorization or how senior a posting may be, so those are asked directly no matter which path you take.
 
 ### What gets populated
 
 | File | Content |
 |------|---------|
 | `CLAUDE.md` | Your full candidate profile |
+| `config/gates.md` | **Your four hard gates** - work authorization, languages with levels, experience ceiling, authorized-relocation countries. The single source of truth every gate reads, and the one file `/rank` refuses to run without |
 | `01-candidate-profile.md` | Structured education, experience, skills |
 | `02-behavioral-profile.md` | Behavioral assessment |
-| `04-job-evaluation.md` | Personalized skill match areas and career goals |
+| `04-job-evaluation.md` | Personalized skill match areas and career goals (gate *mechanisms* only - the values live in `config/gates.md`) |
 | `05-cv-templates.md` | Profile statement templates for your background |
 | `07-interview-prep.md` | STAR examples from your experience |
 | `applications/main_example.tex` | Your LaTeX CV with actual details |

@@ -79,7 +79,16 @@ Read the three packs, then compare against and update each of these targets:
    one the corpus dropped. The About Me paragraph here is a general curated summary; keep
    its wording unless a fact in it is now wrong. When in doubt about a phrasing change,
    leave the wording and flag it in the diff report rather than rewriting.
-6. **`applications/main_example.tex`** — the master CV: `master_cv.md` rendered in the
+6. **`config/gates.md`** — the **user configuration holding every hard-gate value**: the
+   work-authorization block, the Languages table (each language and its level), the experience
+   ceiling, and the authorized-relocation countries with the base location and remote scope.
+   This file is the single source of truth those gates read, so a language level or a country
+   that changed in the corpus **must** land here - CLAUDE.md and `01-candidate-profile.md` only
+   point at it and must never be given the values back. Two exceptions to "the corpus wins":
+   the **experience ceiling** is a search-strategy choice, not a corpus fact, and the
+   **work-authorization** block is not recorded in the corpus at all - leave both as configured
+   and report them as unverified in the diff rather than overwriting them.
+7. **`applications/main_example.tex`** — the master CV: `master_cv.md` rendered in the
    compact LaTeX template, and the verbatim-selection source every tailored CV is copied
    from. Whenever target #5 changes a line, mirror the same change here (LaTeX-escaped:
    `\&`, `\%`, `\#`, `\textasciitilde`) so the two masters stay line-for-line identical.
@@ -102,7 +111,8 @@ Update rules:
 
 ## Step 3 — Verify
 
-- No `[PLACEHOLDER]` tokens remain in any of the six targets.
+- No `[PLACEHOLDER]` tokens remain in any of the seven targets.
+- `config/gates.md` holds no empty table and no placeholder: `/rank` Step 1a stops the pipeline when it does, so an unfilled gate blocks ranking entirely.
 - Names, dates, titles, and metrics in the profile files match the packs exactly.
 - `applications/master_cv.md` retains its curated CV-voice wording — only facts were reconciled, no bullets rewritten into pack prose.
 - `applications/main_example.tex` matches `master_cv.md` line for line (modulo LaTeX escaping) and compiles cleanly.

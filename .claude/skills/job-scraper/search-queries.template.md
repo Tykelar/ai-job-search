@@ -33,7 +33,7 @@ The `site:` templates further down are the **WebSearch fallback** — for compan
 ## Geography (open to relocation)
 
 - **Home market:** [YOUR_HOME_MARKET] — your base city/region and realistic commute radius, or "remote-first" if you have no commute constraint.
-- **Relocation-OK countries:** [YOUR_RELOCATION_COUNTRIES] — comma-separated list, or "none" if you're not open to relocating.
+- **Relocation-OK countries:** must match the authorized list in `config/gates.md` Gate 4 (the single source of truth). [YOUR_RELOCATION_COUNTRIES] — comma-separated list, or "none" if you're not open to relocating.
 - **Remote:** [YOUR_REMOTE_SCOPE] — e.g. "any EU-remote role regardless of country", or "remote within [region] only".
 
 ### LinkedIn `--location` strings per market
@@ -93,7 +93,9 @@ linkedin  -q "[YOUR_BROADER_JOB_TITLE]"       -l <market> --jobage 30
 
 ## Language Filter
 
-The candidate's languages (source of truth: the `Languages:` line in CLAUDE.md's Identity section) are: [YOUR_LANGUAGES_WITH_LEVELS].
+The candidate's declared languages come from the **Languages table in `config/gates.md`** (Gate 2) - the single source of truth. Read it at run time rather than trusting a level copied into this file.
+
+This filter is **not** the Language Gate: it reads what language the ad is *written in* and drops the listing before anything is scored, while the gate reads what the *role requires* and runs once, in `/rank` Step 2a.
 
 A posting **written in** a language outside that set is a strong proxy for the job requiring that language day to day. Filter on the language of the **posting body**, not the employer's country:
 

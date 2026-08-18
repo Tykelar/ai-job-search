@@ -42,19 +42,18 @@ Sixty-nine tailored applications, twenty first interviews, and one signed contra
 A structured workflow that turns Claude Code into a full-stack job application assistant. The core workflow (self-profiling, fit evaluation, and the drafter-reviewer application pipeline) is **language- and country-agnostic**. The job portal search skills are built for the Danish market (Jobindex, Jobnet, Akademikernes Jobbank, etc.), but the pattern is designed to be swapped for your local job boards.
 
 ```
-/setup          /scrape              /apply <url>
-  |                |                     |
-  v                v                     v
-Fill in        Search job           Evaluate fit
-your profile   portals              Score & recommend
-  |                |                     |
-  v                v                     v
-Profile        Present matches      Draft CV + Cover Letter
-files ready    with fit ratings     (LaTeX, tailored)
-                   |                     |
-                   v                     v
-               Pick a match         Reviewer agent critiques
-               -> /apply            -> Revise -> Final output
+/setup          /scrape           /rank              /apply
+  |                |                 |                  |
+  v                v                 v                  v
+Fill in        Search job        Gate + score       Draft CV + Cover Letter
+your profile   portals           every posting      (LaTeX, tailored)
+  |                |                 |                  |
+  v                v                 v                  v
+Profile        Collect &         Ranked shortlist   Reviewer agent critiques
+files ready    deduplicate       + honest gaps      -> Revise -> Final output
+               (no gates,             |
+                no drafting)          v
+                                 Pick a number
 ```
 
 The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
@@ -115,7 +114,7 @@ claude
 /scrape
 ```
 
-This searches multiple job portals for positions matching your profile, deduplicates results, and presents them sorted by fit. Pick a match to run `/apply` on it directly — or, when a scrape returns more jobs than you want to eyeball, run `/rank` to batch-score them all against the fit framework and get a ranked shortlist first.
+This searches multiple job portals for positions matching your profile, deduplicates results, and presents them sorted by fit. `/scrape` collects only — it applies no deal-breaker gates and drafts nothing — so the next step is `/rank`, which fetches each posting, runs the four hard gates from `config/gates.md`, scores whatever clears them, and returns a ranked shortlist. You can also hand one posting straight to `/apply`; it will tell you that job is ungated, since gates run only in `/rank`.
 
 ### 5. Apply to a job
 
@@ -135,13 +134,13 @@ Postings are treated as untrusted input (the workflow follows no instructions em
 
 ## Other commands
 
-`/setup`, `/scrape`, and `/apply` form the core workflow. Ten more commands extend it once your profile is in place:
+`/setup`, `/scrape`, `/rank`, and `/apply` form the core workflow - `/scrape` collects, `/rank` gates and scores, `/apply` builds. The ten commands below cover the rest of the pipeline, with `/rank` described among them since it is where the deal-breaker gates live:
 
 - **`/interview`** preps you for a scheduled interview on a tracked application. It builds a stage-specific prep pack from the application's archive (the exact posting, the CV and cover letter the interviewer actually read, feedback recorded from earlier rounds), researches the company and interviewers with a verify-before-use rule, maps likely questions to your STAR examples, and offers a mock interview following the roleplay protocol in `07-interview-prep.md`. Gaps get honest bridge answers, never invented experience.
 - **`/outcome`** records what happened to an application - interview stages, offers, rejections, silence. It archives the submitted CV, cover letter, and posting text into `documents/applications/<company>_<role>/`, keeps `outcome.md` in the format `/setup` Path A parses, and updates the tracker. It also owns the stretch before there is an outcome to record: `/outcome followup` surfaces open applications that have gone quiet (default 10 days), drafts a short channel-appropriate follow-up in your writing style using only claims from the materials you already submitted (drafts only, never sends; at most twice per application), and offers a thank-you note in the same turn an interview stage is recorded. Once a few applications resolve, it points you back to `/setup` to calibrate the fit framework from what actually got interviews.
 - **`/notion-sync`** publishes a one-way, read-only view of the pipeline into a Notion database via the official Notion MCP server (OAuth, no API keys) - one row per ranked job plus every tracked application, with a write-once briefing page per row. The repo files stay the system of record: nothing syncs back, and documents sync as filenames only. Complements `/html-report`: that is the deep offline dashboard you regenerate at your desk; this is the glanceable live view from anywhere Notion runs (desktop, web, phone).
 - **`/gmail-sync`** reads your Gmail (via the Gmail connector) for status signals on your open applications - interview invites, assessment links, offers, rejections - and proposes them as a batch for you to approve before anything is written to the tracker or `outcome.md`, citing the source email on every proposed change. Offers stop short of proposing `hired`/`offer_declined` since that's your call; conflicting or unmatched signals get flagged for a manual `/outcome` pass instead of guessed.
-- **`/rank`** bridges `/scrape` and `/apply`: it batch-scores all newly scraped postings against the fit framework (parallel agents fetch each posting and score the five evaluation dimensions) and returns a ranked shortlist with honest per-job strengths and gaps. Deal-breakers veto, deadlines get urgency flags, dead postings get marked expired. Pick a number and it hands off to the full `/apply` workflow.
+- **`/rank`** bridges `/scrape` and `/apply`, and is **the one place the hard gates run**: parallel agents fetch each posting, apply the four gates from `config/gates.md` (work authorization, language, experience ceiling, authorized countries), then score the survivors on four weighted dimensions and return a ranked shortlist with honest per-job strengths and gaps. A gate failure is never scored — it leaves the pool with the requirement quoted from the posting. Deadlines get urgency flags, dead postings get marked expired. Pick a number and it hands off to `/apply`, which carries the verdict forward rather than re-deriving it.
 - **`/expand`** enriches your profile by scanning public sources you've already linked in it (GitHub repos, portfolio site, Kaggle, Google Scholar) and looking up syllabi for named courses and certifications. Discovered competencies are added to your profile with a source tag. Useful right after `/setup` to surface skills that documents alone don't make explicit.
 - **`/upskill`** analyzes the gap between your profile, your tracked job postings, and your ranked-but-untracked postings (`/rank`'s recorded gaps in `seen_jobs.json`) — or a single posting via `/upskill <URL>`. Produces a prioritized heatmap of skill gaps and a learning plan with web-searched study resources and time estimates. Useful for career planning between applications.
 - **`/html-report`** generates a self-contained HTML dashboard from `job_search_tracker.csv` and the application archives — stat cards, status/sector/channel/funnel charts (inline SVG, no external dependencies), and a filterable applications table. Opens directly in a browser, fully offline. Re-run it any time after `/outcome` adds new entries.
@@ -155,6 +154,10 @@ Postings are treated as untrusted input (the workflow follows no instructions em
 ```
 ai-job-search/
 ├── CLAUDE.md                          # Main candidate profile + workflow rules
+├── config/
+│   └── gates.md                       # The four hard gates: work authorization, languages,
+│                                      #   experience ceiling, authorized countries (single
+│                                      #   source of truth; /rank Step 2a is where they run)
 ├── .claude/
 │   ├── commands/
 │   │   ├── apply.md                   # /apply workflow (drafter-reviewer)
@@ -175,7 +178,7 @@ ai-job-search/
 │   │   │   ├── 01-candidate-profile.md # Your education, experience, skills
 │   │   │   ├── 02-behavioral-profile.md# PI/DISC/personality assessment
 │   │   │   ├── 03-writing-style.md    # Tone, structure, do's and don'ts
-│   │   │   ├── 04-job-evaluation.md   # Scoring framework for job fit
+│   │   │   ├── 04-job-evaluation.md   # Gate mechanisms + scoring framework (values in config/gates.md)
 │   │   │   ├── 05-cv-templates.md     # LaTeX CV structure + tailoring rules
 │   │   │   ├── 06-cover-letter-templates.md # LaTeX cover letter templates
 │   │   │   └── 07-interview-prep.md   # STAR examples + interview framework

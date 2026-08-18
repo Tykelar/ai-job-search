@@ -5,7 +5,7 @@ description: >
   and preparing for interviews. Triggers on keywords like: job posting, job application, CV,
   cover letter, resume, interview prep, job fit, career, application, apply, ansøgning, stilling
 allowed-tools: Read, Glob, Grep, WebFetch, WebSearch, Bash, Edit, Write, AskUserQuestion
-framework_version: 1.3.2
+framework_version: 1.4.0
 ---
 
 # Job Application Assistant
@@ -13,6 +13,17 @@ framework_version: 1.3.2
 ---
 
 ## Workflow
+
+**`/apply` is the canonical path for a complete application.** It owns the numbered
+application folder, the `POSTING.md`, the shortlist validation gate, the reviewer pass, and
+the mandatory PDF/ATS verification. Use the workflow below only for the **individual
+requests** in *Quick Commands* - one CV, one cover letter, one evaluation, interview prep -
+where the user explicitly wants a single artifact rather than an application. `/scrape` no
+longer routes here: it collects postings, and drafting happens through `/rank` → `/apply`.
+
+**This workflow runs no hard gates.** The four gates (eligibility, language, experience,
+location) execute once per posting, in `/rank` Step 2a, against the values in
+`config/gates.md`. Step 1 below scores fit; it does not veto.
 
 When the user provides a job posting (URL or text), follow this workflow:
 
@@ -29,19 +40,29 @@ When the user provides a job posting (URL or text), follow this workflow:
 ### Step 2: Tailor CV
 - Read the most relevant existing CV variant from `applications/*/` as a starting point
 - Follow the guidelines in `05-cv-templates.md`
-- Create `applications/<company>_<role>/CV_JoseHenriques_<company>_<role>.tex` with tailored content
+- Create `applications/<NN>_<company>_<role>/CV_<CVNameSlug>_<company>_<role>.tex` with tailored
+  content. **The folder naming is not optional:** `<NN>` is the next two-digit sequence number in
+  creation order (highest existing prefix + 1, `INTERVIEW_` flags stripped when reading them) and
+  `<CVNameSlug>` is the `CV filename slug:` line from CLAUDE.md's Identity section - the same
+  rules `/apply` Step 1b applies, stated in CLAUDE.md's Repo Structure as hard rules
 - Adjust: profile statement, skills section, experience bullet emphasis, section order
+- **Compile and verify before presenting**, per `/apply` Step 5: lualatex for the CV, exactly two
+  pages, at least four `\cvproject` entries, no orphaned headers, and the ATS text-layer check.
+  A `.tex` that was never compiled is not a finished CV
 
 ### Step 3: Write Cover Letter
 - Follow the writing style rules in `03-writing-style.md` (critical: no em-dashes, no cliches)
 - Follow the template structure in `06-cover-letter-templates.md`
-- Create `applications/<company>_<role>/CL_JoseHenriques_<company>_<role>.tex`
+- Create `applications/<NN>_<company>_<role>/CL_<CVNameSlug>_<company>_<role>.tex`, in the folder
+  Step 2 created and under the same naming rules
 - Ensure the letter connects specific experience to the role requirements
+- **Compile with xelatex and verify** it is exactly one page with the signature block intact, per
+  `/apply` Step 5
 
 ### Step 3b: Record the Application
 - Run this once both documents exist. A CV or cover letter drafted alone is not yet an application.
 - Follow **`/apply` Step 6b** (`.claude/commands/apply.md`) exactly: same header, same match-then-update rule, same `drafted` row, same posting archive, same prohibition on touching `job_scraper/seen_jobs.json`. It is stated there once so the two paths cannot drift. Three of its values are named in `/apply`'s own terms: `cv_file`/`cover_letter_file` are the paths written in Steps 2 and 3 here, `source` is the posting URL from Step 1, and the posting text item 7 archives is the one Step 1 read.
-- This step exists here because `/scrape` Step 5 routes straight into this skill. Without it, that path writes two documents and records nothing.
+- This step exists for the direct-request path (a user who asked for both documents in conversation). Without it, that path writes two documents and records nothing. When a full application is what the user wants, prefer `/apply`, which does this and the verification automatically.
 
 ### Step 4: Interview Preparation
 - Follow the framework in `07-interview-prep.md`
